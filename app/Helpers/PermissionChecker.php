@@ -44,12 +44,16 @@ class PermissionChecker
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $user_user_group_wiki = self::getUserGroupWiki($user, $wiki);
+            //dd('Группы юзера получены ВМЕСТЕ вики');
         } else {
             $user_user_group_wiki = self::getUserGroup($user);
+            //dd('Группы юзера получены БЕЗ вики');
         }
+            //dd('До итерации');
             $user_groups = UserGroup::all();
             foreach ($user_user_group_wiki as $user_user_group_wiki_foreach) {
                 foreach ($user_groups as $user_group) {
+                    //dd('foreach ($user_groups as $user_group итерация 1');
                     if ($user_user_group_wiki_foreach->user_group_id === $user_group->id) {
                         if ($user_group->$permission === 1) {
                             return $next($request);
@@ -65,7 +69,8 @@ class PermissionChecker
     } else {
         return response('Unauthorized', 403);
     }
-
+    
+    dd('Caught!');
     return response('Unknown error', 400);
 }
 
@@ -74,8 +79,8 @@ class PermissionChecker
         return DB::table('user_user_group_wiki')
             ->where('user_id', $user->id)
             ->where(function (Builder $query) use ($wiki) {
-                $query->where('wiki_id', 0)
-                    ->orWhere('wiki_id', $wiki->id);
+                $query->where('wiki_id', $wiki->id)
+                    ->orWhere('wiki_id', 0);
             })
             ->get();
     }

@@ -35,7 +35,7 @@ Route::get('/global-user-rights/{userId}', [WikisController::class,'manage_globa
 Route::post('/global-user-rights/{userId}/store', [WikisController::class,'store_global_user_rights'])->name('wikis.global_userrights.store')
 ->middleware(ManageGlobalUserrightsMiddleware::class);
 
-//Работа со статьями на викиях
+//Работа со статьями (и правами) на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
 Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show_article'])->name('articles.show');
 Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
@@ -63,6 +63,12 @@ Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionCo
 ->middleware(DeleteRevisionMiddleware::class);
 Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionController::class,'restore'])->name('revision.restore')
 ->middleware(RestoreRevisionMiddleware::class);
+
+Route::get('/wiki/{wikiName}/user-rights/{userId}', [WikisController::class,'manage_local_user_rights'])->name('wikis.local_userrights')
+->middleware(ManageLocalUserrightsMiddleware::class);
+Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [WikisController::class,'store_local_user_rights'])->name('wikis.local_userrights.store')
+->middleware(ManageLocalUserrightsMiddleware::class);
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

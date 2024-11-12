@@ -8,9 +8,9 @@
         <button class="btn btn-success" type="submit">Восстановить</button>
     </form>
     @endcan
-    </div>
     @can('view_deleted_articles', $wiki->url)
     <a href="{{route('articles.deleted.history', [$wiki->url, $article->url_title])}}" class="btn btn-secondary">История</a>
     @endcan
+    </div>
     <p class="mt-3">{{$revision->content}}</p>
 @endsection
