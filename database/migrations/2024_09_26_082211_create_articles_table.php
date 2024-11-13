@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('is_comments_super_enabled')->default(0);
 
             $table->boolean('is_article_visible')->default(1);
-            $table->boolean('is_article_super_visible')->default(1);
+            $table->boolean('is_article_super_visible')->default(0);
 
             $table->string('article_protection_level')->default('none');
             $table->string('comments_protection_level')->default('none');
