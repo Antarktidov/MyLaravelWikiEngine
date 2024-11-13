@@ -35,7 +35,7 @@ Than you should grant you steward (global superadmin) via database editor.
 Add the following row in user_user_group_wiki:
 | id | user_id |user_group_id|wiki_id|
 | ------ | ----------- | ----------- |----------- |
-| <Your_row_id. If it's first row, it should be 1>|<your account id. If you are first user, it's should be 1>|1|0|
+| <Your_row_id. If it's first row, it should be 1>|<Your account id. If you are first user, it's should be 1>|1|0|
 
 Now you can open your wiki in browser and start explore it.
 
