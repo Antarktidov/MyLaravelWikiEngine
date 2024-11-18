@@ -10,7 +10,7 @@ use App\Models\Revision;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Log;
+use Illuminate\Support\Str;
 //use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ArticleController extends Controller

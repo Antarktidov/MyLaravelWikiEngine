@@ -12,5 +12,7 @@
     </form>
     @endcan
     </div>
-    <p class="mt-3">{{$revision->content}}</p>
+    <p class="mt-3">{!!Str::of($revision->content)->markdown([
+        'html_input' => 'strip',
+    ])!!}</p>
 @endsection

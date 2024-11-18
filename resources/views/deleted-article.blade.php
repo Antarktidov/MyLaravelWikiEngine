@@ -12,5 +12,7 @@
     <a href="{{route('articles.deleted.history', [$wiki->url, $article->url_title])}}" class="btn btn-secondary">История</a>
     @endcan
     </div>
-    <p class="mt-3">{{$revision->content}}</p>
+    <p class="mt-3">{!!Str::of($revision->content)->markdown([
+        'html_input' => 'strip',
+    ])!!}
 @endsection
