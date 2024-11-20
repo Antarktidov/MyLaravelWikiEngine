@@ -6,6 +6,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
 
 /*use App\Models\User;
 use App\Models\Wiki;
@@ -28,9 +29,6 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-      // Убедись, что импорт прописан в начале файла
-
-// ...
 
 public function boot(): void
 {
@@ -78,6 +76,9 @@ public function boot(): void
     Gate::define('open_wikis', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_open_wikis');
     });
+    Gate::define('delete_commons_images', function ($user, $wikiName) {
+        return PermissionChecker::check($user, $wikiName, 'can_delete_commons_images');
+    });
     
     /*Gate::define('check_revisions', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_check_revisions');
@@ -94,6 +95,8 @@ public function boot(): void
     Gate::define('oldedit', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_oldedit');
     });*/
+    //Пагинация
+    Paginator::useBootstrapFive();
 }
 
 }

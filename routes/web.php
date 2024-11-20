@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WikisController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\RevisionController;
+use App\Http\Controllers\ImageController;
 
 use App\Http\Middleware\DeleteMiddleware;
 use App\Http\Middleware\DeleteRevisionMiddleware;
@@ -17,6 +18,8 @@ use App\Http\Middleware\CloseWikisMiddleware;
 use App\Http\Middleware\OpenWikisMiddleware;
 use App\Http\Middleware\ManageGlobalUserrightsMiddleware;
 use App\Http\Middleware\ManageLocalUserrightsMiddleware;
+
+use App\Http\Middleware\DeleteImagesMiddleware;
 
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
@@ -34,6 +37,13 @@ Route::get('/global-user-rights/{userId}', [WikisController::class,'manage_globa
 ->middleware(ManageGlobalUserrightsMiddleware::class);
 Route::post('/global-user-rights/{userId}/store', [WikisController::class,'store_global_user_rights'])->name('wikis.global_userrights.store')
 ->middleware(ManageGlobalUserrightsMiddleware::class);
+
+//Работа с общими изображениями
+Route::get('/commons/upload', [ImageController::class,'upload_page'])->name('images.upload_page');
+Route::post('/commons/store', [ImageController::class,'store'])->name('images.store');
+Route::get('/commons', [ImageController::class,'gallery'])->name('images.gallery');
+Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
+->middleware(DeleteImagesMiddleware::class);
 
 //Работа со статьями (и правами) на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
