@@ -7,7 +7,7 @@
           <tr>
             <th scope="col">id</th>
             <th scope="col">Название</th>
-            @can('open_wikis', 'Some magic string. Don\'t delete it')
+            @can('open_wikis')
             <th></th>
             @endcan
           </tr>
