@@ -35,21 +35,26 @@
 }
 </style>
 <h1>Викисклад</h1>
+@isset($images->items)
 <div class="commons-gallery-super-block">
 <div class="commons-gallery-block">
-@foreach ($images as $image)
-    <div class="commons-gallery-sub-block">
-    <img src="{{asset('storage/images/' . $image->filename) }}"class="img-thumbnail img-on-commons">
-    @can('delete_commons_images', $wiki->url)
-    <form action="{{route('images.delete', $image->id)}}" method="post" class="mt-3 delete-img-btn-form">
-        @csrf
-        @method('delete')
-        <button type="submit" class="btn btn-danger">Удалить</button>
-    </form>
-  @endcan
-</div>
-@endforeach
+  @foreach ($images as $image)
+      <div class="commons-gallery-sub-block">
+      <img src="{{asset('storage/images/' . $image->filename) }}"class="img-thumbnail img-on-commons">
+      @can('delete_commons_images', $wiki->url)
+      <form action="{{route('images.delete', $image->id)}}" method="post" class="mt-3 delete-img-btn-form">
+          @csrf
+          @method('delete')
+          <button type="submit" class="btn btn-danger">Удалить</button>
+      </form>
+    @endcan
+  </div>
+  @endforeach
 </div>
 </div>
 <div>{{$images->links()}}</div>
+@endisset
+@empty($images->items)
+    <p>На викискладе нет картинок <a href="{{route('images.upload_page')}}">Загрузите</a> первую картику</p>
+@endempty
 @endsection

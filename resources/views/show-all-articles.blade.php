@@ -20,6 +20,6 @@
     </table>
 @endif
 @if (count($articles) === 0)
-<p>На данной вики нет статей</p>
+<p>На данной вики нет статей. Давайте <a href="{{route('articles.create', $wiki->url)}}">создадим</a> вашу первую статью.</p>
 @endif
 @endsection

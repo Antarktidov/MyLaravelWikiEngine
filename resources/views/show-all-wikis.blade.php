@@ -32,6 +32,6 @@
     </table>
   @endif
   @if(count($wikis) === 0)
-  <p>На данной вики-ферме нет вики</p>
+  <p>На данной вики-ферме нет вики.@can('create_wikis', '') Двайте <a href="{{route('wikis.create')}}">создадим</a> вашу первую вики.@endcan</p>
   @endif
 @endsection
