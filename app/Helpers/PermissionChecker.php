@@ -69,10 +69,8 @@ class PermissionChecker
             return response('Wiki not found', 404);
         }*/
     } else {
-        return response('Unauthorized', 403);
+        return response('Unauthorized', 401);
     }
-    
-    //dd('Caught!');
     return response('Forbidden', 403);
 }
 
