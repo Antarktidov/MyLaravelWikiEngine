@@ -1,13 +1,13 @@
 @extends('layouts.main')
 @section('content')
-@isset($wikis->items)
+@if(count($wikis) !== 0)
     <h1>Список всех закрытых вики</h1>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">id</th>
             <th scope="col">Название</th>
-            @can('open_wikis')
+            @can('open_wikis', 'Some magic string. Don\'t delete it')
             <th></th>
             @endcan
           </tr>
@@ -29,8 +29,8 @@
            @endforeach
           </tbody>
     </table>
-@endisset
-@empty($wikis->items)
+@endif
+@if(count($wikis) === 0)
 <p>На данной викиферме нет закрытых вики</p>
-@endempty
+@endif
 @endsection
