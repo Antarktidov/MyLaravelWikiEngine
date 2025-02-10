@@ -41,14 +41,17 @@ class ImageController extends Controller
 {
     $filePath = public_path("storage/images/{$image->filename}");
 
+    $response = "";
+
     if (file_exists($filePath)) {
         unlink($filePath);
+        $response =  'Файл успешно удалён';
     } else {
-        return 'Файл не найден';
+        $response =  'Файл не найден';
     }
     
     $image->delete();
-    return 'Файл успешно удален';
+    return $response;
 }
 
 

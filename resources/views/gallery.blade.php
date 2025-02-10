@@ -34,8 +34,8 @@
     }
 }
 </style>
+@if(count($images) !== 0)
 <h1>Викисклад</h1>
-@isset($images->items)
 <div class="commons-gallery-super-block">
 <div class="commons-gallery-block">
   @foreach ($images as $image)
@@ -53,8 +53,8 @@
 </div>
 </div>
 <div>{{$images->links()}}</div>
-@endisset
-@empty($images->items)
+@endif
+@if(count($images) === 0)
     <p>На викискладе нет картинок <a href="{{route('images.upload_page')}}">Загрузите</a> первую картику</p>
-@endempty
+@endif
 @endsection

@@ -13,9 +13,6 @@ use App\Models\UserUserGroupWiki;
 class CreateWikiPageTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic feature test example.
-     */
     public function test_that_unauthorized_user_can_not_asses_to_create_wiki_page(): void
     {
         $response = $this->get('/create-wiki');

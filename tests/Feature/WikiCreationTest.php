@@ -13,9 +13,6 @@ use App\Models\UserUserGroupWiki;
 class WikiCreationTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic feature test example.
-     */
     public function test_that_unauthorized_user_can_not_crete_wikis(): void
     {
         $data = [
