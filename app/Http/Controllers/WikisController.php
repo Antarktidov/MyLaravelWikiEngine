@@ -59,6 +59,7 @@ class WikisController extends Controller
         $data = request()->validate([
             'user_group_ids' => 'array',
         ]);
+
         $managed_user = User::findOrFail($userId);
         $user_user_group_wiki = DB::table('user_user_group_wiki')
         ->where('user_id', $userId)
