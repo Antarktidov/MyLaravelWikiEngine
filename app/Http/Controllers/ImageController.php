@@ -32,7 +32,7 @@ class ImageController extends Controller
 
     public function gallery() {
         $images = Image::Paginate(10);
-        $wiki = Wiki::find(1);//7 бед - один ответ, костыль и велосипед (исполнение)
+        $wiki = Wiki::first();//7 бед - один ответ, костыль и велосипед (исполнение)
 
         return view('gallery', compact('images', 'wiki'));
     }
