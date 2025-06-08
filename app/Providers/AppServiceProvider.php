@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
 
 public function boot(): void
 {
+    
     Gate::define('edit_articles', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_edit_articles');
     });

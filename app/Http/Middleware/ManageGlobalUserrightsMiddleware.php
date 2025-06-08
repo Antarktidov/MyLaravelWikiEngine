@@ -28,15 +28,4 @@ class ManageGlobalUserrightsMiddleware
      {
          return PermissionChecker::check_for_middleware($request, $next, 'can_manage_global_userrights');
      }
-
-    /*private function getUserGroupWiki($user, $wiki)
-    {
-        return DB::table('user_user_group_wiki')
-            ->where('user_id', $user->id)
-            ->where(function (Builder $query) use ($wiki) {
-                $query->where('wiki_id', 0)
-                    ->orWhere('wiki_id', $wiki->id);
-            })
-            ->get();
-    }*/
 }
