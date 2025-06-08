@@ -11,12 +11,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-//use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ArticleController extends Controller
 {
-    //use SoftDeletes;
-
+    //Заглавная конкретной вики: список всех статей
+    //(Аналог Служебная:Все страницы)
     public function index($wikiName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -28,6 +27,7 @@ class ArticleController extends Controller
         }
     }
 
+    //Плказывает вики-страницу
     public function show_article($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -58,6 +58,7 @@ class ArticleController extends Controller
         }
     }
 
+    //Показывает историю страницы
     public function history($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -80,6 +81,8 @@ class ArticleController extends Controller
         }
     }
 
+    //Показывает историю удалённой страницы
+    //(требуются технические права)
     public function show_deleted_article_history($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -102,6 +105,8 @@ class ArticleController extends Controller
         }
     }
 
+    //Показывает скрытые правки в истории страницы
+    //(требуются технические права)
     public function deleted_history($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -119,6 +124,7 @@ class ArticleController extends Controller
     }
     
 
+    //Форма создания статьи
     public function create($wikiName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -128,6 +134,7 @@ class ArticleController extends Controller
         }
     }
 
+    //POST-ручка для создания статьи
     public function store($wikiName, Request $request) {
         //dd('test0');
         $data = request()->validate([
@@ -170,6 +177,7 @@ class ArticleController extends Controller
         }
     }
 
+    //Форма правки статьи
     public function edit($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -190,15 +198,14 @@ class ArticleController extends Controller
             return 'Указанной вики не сущесвует';
         }
     }
+
+    //POST-ручка для формы правки статьи
     public function update($wikiName, $articleName, Request $request) {
-        //dd($articleName);
         $data = request()->validate([
             'title' => 'string',
             'url_title' => 'string',
             'content' => 'string',
         ]);
-        //dd($data);
-        //Log::info('Updating article', ['data' => $data]);
 
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -207,7 +214,6 @@ class ArticleController extends Controller
                 'url_title' => $data['url_title'],
                 'title' => $data['title'],
             ];
-            //dd($my_article);
             $articles = Article::where('wiki_id', $wiki->id)->get();
             if ($articles) {
 
@@ -248,11 +254,13 @@ class ArticleController extends Controller
             return 'Указанной вики не сущесвует';
         }
     }
+
+    //DELETE-ручка для удаления статьи
+    //(требуются технические права)
     public function destroy($wikiName, $articleName)
     {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
-            //dd($my_article);
             $articles = Article::where('wiki_id', $wiki->id)->get();
             if ($articles) {
 
@@ -261,8 +269,6 @@ class ArticleController extends Controller
                 if ($my_article2) {
 
                     $my_article2->delete();
-
-                    //return redirect()->route('index.articles', $wiki->url);
                     return "Статья удалена";
                 }   else {
                         return 'Ошибка';
@@ -274,10 +280,10 @@ class ArticleController extends Controller
         } else {
             return 'Указанной вики не сущесвует';
         }
-        //$article->destroy();
-        //return 'Удалено успешно. Надеюсь...';
     }
 
+    //Список удалённых статей
+    //(требуются технические права)
     public function trash($wikiName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -289,6 +295,8 @@ class ArticleController extends Controller
         }
     }
 
+    //Просмотр удалённой стати
+    //(требуются технические права)
     public function show_deleted_article($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -312,23 +320,18 @@ class ArticleController extends Controller
         }
     }
 
+    //POST-ручка для восстановления стаьи
+    //(требуются технические права)
     public function restore($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
-            //dd($my_article);
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
-            //dd($articles);
             if ($articles) {
 
                 $my_article2 = $articles->where('url_title', $articleName)->first();
-                //dd($my_article2);
                 if ($my_article2) {
 
                     $my_article2->restore();
-
-                    //dd($my_article2);
-
-                    //return redirect()->route('articles.show', [$wiki->url, $my_article2->url]);
                     return 'Статья восстановлена!';
                 }   else {
                         return 'Ошибка';
