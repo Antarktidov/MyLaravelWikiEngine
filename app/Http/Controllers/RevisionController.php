@@ -10,17 +10,14 @@ use App\Models\Revision;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-//use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RevisionController extends Controller
 {
-    //use SoftDeletes;
-
+    //DELETE-ручка для сокрытия правки
     public function destroy($wikiName, $articleName, $revisionId)
     {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
-            //dd($my_article);
             $articles = Article::where('wiki_id', $wiki->id)->get();
             if ($articles) {
 
@@ -50,30 +47,22 @@ class RevisionController extends Controller
         }
     }
 
+    //POST-ручка для восстановления скрытой правки
     public function restore($wikiName, $articleName, $revisionId) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
-            //dd($my_article);
             $articles = Article::where('wiki_id', $wiki->id)->get();
-            //dd($articles);
             if ($articles) {
-
                 $my_article = $articles->where('url_title', $articleName)->first();
-                //dd($my_article);
-
                 if ($my_article) {
                     $revisions = Revision::onlyTrashed()->where('article_id', $my_article->id)->get();
-                    //dd($revisions);
-
                     if ($revisions) {
                         $my_revision = $revisions->where('id', $revisionId)->first();
                         $my_revision->restore();
-
                         return 'Правка вогсстановлена';
                     } else {
                         return 'Ошибка';
-                    }
-                    
+                    }           
                 }   else {
                         return 'Ошибка';
                 }
@@ -86,11 +75,11 @@ class RevisionController extends Controller
         }
     }
 
+    //Просмотр правки статьи по ID
     public function view($wikiName, $articleName, $revisionId)
     {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
-            //dd($my_article);
             $articles = Article::where('wiki_id', $wiki->id)->get();
             if ($articles) {
 
@@ -124,4 +113,3 @@ class RevisionController extends Controller
         }
     }
 }
-//restore
