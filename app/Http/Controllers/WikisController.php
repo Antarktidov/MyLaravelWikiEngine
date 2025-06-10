@@ -41,7 +41,7 @@ class WikisController extends Controller
         ]);
         Wiki::create($data);
 
-        return 'Вики успешно создана!';
+        return __('Wiki was created');
     }
 
     //DELETE-ручка закрытия вики
@@ -49,7 +49,7 @@ class WikisController extends Controller
     //по умолчнию - steward
     public function destroy(Wiki $wiki) {
         $wiki->delete();
-        return 'Вики успешно закрыта!';
+        return __('Wiki was closed');
     }
 
     //POST-ручка открытия вики
@@ -58,7 +58,7 @@ class WikisController extends Controller
     public function open($wikiId) {
         $wiki = Wiki::onlyTrashed()->findOrFail($wikiId);
         $wiki->restore();
-        return 'Вики успешно открыта!';
+        return __('Wiki was opened');
     }
 
     //Форма для управления глобальными группами
@@ -121,7 +121,7 @@ class WikisController extends Controller
             UserUserGroupWiki::create($one_user_group_to_add);
         }
 
-        return 'Группы участника успешно изменены!';
+        return __('The user\'s usergroups was changed');
     }
 
 
@@ -191,7 +191,7 @@ class WikisController extends Controller
                 UserUserGroupWiki::create($one_user_group_to_add);
             }
 
-            return 'Группы участника успешно изменены!';
+            return __('The user\'s usergroups was changed');
         }
     }
 }

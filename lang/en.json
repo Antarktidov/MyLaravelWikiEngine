@@ -75,5 +75,27 @@
 
     "There is no deleted articles on this wiki": "There is no deleted articles on this wiki.",
 
-    "Upload image": "Upload image"
+    "Upload image": "Upload image",
+
+    "Wiki does not exist": "Wiki does not exist",
+    "Article does not exist": "Article does not exist",
+    "No articles": "No articles",
+    "All edits of this article are hidden": "All edits of this article are hidden",
+    "Article was deleted": "Article was deleted",
+    "Error": "Error",
+    "Article was restored": "Article was restored",
+
+    "The file is uploaded! To add an image to an article, use the following code: ![Image]": "The file is uploaded! To add an image to an article, use the following code: ![Image]",
+    "Unknown error": "Unknown error",
+    "File deleted successfully": "File deleted successfully",
+    "File not found": "File not found",
+
+    "The edit was hidden": "The edit was hidden",
+    "The edit has been restored": "The edit has been restored",
+    "404. Invalid edit id entered.": "404. Invalid edit id entered.",
+
+    "Wiki was created": "Wiki was created",
+    "Wiki was closed": "Wiki was closed",
+    "Wiki was opened": "Wiki was opened",
+    "The user's usergroups was changed": "The user's usergroups was changed"
 }

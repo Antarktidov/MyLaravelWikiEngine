@@ -73,5 +73,28 @@
     "Deleted pages": "Список всех удалённых статей на вики",
     "There is no deleted articles on this wiki" :"На данной вики удалённых нет статей.",
 
-    "Upload image": "Загрузить изображение"
+    "Upload image": "Загрузить изображение",
+
+    "Wiki does not exist": "Указанной вики не существует",
+    "Article does not exist": "Такой статьи нет",
+    "No articles": "Нет статей",
+    "All edits of this article are hidden": "Похоже, все правки данной статьи скрыты",
+    "Article was deleted": "Статья удалена",
+    "Error": "Ошибка",
+    "Article was restored": "Статья восстановлена!",
+
+    "The file is uploaded! To add an image to an article, use the following code: ![Image]": "Файл загружен! Чтобы добавить картинку в статью, используйте следующий код: ![Изображение]",
+    "Unknown error": "Неизвестная ошибка!",
+    "File deleted successfully": "Файл успешно удалён",
+    "File not found": "Файл не найден",
+
+    "The edit was hidden": "Правка скрыта",
+    "The edit has been restored": "Правка восстановлена",
+    "404. Invalid edit id entered.": "404. Введён неверный id правки",
+
+    "Wiki was created": "Вики успешно создана!",
+    "Wiki was closed": "Вики успешно закрыта!",
+    "Wiki was opened": "Вики успешно открыта!",
+    "The user's usergroups was changed": "Группы участника успешно изменены!"
+
 }

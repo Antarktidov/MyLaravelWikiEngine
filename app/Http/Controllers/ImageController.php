@@ -26,10 +26,10 @@ class ImageController extends Controller
             Image::create($data);
 
             $index = route('index');
-            return "Файл загружен! Чтобы добавить картинку в статью, используйте следующий код: ![Изображение]($index/storage/$path)";
+            return __('The file is uploaded! To add an image to an article, use the following code: ![Image]') . "($index/storage/$path)";
             //После загрузки файла возвращаем код для вставки в статью
         } else {
-            return 'Неизвестная ошибка!';
+            return __('Unknown error');
         }
     }
 
@@ -54,14 +54,12 @@ class ImageController extends Controller
          */
         if (file_exists($filePath)) {
             unlink($filePath);
-            $response =  'Файл успешно удалён';
+            $response =  __('File deleted successfully');
         } else {
-            $response =  'Файл не найден';
+            $response =  __('File not found');
         }
         
         $image->delete();
         return $response;
     }
-
-
 }

@@ -23,11 +23,11 @@ class ArticleController extends Controller
 
             return view('show-all-articles', compact('articles', 'wiki'));
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 
-    //Плказывает вики-страницу
+    //Показывает вики-страницу
     public function show_article($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -44,17 +44,17 @@ class ArticleController extends Controller
                     if ($revision) {
                         return view('article', compact('revision', 'wiki', 'article'));
                     } else {
-                        return 'Похоже, все правки данной статьи скрыты';
+                        return __('All edits of this article are hidden');
                     }
                 }
                  else {
-                    return 'Такой статьи нет';
+                    return __('Article does not exist');
                  }
             } else {
-                return 'Нет статей';
+                return __('No articles');
             }
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');;
         }
     }
 
@@ -71,13 +71,13 @@ class ArticleController extends Controller
                             return view('history', compact('article', 'revisions',
                             'users', 'wiki'));
                             } else {
-                                return 'Такой статьи нет';
+                                return __('Article does not exist');
                             }
             } else {
-                return 'Нет статей';
+                return __('No articles');
             }
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');;
         }
     }
 
@@ -95,13 +95,13 @@ class ArticleController extends Controller
                             return view('show_deleted_article_history', compact('article', 'revisions',
                             'users', 'wiki'));
                             } else {
-                                return 'Такой статьи нет';
+                                return __('Article does not exist');
                             }
             } else {
-                return 'Нет статей';
+                return __('No articles');
             }
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');;
         }
     }
 
@@ -116,10 +116,10 @@ class ArticleController extends Controller
                 $users = User::all();
                 return view('deleted_history', compact('article', 'revisions', 'users', 'wiki'));
             } else {
-                return 'Такой статьи нет';
+                return __('Article does not exist');
             }
         } else {
-            return 'Указанной вики не существует';
+            return __('Wiki does not exist');;
         }
     }
     
@@ -130,7 +130,7 @@ class ArticleController extends Controller
         if ($wiki) {
             return view('create-article', compact('wiki'));
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');;
         }
     }
 
@@ -173,7 +173,7 @@ class ArticleController extends Controller
             return redirect()->route('articles.show', [$wiki->url, $created_article->url_title]);
 
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');;
         }
     }
 
@@ -188,14 +188,14 @@ class ArticleController extends Controller
                     $revision = DB::table('revisions')->where('article_id', $article->id)->orderBy('id', 'desc')->first();
                     return view('edit', compact('article', 'revision', 'wiki'));
                 } else {
-                    return 'Такой статьи нет';
+                    return __('Article does not exist');
                 }
 
             } else {
-                return 'Нет статей';
+                return __('No articles');
             }
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');;
         }
     }
 
@@ -244,14 +244,14 @@ class ArticleController extends Controller
 
                     return redirect()->route('articles.show', [$wiki->url, $my_article2->url_title]);
                 }   else {
-                        return 'Ошибка';
+                        return __('Error');
                 }
             } else {
-                return 'Ошибка';
+                return __('Error');
             }
 
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 
@@ -269,16 +269,16 @@ class ArticleController extends Controller
                 if ($my_article2) {
 
                     $my_article2->delete();
-                    return "Статья удалена";
+                    return __('Article was deleted');
                 }   else {
-                        return 'Ошибка';
+                        return __('Error');
                 }
             } else {
-                return 'Ошибка';
+                return __('Error');
             }
 
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 
@@ -291,11 +291,11 @@ class ArticleController extends Controller
 
             return view('trash', compact('articles', 'wiki'));
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 
-    //Просмотр удалённой стати
+    //Просмотр удалённой статmи
     //(требуются технические права)
     public function show_deleted_article($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
@@ -310,13 +310,13 @@ class ArticleController extends Controller
                     return view('deleted-article', compact('revision', 'wiki', 'article'));
                 }
                  else {
-                    return 'Такой статьи нет';
+                    return __('Article does not exist');
                  }
             } else {
-                return 'Нет статей';
+                return __('No articles');
             }
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 
@@ -332,16 +332,16 @@ class ArticleController extends Controller
                 if ($my_article2) {
 
                     $my_article2->restore();
-                    return 'Статья восстановлена!';
+                    return __('Article was restored');
                 }   else {
-                        return 'Ошибка';
+                        return __('Error');
                 }
             } else {
-                return 'Ошибка';
+                return __('Error');
             }
 
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 

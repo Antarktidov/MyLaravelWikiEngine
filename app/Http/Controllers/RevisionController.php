@@ -30,20 +30,20 @@ class RevisionController extends Controller
                         $my_revision = $revisions->where('id', $revisionId)->first();
                         $my_revision->delete();
 
-                        return 'Правка скрыта';
+                        return __('The edit was hidden');
                     } else {
-                        return 'Ошибка';
+                        return __('Error');
                     }
                     
                 }   else {
-                        return 'Ошибка';
+                        return __('Error');
                 }
             } else {
-                return 'Ошибка';
+                return __('Error');
             }
 
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 
@@ -59,19 +59,19 @@ class RevisionController extends Controller
                     if ($revisions) {
                         $my_revision = $revisions->where('id', $revisionId)->first();
                         $my_revision->restore();
-                        return 'Правка вогсстановлена';
+                        return __('The edit has been restored');
                     } else {
-                        return 'Ошибка';
+                        return __('Error');
                     }           
                 }   else {
-                        return 'Ошибка';
+                        return __('Error');
                 }
             } else {
-                return 'Ошибка';
+                return __('Error');
             }
 
         } else {
-            return 'Указанной вики не существует';
+            return __('Wiki does not exist');;
         }
     }
 
@@ -95,21 +95,21 @@ class RevisionController extends Controller
                             return view('revision', compact('revision', 'wiki', 'article'));
                         }
                         else {
-                            return '404. Введён неверный id правки';
+                            return __('404. Invalid edit id entered.');
                         }
                     } else {
-                        return 'Ошибка';
+                        return __('Error');
                     }
                     
                 }   else {
-                        return 'Ошибка';
+                        return __('Error');
                 }
             } else {
-                return 'Ошибка';
+                return __('Error');
             }
 
         } else {
-            return 'Указанной вики не сущесвует';
+            return __('Wiki does not exist');
         }
     }
 }
