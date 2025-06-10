@@ -1,0 +1,77 @@
+{
+    "Email Address": "Email",
+    "Password": "Пароль",
+    "Remember Me": "Запомнить меня",
+    "Login": "Войти",
+    "Login 1": "Вход",
+    "Forgot Your Password?": "Забыли пароль?",
+
+    "Register": "Зарегистрироваться",
+    "Register 1": "Регистрация",
+    "Name": "Имя",
+    "Confirm Password": "Подтвердить пароль",
+
+    "Dashboard": "Страница входа",
+    "You are logged in!": "Вы успешно вошли!",
+
+    "Edit" :"Править",
+    "History": "История",
+    "Delete": "Удалить",
+
+    "Title": "Название",
+    "url-title": "url-название",
+    "Article text": "Текст статьи",
+    "Save": "Сохранить",
+
+    "Create wiki": "Создать вики",
+    "url-title of your wiki": "url-название вашей вики",
+
+    "Content": "Контент",
+    "User": "Участник",
+    "User IP": "IP участника",
+    "Time and data (UTC)": "Дата и время (UTC)",
+    "Restore edit": "Восстановить правку",
+    "Anonymous user": "Анонимный участник",
+    "Deleted page history": "История удалённой страницы",
+    "Deleted history": "Удалённая история",
+
+    "Restore": "Восстановить",
+
+    "Commons": "Викисклад",
+
+    "There are no pictures on the commons. ": "На викискладе нет картинок. ",
+    "Upload": "Загрузите",
+    " your first picture.":" первую картику.",
+
+    "Page history": "История страницы",
+    "Delete edit": "Удалить правку",
+
+    "Manage userrights": "Управление правами участника",
+    "User information": "Информация об участнике",
+
+    "Rights": "Права",
+    "Save usergroups": "Сохранить группы участника",
+
+    "All articles": "Список всех статей на вики",
+
+    "There is no articles on the wiki now. Let's ": "На данной вики нет статей. Давайте ",
+    "(let's) create": "создадим",
+    "(let's create) your first article.": " вашу первую статью.",
+
+    "Closed wikis": "Список всех закрытых вики",
+    "Open wiki": "Открыть вики",
+    "There is no closed wikis on this wikifarm.": "На данной викиферме нет закрытых вики.",
+
+    "List of all wikis": "Список всех вики",
+    "Close wiki": "Закрыть вики",
+
+    "There is no wikis on this wiki farm.": "На данной вики-ферме нет вики.",
+    " Let's (create new wiki)":" Давайте ",
+    "( Let's) create (new wiki)": "создадим",
+    "( Let's create) new wiki": " вашу первую вики.",
+
+    "Deleted pages": "Список всех удалённых статей на вики",
+    "There is no deleted articles on this wiki" :"На данной вики удалённых нет статей.",
+
+    "Upload image": "Загрузить изображение"
+}

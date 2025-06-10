@@ -35,7 +35,7 @@
 }
 </style>
 @if(count($images) !== 0)
-<h1>Викисклад</h1>
+<h1>{{__('Commons')}}</h1>
 <div class="commons-gallery-super-block">
 <div class="commons-gallery-block">
   @foreach ($images as $image)
@@ -45,7 +45,7 @@
       <form action="{{route('images.delete', $image->id)}}" method="post" class="mt-3 delete-img-btn-form">
           @csrf
           @method('delete')
-          <button type="submit" class="btn btn-danger">Удалить</button>
+          <button type="submit" class="btn btn-danger">{{__('Delete')}}</button>
       </form>
     @endcan
   </div>
@@ -55,6 +55,6 @@
 <div>{{$images->links()}}</div>
 @endif
 @if(count($images) === 0)
-    <p>На викискладе нет картинок <a href="{{route('images.upload_page')}}">Загрузите</a> первую картику</p>
+    <p>{{__('There are no pictures on the commons. ')}}<a href="{{route('images.upload_page')}}">{{__('Upload')}}</a>{{__(' your first picture.')}}</p>
 @endif
 @endsection

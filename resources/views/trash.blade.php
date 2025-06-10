@@ -1,12 +1,12 @@
 @extends('layouts.main')
 @section('content')
 @if (count($articles) !== 0)
-<h1>Список всех удалённых статей на вики</h1>
+<h1>{{__('Deleted pages')}}</h1>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">Название</th>
+            <th scope="col">{{__('Title')}}</th>
           </tr>
         </thead>
           <tbody>
@@ -20,6 +20,6 @@
     </table>
 @endif
 @if (count($articles) === 0)
-<p>На данной вики удалённых нет статей</p>
+<p>{{__('There is no deleted articles on this wiki')}}</p>
 @endif
 @endsection

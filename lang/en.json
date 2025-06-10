@@ -1,0 +1,79 @@
+{
+    "Email Address": "Email Address",
+    "Password": "Password",
+    "Remember Me": "Remember Me",
+    "Login": "Login",
+    "Login 1": "Login",
+    "Forgot Your Password?": "Forgot Your Password?",
+
+    "Register": "Register",
+    "Register 1": "Register",
+    "Name": "Name",
+    "Confirm Password": "Confirm Password",
+
+    "Dashboard": "Dashboard",
+    "You are logged in!": "You are logged in!",
+
+    "Edit" :"Edit",
+    "History": "History",
+    "Delete": "Delete",
+
+    "Title": "Title",
+    "url-title": "url-title",
+    "Article text": "Article text",
+    "Save": "Save",
+
+    "Create wiki": "Create wiki",
+    "url-title of your wiki": "url-title of your wiki",
+    
+    "Content": "Content",
+    "User": "User",
+    "User IP": "User IP",
+    "Time and data (UTC)": "Time and data (UTC)",
+    "Restore edit": "Restore edit",
+    "Anonymous user": "Anonymous user",
+    "Deleted page history": "Deleted page history",
+    "Deleted history": "Deleted history",
+
+    "Restore": "Restore",
+
+    "Commons": "Commons",
+
+    "There are no pictures on the commons. ": "There are no pictures on the commons. ",
+    "Upload": "Upload",
+    " your first picture.":"  your first picture.",
+
+    "Page history": "Page history",
+    "Delete edit": "Delete edit",
+
+    "Manage userrights": "Manage userrights",
+    "User information": "User information",
+
+    "Rights": "Rights",
+    "Save usergroups": "Save usergroups",
+
+    "All articles": "All articles",
+
+    "There is no articles on the wiki now. Let's ": "There is no articles on the wiki now. Let's ",
+    "(let's) create": "create",
+    "(let's create) your first article.": " your first article.",
+
+    "Closed wikis": "Closed wikis",
+    "Open wiki": "Open wiki",
+    "There is no closed wikis on this wikifarm.": "There is no closed wikis on this wikifarm.",
+
+    "List of all wikis": "List of all wikis",
+
+    "Close wiki": "Close wiki",
+
+    "There is no wikis on this wiki farm.": "There is no wikis on this wiki farm.",
+    " Let's (create new wiki)": " Let's ",
+    "( Let's) create (new wiki)": "create",
+    "( Let's create) new wiki": " new wiki.",
+
+    "Deleted pages": "Deleted pages",
+
+    "There is no deleted articles on this wiki": "There is no deleted articles on this wiki.",
+
+    "Upload image": "Upload image"
+}

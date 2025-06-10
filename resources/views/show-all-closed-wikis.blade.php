@@ -1,12 +1,12 @@
 @extends('layouts.main')
 @section('content')
 @if(count($wikis) !== 0)
-    <h1>Список всех закрытых вики</h1>
+    <h1>{{__('Closed wikis')}}</h1>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">Название</th>
+            <th scope="col">{{__('Title')}}</th>
             @can('open_wikis', 'Some magic string. Don\'t delete it')
             <th></th>
             @endcan
@@ -21,7 +21,7 @@
             <th scope="row">
             <form action="{{route('wikis.open',  $wiki->id)}}" method="post">
               @csrf
-              <button class="btn btn-success" type="submit">Открыть вики</button>
+              <button class="btn btn-success" type="submit">{{__('Open wiki')}}</button>
             </form>
             </th>
             @endcan
@@ -31,6 +31,6 @@
     </table>
 @endif
 @if(count($wikis) === 0)
-<p>На данной викиферме нет закрытых вики</p>
+<p>{{__('There is no closed wikis on this wikifarm.')}}</p>
 @endif
 @endsection

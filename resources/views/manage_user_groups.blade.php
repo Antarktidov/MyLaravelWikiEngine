@@ -1,11 +1,11 @@
 @extends('layouts.main')
 @section('content')
-<h1>Управление правами участника</h1>
-<h2>Информация об участнике</h2>
+<h1>{{__('Manage userrights')}}</h1>
+<h2>{{__('User information')}}</h2>
 <p><span class="fw-bold">id:</span> {{$managed_user->id}}</p>
-<p><span class="fw-bold">Ник:</span> {{$managed_user->name}}</p>
-<p><span class="fw-bold">Электронная почта:</span> {{$managed_user->email}}</p>
-<p class="fw-bold">Права:</p>
+<p><span class="fw-bold">{{__('Name')}}:</span> {{$managed_user->name}}</p>
+<p><span class="fw-bold">{{__('Email')}}:</span> {{$managed_user->email}}</p>
+<p class="fw-bold">{{__('Rights')}}:</p>
 <form action="{{route('wikis.global_userrights.store', $managed_user->id)}}" method="post">
   @csrf
   @foreach($user_groups as $user_group)
@@ -22,7 +22,7 @@
           </label>
       </div>
   @endforeach
-  <button class="btn btn-primary mt-4" type="submit">Сохранить группы участника</button>
+  <button class="btn btn-primary mt-4" type="submit">{{__('Save usergroups')}}</button>
 </form>
 
 @endsection

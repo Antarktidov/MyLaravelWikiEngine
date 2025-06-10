@@ -1,18 +1,17 @@
 @extends('layouts.main')
 @section('content')
-<h1>Истонрия страницы</h1>
+<h1>{{__('Page history')}}</h1>
     <table class="table">
         <thead>
           <tr>
-            <th scope="col">id</th>
-            <th scope="col">Название</th>
-            <th scope="col">url-название</th>
-            <th scope="col">Контент</th>
-            <th scope="col">Участник</th>
+            <th scope="col">{{__('Title')}}</th>
+            <th scope="col">{{__('url-title')}}</th>
+            <th scope="col">{{__('Content')}}</th>
+            <th scope="col">{{__('User')}}</th>
             @can('view_revision_user_ip', $wiki->url)
-            <th scope="col">IP участника</th>
+            <th scope="col">{{__('User IP')}}</th>
             @endcan
-            <th scope="col">Дата и время (UTC)</th>
+            <th scope="col">{{__('Time and data (UTC)')}}</th>
             @can('delete_revisions', $wiki->url)
             <th scope="col"></th>
             @endcan
@@ -39,7 +38,7 @@
             <th scope="row">{{$revision->url_title}}</th>
             <th scope="row">{{$revision->content}}</th>
             @if ($revision->user_id === 0)
-            <th scope="row">Анонимный участник</th>
+            <th scope="row">{{__('Anonymous user')}}</th>
             @endif
             @if ($revision->user_id > 0)
               @foreach ($users as $user)
@@ -57,7 +56,7 @@
               <form action="{{route('revision.delete', [$wiki->url, $article->url_title, $revision->id])}}" method="post">
                 @csrf
                 @method('delete')
-                <button class="btn btn-danger" type="submit">Удалить правку</button>
+                <button class="btn btn-danger" type="submit">{{__('Delete edit')}}</button>
             </form>
             </th>
             @endcan
@@ -65,6 +64,7 @@
             <th scope="row">
               <form action="" method="post">
                 @csrf
+                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-success" type="submit">Одобрить правку</button>
             </form>
             </th>
@@ -73,6 +73,7 @@
             <th scope="row">
               <form action="" method="post">
                 @csrf
+                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-info" type="submit">Отпратрулировать правку</button>
             </form>
             </th>
@@ -81,6 +82,7 @@
             <th scope="row">
               <form action="" method="post">
                 @csrf
+                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-warning" type="submit">Откатить к этой версии</button>
             </form>
             </th>
@@ -89,6 +91,7 @@
             <th scope="row">
               <form action="" method="post">
                 @csrf
+                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-primary" type="submit">Править старую версию</button>
             </form>
             </th>

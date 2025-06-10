@@ -1,18 +1,18 @@
 @extends('layouts.main')
 @section('content')
-<h1>История страницы</h1>
+<h1>{{__('Deleted page history')}}</h1>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">Название</th>
-            <th scope="col">url-название</th>
-            <th scope="col">Контент</th>
-            <th scope="col">Участник</th>
+            <th scope="col">{{__('Title')}}</th>
+            <th scope="col">{{__('url-title')}}</th>
+            <th scope="col">{{__('Content')}}</th>
+            <th scope="col">{{__('User')}}</th>
             @can('view_revision_user_ip', $wiki->url)
-            <th scope="col">IP участника</th>
+            <th scope="col">{{__('User IP')}}</th>
             @endcan
-            <th scope="col">Дата и время (UTC)</th>
+            <th scope="col">{{__('Time and data (UTC)')}}</th>
           </tr>
         </thead>
           <tbody>
@@ -24,7 +24,7 @@
             <th scope="row">{{$revision->url_title}}</th>
             <th scope="row">{{$revision->content}}</th>
             @if ($revision->user_id === 0)
-            <th scope="row">Анонимный участник</th>
+            <th scope="row">{{__('Anonymous user')}}</th>
             @endif
             @if ($revision->user_id > 0)
               @foreach ($users as $user)

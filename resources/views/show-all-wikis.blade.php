@@ -1,12 +1,12 @@
 @extends('layouts.main')
 @section('content')
 @if(count($wikis) !== 0)
-    <h1>Список всех вики</h1>
+    <h1>{{__('List of all wikis')}}</h1>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">Название</th>
+            <th scope="col">{{__('Title')}}</th>
             @can('close_wikis', $wikis->first()->url)
             <th></th>
             @endcan
@@ -22,7 +22,7 @@
             <form action="{{route('wikis.destroy',  $wiki->id)}}" method="post">
               @csrf
               @method('delete')
-              <button class="btn btn-danger" type="submit">Закрыть вики</button>
+              <button class="btn btn-danger" type="submit">{{__('Close wiki')}}</button>
             </form>
             </th>
             @endcan
@@ -32,6 +32,6 @@
     </table>
   @endif
   @if(count($wikis) === 0)
-  <p>На данной вики-ферме нет вики.@can('create_wikis', '') Двайте <a href="{{route('wikis.create')}}">создадим</a> вашу первую вики.@endcan</p>
+  <p>{{"There is no wikis on this wiki farm."}}@can('create_wikis', ''){{__(' Let\'s (create new wiki)')}}<a href="{{route('wikis.create')}}">{{__("( Let's) create (new wiki)")}}</a>{{__("( Let's create) new wiki")}}@endcan</p>
   @endif
 @endsection

@@ -1,12 +1,12 @@
 @extends('layouts.main')
 @section('content')
 @if (count($articles) !== 0)
-<h1>Список всех статей на вики</h1>
+<h1>{{__('All articles')}}</h1>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">Название</th>
+            <th scope="col">{{__('Title')}}</th>
           </tr>
         </thead>
           <tbody>
@@ -20,6 +20,6 @@
     </table>
 @endif
 @if (count($articles) === 0)
-<p>На данной вики нет статей. Давайте <a href="{{route('articles.create', $wiki->url)}}">создадим</a> вашу первую статью.</p>
+<p>{{__('There is no articles on the wiki now. Let\'s ')}}<a href="{{route('articles.create', $wiki->url)}}">{{__('(let\'s) create')}}</a>{{__('(let\'s create) your first article.')}}</p>
 @endif
 @endsection
