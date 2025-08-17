@@ -11,7 +11,7 @@
       <input type="text" class="form-control" name="url_title" id="url_title">
     </div>
     <div class="mb-3">
-        <label  class="form-label" for="content">{{__('Article Text')}}</label>
+        <label  class="form-label" for="content">{{__('Article text')}}</label>
         <textarea name="content" class="form-control" id="content"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">{{__('Save')}}</button>
