@@ -30,9 +30,9 @@ Route::post('/store', [WikisController::class,'store'])->name('wikis.store')
 ->middleware(CreateWikisMiddleware::class);
 Route::delete('/destroy/{wiki}', [WikisController::class,'destroy'])->name('wikis.destroy')
 ->middleware(CloseWikisMiddleware::class);
-Route::post('/open/{wiki}', [WikisController::class,'open'])->name('wikis.open')
+Route::post('/open/{wiki}', [WikisController::class,'restore'])->name('wikis.open')
 ->middleware(OpenWikisMiddleware::class);
-Route::get('/closed-wikis', [WikisController::class,'show_closed_wikis'])->name('wikis.show_closed')
+Route::get('/closed-wikis', [WikisController::class,'trash'])->name('wikis.show_closed')
 ->middleware(OpenWikisMiddleware::class);
 
 //Работа с правами на вики
@@ -48,16 +48,15 @@ Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [UserRightsController
     ->middleware(ManageLocalUserrightsMiddleware::class);
 
 //Работа с общими изображениями
-Route::get('/commons/upload', [ImageController::class,'upload_page'])->name('images.upload_page');
+Route::get('/commons/upload', [ImageController::class,'create'])->name('images.upload_page');
 Route::post('/commons/store', [ImageController::class,'store'])->name('images.store');
-Route::get('/commons', [ImageController::class,'gallery'])->name('images.gallery');
+Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
 Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
 ->middleware(DeleteImagesMiddleware::class);
 
 //Работа со статьями на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
 Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show_article'])->name('articles.show');
-Route::get('/wiki/{wikiName}/article/{articleName}/history', [RevisionController::class,'history'])->name('articles.history');
 Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit');
 Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create');
 Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store');
@@ -65,18 +64,19 @@ Route::post('/wiki/{wikiName}/update/{articleName}/edit', [ArticleController::cl
 Route::delete('/wiki/{wikiName}/{articleName}/destroy', [ArticleController::class,'destroy'])->name('articles.destroy')
 ->middleware(DeleteMiddleware::class);
 Route::get('/wiki/{wikiName}/trash', [ArticleController::class,'trash'])->name('articles.trash')
-->middleware(ViewDeletedMiddleware::class);//'articles.trash.show'
-Route::get('/wiki/{wikiName}/trash/article/{articleName}', [ArticleController::class,'show_deleted_article'])
+->middleware(ViewDeletedMiddleware::class);
+Route::get('/wiki/{wikiName}/trash/article/{articleName}', [ArticleController::class,'show_deleted'])
 ->name('articles.trash.show')
 ->middleware(ViewDeletedMiddleware::class);
 Route::post('/wiki/{wikiName}/{articleName}/restore', [ArticleController::class,'restore'])->name('articles.restore')
     ->middleware(RestoreMiddleware::class);
 
 //Работа с историей правок
-Route::get('/wiki/{wikiName}/trash/article/{articleName}/history', [RevisionController::class,'show_deleted_article_history'])
+Route::get('/wiki/{wikiName}/article/{articleName}/history', [RevisionController::class,'index'])->name('articles.history');
+Route::get('/wiki/{wikiName}/trash/article/{articleName}/history', [RevisionController::class,'show_deleted_hist'])
 ->name('articles.deleted.history')
 ->middleware(ViewDeletedMiddleware::class);
-Route::get('/wiki/{wikiName}/article/{articleName}/deleted_history', [RevisionController::class,'deleted_history'])
+Route::get('/wiki/{wikiName}/article/{articleName}/deleted_history', [RevisionController::class,'trash'])
 ->name('articles.trash.edits')
 ->middleware(ViewDeletedRevisionsMiddleware::class);
 Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionController::class,'destroy'])->name('revision.delete')

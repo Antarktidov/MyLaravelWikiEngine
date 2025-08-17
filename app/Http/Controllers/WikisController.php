@@ -20,10 +20,10 @@ class WikisController extends Controller
         return view('show-all-wikis', compact('wikis'));
     }
 
-    //Показывает закрыте вики
+    //Показывает закрытые вики
     //Предназначена для участников со специальными глобальными правами
     //по умолчанию - steward
-    public function show_closed_wikis() {
+    public function trash() {
         $wikis = Wiki::onlyTrashed()->get();
 
         return view('show-all-closed-wikis', compact('wikis'));
@@ -55,7 +55,7 @@ class WikisController extends Controller
     //POST-ручка открытия вики
     //Ограничена для пользователь без глобльных прав
     //по умолчнию - steward
-    public function open($wikiId) {
+    public function restore($wikiId) {
         $wiki = Wiki::onlyTrashed()->findOrFail($wikiId);
         $wiki->restore();
         return __('Wiki was opened');

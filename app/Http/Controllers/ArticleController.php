@@ -229,9 +229,9 @@ class ArticleController extends Controller
         }
     }
 
-    //Просмотр удалённой статmи
+    //Просмотр удалённой статьи
     //(требуются технические права)
-    public function show_deleted_article($wikiName, $articleName) {
+    public function show_deleted($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();

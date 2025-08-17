@@ -16,7 +16,7 @@
           @foreach ($wikis as $wiki)
           <tr>
             <th scope="row">{{$wiki->id}}</th>
-            <th scope="row"><a href="{{route('index.articles', $wiki->url)}}">{{$wiki->url}}</a></th>
+            <th scope="row">{{$wiki->url}}</th>
             @can('open_wikis', $wiki->url)
             <th scope="row">
             <form action="{{route('wikis.open',  $wiki->id)}}" method="post">
@@ -25,7 +25,7 @@
             </form>
             </th>
             @endcan
-          </tr> 
+          </tr>
            @endforeach
           </tbody>
     </table>

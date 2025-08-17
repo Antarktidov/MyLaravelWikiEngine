@@ -12,7 +12,7 @@ use App\Models\Image;
 class ImageController extends Controller
 {
     //Форма загрузки изображения
-    public function upload_page() {
+    public function create() {
         return view('upload');
     }
 
@@ -34,7 +34,7 @@ class ImageController extends Controller
     }
 
     //Заглавная старница викисклада - галлерея
-    public function gallery() {
+    public function index() {
         $images = Image::Paginate(10);
         $wiki = Wiki::withTrashed()->first();//7 бед - один ответ, костыль и велосипед (исполнение)
 

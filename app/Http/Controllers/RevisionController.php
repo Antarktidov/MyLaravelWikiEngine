@@ -114,7 +114,7 @@ class RevisionController extends Controller
     }
 
     //Показывает историю страницы
-    public function history($wikiName, $articleName) {
+    public function index($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
@@ -138,7 +138,7 @@ class RevisionController extends Controller
 
     //Показывает историю удалённой страницы
     //(требуются технические права)
-    public function show_deleted_article_history($wikiName, $articleName) {
+    public function show_deleted_hist($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
@@ -162,7 +162,7 @@ class RevisionController extends Controller
 
     //Показывает скрытые правки в истории страницы
     //(требуются технические права)
-    public function deleted_history($wikiName, $articleName) {
+    public function trash($wikiName, $articleName) {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $article = Article::where('wiki_id', $wiki->id)->where('url_title', $articleName)->first();
