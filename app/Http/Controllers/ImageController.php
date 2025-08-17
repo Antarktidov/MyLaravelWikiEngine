@@ -33,7 +33,7 @@ class ImageController extends Controller
         }
     }
 
-    //Заклавная старница викисклада - галлерея
+    //Заглавная старница викисклада - галлерея
     public function gallery() {
         $images = Image::Paginate(10);
         $wiki = Wiki::withTrashed()->first();//7 бед - один ответ, костыль и велосипед (исполнение)
@@ -58,7 +58,7 @@ class ImageController extends Controller
         } else {
             $response =  __('File not found');
         }
-        
+
         $image->delete();
         return $response;
     }

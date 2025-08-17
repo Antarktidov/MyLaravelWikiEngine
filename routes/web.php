@@ -54,11 +54,10 @@ Route::get('/commons', [ImageController::class,'gallery'])->name('images.gallery
 Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
 ->middleware(DeleteImagesMiddleware::class);
 
-//Работа со статьями (и правами) на викиях
+//Работа со статьями на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
 Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show_article'])->name('articles.show');
-Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
-Route::get('/wiki/{wikiName}/article/{articleName}/history', [ArticleController::class,'history'])->name('articles.history');
+Route::get('/wiki/{wikiName}/article/{articleName}/history', [RevisionController::class,'history'])->name('articles.history');
 Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit');
 Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create');
 Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store');
@@ -70,18 +69,21 @@ Route::get('/wiki/{wikiName}/trash', [ArticleController::class,'trash'])->name('
 Route::get('/wiki/{wikiName}/trash/article/{articleName}', [ArticleController::class,'show_deleted_article'])
 ->name('articles.trash.show')
 ->middleware(ViewDeletedMiddleware::class);
-Route::get('/wiki/{wikiName}/trash/article/{articleName}/history', [ArticleController::class,'show_deleted_article_history'])
+Route::post('/wiki/{wikiName}/{articleName}/restore', [ArticleController::class,'restore'])->name('articles.restore')
+    ->middleware(RestoreMiddleware::class);
+
+//Работа с историей правок
+Route::get('/wiki/{wikiName}/trash/article/{articleName}/history', [RevisionController::class,'show_deleted_article_history'])
 ->name('articles.deleted.history')
 ->middleware(ViewDeletedMiddleware::class);
-Route::get('/wiki/{wikiName}/article/{articleName}/deleted_history', [ArticleController::class,'deleted_history'])
+Route::get('/wiki/{wikiName}/article/{articleName}/deleted_history', [RevisionController::class,'deleted_history'])
 ->name('articles.trash.edits')
 ->middleware(ViewDeletedRevisionsMiddleware::class);
-Route::post('/wiki/{wikiName}/{articleName}/restore', [ArticleController::class,'restore'])->name('articles.restore')
-->middleware(RestoreMiddleware::class);
 Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionController::class,'destroy'])->name('revision.delete')
 ->middleware(DeleteRevisionMiddleware::class);
 Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionController::class,'restore'])->name('revision.restore')
 ->middleware(RestoreRevisionMiddleware::class);
+Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
 
 Auth::routes();
 

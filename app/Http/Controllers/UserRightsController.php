@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class UserRightsController extends Controller
 {
-//Форма для управления глобальными группами
+    //TODO: разделить логику управления локальными и глоабьными группами, избавиться от дублирующегося кода
+
+    //Форма для управления глобальными группами
     public function manage_global_user_rights($userId) {
         $managed_user = User::findOrFail($userId);
         $user_groups = UserGroup::where('is_global', 1)->get();

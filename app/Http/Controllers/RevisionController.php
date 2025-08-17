@@ -34,7 +34,7 @@ class RevisionController extends Controller
                     } else {
                         return __('Error');
                     }
-                    
+
                 }   else {
                         return __('Error');
                 }
@@ -62,7 +62,7 @@ class RevisionController extends Controller
                         return __('The edit has been restored');
                     } else {
                         return __('Error');
-                    }           
+                    }
                 }   else {
                         return __('Error');
                 }
@@ -100,7 +100,7 @@ class RevisionController extends Controller
                     } else {
                         return __('Error');
                     }
-                    
+
                 }   else {
                         return __('Error');
                 }
@@ -110,6 +110,71 @@ class RevisionController extends Controller
 
         } else {
             return __('Wiki does not exist');
+        }
+    }
+
+    //Показывает историю страницы
+    public function history($wikiName, $articleName) {
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
+        if ($wiki) {
+            $articles = Article::where('wiki_id', $wiki->id)->get();
+            if($articles) {
+                $article = $articles->where('url_title', $articleName)->first();
+                if($article) {
+                    $revisions = Revision::all();
+                    $users = User::all();
+                    return view('history', compact('article', 'revisions',
+                        'users', 'wiki'));
+                } else {
+                    return __('Article does not exist');
+                }
+            } else {
+                return __('No articles');
+            }
+        } else {
+            return __('Wiki does not exist');;
+        }
+    }
+
+    //Показывает историю удалённой страницы
+    //(требуются технические права)
+    public function show_deleted_article_history($wikiName, $articleName) {
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
+        if ($wiki) {
+            $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
+            if($articles) {
+                $article = $articles->where('url_title', $articleName)->first();
+                if($article) {
+                    $revisions = Revision::all();
+                    $users = User::all();
+                    return view('show_deleted_article_history', compact('article', 'revisions',
+                        'users', 'wiki'));
+                } else {
+                    return __('Article does not exist');
+                }
+            } else {
+                return __('No articles');
+            }
+        } else {
+            return __('Wiki does not exist');;
+        }
+    }
+
+    //Показывает скрытые правки в истории страницы
+    //(требуются технические права)
+    public function deleted_history($wikiName, $articleName) {
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
+        if ($wiki) {
+            $article = Article::where('wiki_id', $wiki->id)->where('url_title', $articleName)->first();
+            if ($article) {
+                $revisions = Revision::onlyTrashed()->where('article_id', $article->id)->get();
+                $users = User::all();
+                return view('deleted_history', compact('article', 'revisions', 'users', 'wiki'));
+            } else {
+                return __('Article does not exist');
+            }
+        } else {
+            return __('Wiki does not exist');;
         }
     }
 }
