@@ -15,11 +15,12 @@ class Article extends Model
 
     public function wiki()
     {
-        return $this->belongsTo(Wiki::class);
+        return $this->belongsTo(Wiki::class, 'wiki_id', 'id');
     }
-    public function article()
+
+    public function revisions()
     {
-        $this->hasMany(Revision::class);
+        return $this->hasMany(Revision::class, 'article_id', 'id');
     }
 
 }

@@ -16,6 +16,6 @@ class Wiki extends Model
 
     public function article()
     {
-        $this->hasMany(Article::class);
+        $this->hasMany(Article::class, 'article_id', 'id');
     }
 }
