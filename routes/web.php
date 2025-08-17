@@ -56,7 +56,7 @@ Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->na
 
 //Работа со статьями на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
-Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show_article'])->name('articles.show');
+Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show'])->name('articles.show');
 Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit');
 Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create');
 Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store');

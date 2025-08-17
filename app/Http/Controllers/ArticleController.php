@@ -26,7 +26,7 @@ class ArticleController extends Controller
     }
 
     //Показывает вики-страницу
-    public function show_article(string $wikiName, string $articleName): string|View {
+    public function show(string $wikiName, string $articleName): string|View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
