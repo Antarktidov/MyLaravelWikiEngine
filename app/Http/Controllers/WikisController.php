@@ -1,20 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Wiki;
-use App\Models\User;
-use App\Models\UserGroup;
-use App\Models\UserUserGroupWiki;
-use Illuminate\Support\Facades\DB;
 
+use Illuminate\Contracts\View\View;
 class WikisController extends Controller
 {
-    //заглавная вики-фермы. Показывает все вики.
+    //Заглавная вики-фермы. Показывает все вики.
     //Аналог Special:NewWikis
-    public function index() {
+    public function index(): View
+    {
         $wikis = Wiki::all();
 
         return view('show-all-wikis', compact('wikis'));
@@ -23,19 +18,19 @@ class WikisController extends Controller
     //Показывает закрытые вики
     //Предназначена для участников со специальными глобальными правами
     //по умолчанию - steward
-    public function trash() {
+    public function trash(): View {
         $wikis = Wiki::onlyTrashed()->get();
 
         return view('show-all-closed-wikis', compact('wikis'));
     }
 
     //Форма создания вики. Страница с ограниченным доступом
-    public function create() {
+    public function create(): View {
         return view('create-wiki');
     }
 
     //POST-ручка для формы создания вики
-    public function store() {
+    public function store(): string {
         $data = request()->validate([
             'url' => 'string',
         ]);
@@ -45,17 +40,17 @@ class WikisController extends Controller
     }
 
     //DELETE-ручка закрытия вики
-    //Ограничена для пользователь без глобльных прав
-    //по умолчнию - steward
-    public function destroy(Wiki $wiki) {
+    //Ограничена для пользователей без глобальных прав
+    //по умолчанию - steward
+    public function destroy(Wiki $wiki): string {
         $wiki->delete();
         return __('Wiki was closed');
     }
 
     //POST-ручка открытия вики
-    //Ограничена для пользователь без глобльных прав
-    //по умолчнию - steward
-    public function restore($wikiId) {
+    //Ограничена для пользователей без глобальных прав
+    //по умолчанию - steward
+    public function restore($wikiId): string {
         $wiki = Wiki::onlyTrashed()->findOrFail($wikiId);
         $wiki->restore();
         return __('Wiki was opened');

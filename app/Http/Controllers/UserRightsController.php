@@ -7,12 +7,13 @@ use App\Models\UserGroup;
 use App\Models\UserUserGroupWiki;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Contracts\View\View;
 class UserRightsController extends Controller
 {
     //TODO: разделить логику управления локальными и глоабьными группами, избавиться от дублирующегося кода
 
     //Форма для управления глобальными группами
-    public function manage_global_user_rights($userId) {
+    public function manage_global_user_rights(int $userId): View {
         $managed_user = User::findOrFail($userId);
         $user_groups = UserGroup::where('is_global', 1)->get();
         $user_user_group_wiki = UserUserGroupWiki::where('wiki_id', 0)->get();
@@ -21,7 +22,7 @@ class UserRightsController extends Controller
     }
     //POST-ручка для сохранения глобальных прав участника
     //Уровень доступа - глобальная группа steward
-    public function store_global_user_rights($userId) {
+    public function store_global_user_rights(int $userId): string {
         $data = request()->validate([
             'user_group_ids' => 'array',
         ]);
@@ -78,7 +79,7 @@ class UserRightsController extends Controller
     /**
      * Управление локальными групами. Уровень дсотупа - steward и admin
      */
-    public function manage_local_user_rights($wikiName, $userId) {
+    public function manage_local_user_rights(string $wikiName, int $userId): View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $managed_user = User::findOrFail($userId);
@@ -91,7 +92,7 @@ class UserRightsController extends Controller
     /**
      * POST-ручка для управления локальными группами
      */
-    public function store_local_user_rights($wikiName, $userId) {
+    public function store_local_user_rights(string $wikiName, int $userId): string {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $data = request()->validate([

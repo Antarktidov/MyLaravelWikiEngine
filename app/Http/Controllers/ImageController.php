@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Wiki;//7 бед - один ответ, костыль и велосипед (подготовка)
-
-use Illuminate\Support\Facades\Storage;
+use App\Models\Wiki;
 use App\Models\Image;
 
+use Illuminate\Contracts\View\View;
 class ImageController extends Controller
 {
     //Форма загрузки изображения
-    public function create() {
+    public function create(): View {
         return view('upload');
     }
 
     //POST-ручка для формы загрузки страницы
-    public function store(Request $request) {
+    public function store(Request $request): string|View {
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('images', 'public');
             $filename = str_replace("images/","",$path);
@@ -33,17 +31,17 @@ class ImageController extends Controller
         }
     }
 
-    //Заглавная старница викисклада - галлерея
-    public function index() {
+    //Заглавная страница викисклада - галерея
+    public function index(): View {
         $images = Image::Paginate(10);
-        $wiki = Wiki::withTrashed()->first();//7 бед - один ответ, костыль и велосипед (исполнение)
+        $wiki = Wiki::withTrashed()->first();
 
         return view('gallery', compact('images', 'wiki'));
     }
 
     //DELETE-ручка для изображения
     //Отвязывает файл от публичного хранилища
-    public function destroy(Image $image)
+    public function destroy(Image $image): string
     {
         $filePath = public_path("storage/images/{$image->filename}");
 

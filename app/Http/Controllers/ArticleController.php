@@ -1,22 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Wiki;
 use App\Models\Article;
 use App\Models\Revision;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
+
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 
 class ArticleController extends Controller
 {
     //Заглавная конкретной вики: список всех статей
     //(Аналог Служебная:Все страницы)
-    public function index($wikiName) {
+    public function index(string $wikiName): string|View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
@@ -28,7 +26,7 @@ class ArticleController extends Controller
     }
 
     //Показывает вики-страницу
-    public function show_article($wikiName, $articleName) {
+    public function show_article(string $wikiName, string $articleName): string|View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
@@ -59,7 +57,7 @@ class ArticleController extends Controller
     }
 
     //Форма создания статьи
-    public function create($wikiName) {
+    public function create(string $wikiName): string|View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             return view('create-article', compact('wiki'));
@@ -69,7 +67,7 @@ class ArticleController extends Controller
     }
 
     //POST-ручка для создания статьи
-    public function store($wikiName, Request $request) {
+    public function store(string $wikiName, Request $request): string|Redirect|RedirectResponse {
         //dd('test0');
         $data = request()->validate([
             'title' => 'string',
@@ -107,12 +105,12 @@ class ArticleController extends Controller
             return redirect()->route('articles.show', [$wiki->url, $created_article->url_title]);
 
         } else {
-            return __('Wiki does not exist');;
+            return __('Wiki does not exist');
         }
     }
 
     //Форма правки статьи
-    public function edit($wikiName, $articleName) {
+    public function edit(string $wikiName, string $articleName): string|View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
@@ -134,7 +132,8 @@ class ArticleController extends Controller
     }
 
     //POST-ручка для формы правки статьи
-    public function update($wikiName, $articleName, Request $request) {
+    public function update($wikiName, $articleName, Request $request): string|Redirect|RedirectResponse
+    {
         $data = request()->validate([
             'title' => 'string',
             'url_title' => 'string',
@@ -191,7 +190,7 @@ class ArticleController extends Controller
 
     //DELETE-ручка для удаления статьи
     //(требуются технические права)
-    public function destroy($wikiName, $articleName)
+    public function destroy(string $wikiName, string $articleName): string
     {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
@@ -218,7 +217,7 @@ class ArticleController extends Controller
 
     //Список удалённых статей
     //(требуются технические права)
-    public function trash($wikiName) {
+    public function trash(string $wikiName): string|View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
@@ -231,7 +230,7 @@ class ArticleController extends Controller
 
     //Просмотр удалённой статьи
     //(требуются технические права)
-    public function show_deleted($wikiName, $articleName) {
+    public function show_deleted(string $wikiName, string $articleName): string|View {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
@@ -256,7 +255,7 @@ class ArticleController extends Controller
 
     //POST-ручка для восстановления стаьи
     //(требуются технические права)
-    public function restore($wikiName, $articleName) {
+    public function restore(string $wikiName, string $articleName): string {
         $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
