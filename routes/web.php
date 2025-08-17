@@ -5,6 +5,7 @@ use App\Http\Controllers\WikisController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\RevisionController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\UserRightsController;
 
 use App\Http\Middleware\DeleteMiddleware;
 use App\Http\Middleware\DeleteRevisionMiddleware;
@@ -33,10 +34,18 @@ Route::post('/open/{wiki}', [WikisController::class,'open'])->name('wikis.open')
 ->middleware(OpenWikisMiddleware::class);
 Route::get('/closed-wikis', [WikisController::class,'show_closed_wikis'])->name('wikis.show_closed')
 ->middleware(OpenWikisMiddleware::class);
-Route::get('/global-user-rights/{userId}', [WikisController::class,'manage_global_user_rights'])->name('wikis.global_userrights')
+
+//Работа с правами на вики
+//1. Глобальными
+Route::get('/global-user-rights/{userId}', [UserRightsController::class,'manage_global_user_rights'])->name('wikis.global_userrights')
 ->middleware(ManageGlobalUserrightsMiddleware::class);
-Route::post('/global-user-rights/{userId}/store', [WikisController::class,'store_global_user_rights'])->name('wikis.global_userrights.store')
+Route::post('/global-user-rights/{userId}/store', [UserRightsController::class,'store_global_user_rights'])->name('wikis.global_userrights.store')
 ->middleware(ManageGlobalUserrightsMiddleware::class);
+//2. Локальными
+Route::get('/wiki/{wikiName}/user-rights/{userId}', [UserRightsController::class,'manage_local_user_rights'])->name('wikis.local_userrights')
+    ->middleware(ManageLocalUserrightsMiddleware::class);
+Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [UserRightsController::class,'store_local_user_rights'])->name('wikis.local_userrights.store')
+    ->middleware(ManageLocalUserrightsMiddleware::class);
 
 //Работа с общими изображениями
 Route::get('/commons/upload', [ImageController::class,'upload_page'])->name('images.upload_page');
@@ -73,11 +82,6 @@ Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionCo
 ->middleware(DeleteRevisionMiddleware::class);
 Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionController::class,'restore'])->name('revision.restore')
 ->middleware(RestoreRevisionMiddleware::class);
-
-Route::get('/wiki/{wikiName}/user-rights/{userId}', [WikisController::class,'manage_local_user_rights'])->name('wikis.local_userrights')
-->middleware(ManageLocalUserrightsMiddleware::class);
-Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [WikisController::class,'store_local_user_rights'])->name('wikis.local_userrights.store')
-->middleware(ManageLocalUserrightsMiddleware::class);
 
 Auth::routes();
 
