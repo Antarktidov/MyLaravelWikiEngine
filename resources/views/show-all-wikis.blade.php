@@ -26,12 +26,12 @@
             </form>
             </th>
             @endcan
-          </tr> 
+          </tr>
            @endforeach
           </tbody>
     </table>
   @endif
   @if(count($wikis) === 0)
-  <p>{{"There is no wikis on this wiki farm."}}@can('create_wikis', ''){{__(' Let\'s (create new wiki)')}}<a href="{{route('wikis.create')}}">{{__("( Let's) create (new wiki)")}}</a>{{__("( Let's create) new wiki")}}@endcan</p>
+  <p>{{__("There is no wikis on this wiki farm.")}}@can('create_wikis', ''){{__(' Let\'s (create new wiki)')}}<a href="{{route('wikis.create')}}">{{__("( Let's) create (new wiki)")}}</a>{{__("( Let's create) new wiki")}}@endcan</p>
   @endif
 @endsection
