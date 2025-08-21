@@ -14,15 +14,15 @@ class RevisionController extends Controller
     //DELETE-ручка для сокрытия правки
     public function destroy(string $wikiName, string $articleName, int $revisionId): string
     {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
-            $articles = Article::where('wiki_id', $wiki->id)->get();
+            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
             if ($articles) {
 
                 $my_article = $articles->where('url_title', $articleName)->first();
 
                 if ($my_article) {
-                    $revisions = Revision::where('article_id', $my_article->id)->get();
+                    $revisions = Revision::where('article_id', $my_article->id)->whereNull('deleted_at')->get();
 
                     if ($revisions) {
                         $my_revision = $revisions->where('id', $revisionId)->first();
@@ -47,9 +47,9 @@ class RevisionController extends Controller
 
     //POST-ручка для восстановления скрытой правки
     public function restore(string $wikiName, string $articleName, int $revisionId): string {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
-            $articles = Article::where('wiki_id', $wiki->id)->get();
+            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
             if ($articles) {
                 $my_article = $articles->where('url_title', $articleName)->first();
                 if ($my_article) {
@@ -76,15 +76,15 @@ class RevisionController extends Controller
     //Просмотр правки статьи по ID
     public function view(string $wikiName, string $articleName, int $revisionId): string|View
     {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
-            $articles = Article::where('wiki_id', $wiki->id)->get();
+            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
             if ($articles) {
 
                 $article = $articles->where('url_title', $articleName)->first();
 
                 if ($article) {
-                    $revisions = Revision::where('article_id', $article->id)->get();
+                    $revisions = Revision::where('article_id', $article->id)->whereNull('deleted_at')->get();
 
                     if ($revisions) {
                         $revision = $revisions->where('id', $revisionId)->first();
@@ -113,13 +113,13 @@ class RevisionController extends Controller
 
     //Показывает историю страницы
     public function index(string $wikiName, string $articleName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
-            $articles = Article::where('wiki_id', $wiki->id)->get();
+            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
             if($articles) {
                 $article = $articles->where('url_title', $articleName)->first();
                 if($article) {
-                    $revisions = Revision::all();
+                    $revisions = Revision::whereNull('deleted_at')->get();
                     $users = User::all();
                     return view('history', compact('article', 'revisions',
                         'users', 'wiki'));
@@ -137,7 +137,7 @@ class RevisionController extends Controller
     //Показывает историю удалённой страницы
     //(требуются технические права)
     public function show_deleted_hist(string $wikiName, string $articleName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
             if($articles) {
@@ -161,9 +161,9 @@ class RevisionController extends Controller
     //Показывает скрытые правки в истории страницы
     //(требуются технические права)
     public function trash(string $wikiName, string $articleName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
-            $article = Article::where('wiki_id', $wiki->id)->where('url_title', $articleName)->first();
+            $article = Article::where('wiki_id', $wiki->id)->where('url_title', $articleName)->whereNull('deleted_at')->first();
             if ($article) {
                 $revisions = Revision::onlyTrashed()->where('article_id', $article->id)->get();
                 $users = User::all();
