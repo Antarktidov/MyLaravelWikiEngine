@@ -7,8 +7,6 @@ use App\Models\Revision;
 use App\Models\User;
 use App\Models\Wiki;
 
-use Illuminate\Contracts\View\View;
-
 class RevisionController extends Controller
 {
     //DELETE-ручка для сокрытия правки

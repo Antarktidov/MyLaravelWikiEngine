@@ -6,9 +6,6 @@ use App\Models\Article;
 use App\Models\Revision;
 use App\Models\Wiki;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Response;
 
 class ArticleController extends Controller

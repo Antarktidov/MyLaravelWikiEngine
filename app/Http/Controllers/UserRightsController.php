@@ -6,8 +6,6 @@ use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserUserGroupWiki;
 use App\Models\Wiki;
-
-use Illuminate\Contracts\View\View;
 class UserRightsController extends Controller
 {
     //TODO: разделить логику управления локальными и глоабьными группами, избавиться от дублирующегося кода
