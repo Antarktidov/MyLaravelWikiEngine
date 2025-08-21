@@ -9,24 +9,26 @@ use App\Models\Wiki;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Response;
 
 class ArticleController extends Controller
 {
     //Заглавная конкретной вики: список всех статей
     //(Аналог Служебная:Все страницы)
-    public function index(string $wikiName): string|View {
+    public function index(string $wikiName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
 
             return view('show-all-articles', compact('articles', 'wiki'));
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Показывает вики-страницу
-    public function show(string $wikiName, string $articleName): string|View {
+    public function show(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
@@ -42,32 +44,37 @@ class ArticleController extends Controller
                     if ($revision) {
                         return view('article', compact('revision', 'wiki', 'article'));
                     } else {
-                        return __('All edits of this article are hidden');
+                        return response(__('All edits of this article are hidden'), 404)
+                            ->header('Content-Type', 'text/plain');
                     }
                 }
                  else {
-                    return __('Article does not exist');
+                    return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
                  }
             } else {
-                return __('No articles');
+                return response(__('No articles'), 404)
+                    ->header('Content-Type', 'text/plain');
             }
         } else {
-            return __('Wiki does not exist');;
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Форма создания статьи
-    public function create(string $wikiName): string|View {
+    public function create(string $wikiName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             return view('create-article', compact('wiki'));
         } else {
-            return __('Wiki does not exist');;
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //POST-ручка для создания статьи
-    public function store(string $wikiName, Request $request): string|Redirect|RedirectResponse {
+    public function store(string $wikiName, Request $request) {
         //dd('test0');
         $data = request()->validate([
             'title' => 'string',
@@ -105,12 +112,13 @@ class ArticleController extends Controller
             return redirect()->route('articles.show', [$wiki->url, $created_article->url_title]);
 
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Форма правки статьи
-    public function edit(string $wikiName, string $articleName): string|View {
+    public function edit(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
@@ -120,19 +128,22 @@ class ArticleController extends Controller
                     $revision = Revision::where('article_id', $article->id)->whereNull('deleted_at')->orderBy('id', 'desc')->first();
                     return view('edit', compact('article', 'revision', 'wiki'));
                 } else {
-                    return __('Article does not exist');
+                    return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
                 }
 
             } else {
-                return __('No articles');
+                return response(__('No articles'), 404)
+                    ->header('Content-Type', 'text/plain');
             }
         } else {
-            return __('Wiki does not exist');;
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //POST-ручка для формы правки статьи
-    public function update($wikiName, $articleName, Request $request): string|Redirect|RedirectResponse
+    public function update($wikiName, $articleName, Request $request)
     {
         $data = request()->validate([
             'title' => 'string',
@@ -177,20 +188,23 @@ class ArticleController extends Controller
 
                     return redirect()->route('articles.show', [$wiki->url, $my_article2->url_title]);
                 }   else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('Error');
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
             }
 
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //DELETE-ручка для удаления статьи
     //(требуются технические права)
-    public function destroy(string $wikiName, string $articleName): string
+    public function destroy(string $wikiName, string $articleName): Response
     {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
@@ -202,35 +216,40 @@ class ArticleController extends Controller
                 if ($my_article2) {
 
                     $my_article2->delete();
-                    return __('Article was deleted');
+                    return response(__('Article was deleted'), 200)
+                        ->header('Content-Type', 'text/plain');
                 }   else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('Error');
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
             }
 
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Список удалённых статей
     //(требуются технические права)
-    public function trash(string $wikiName): string|View {
+    public function trash(string $wikiName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
 
             return view('trash', compact('articles', 'wiki'));
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Просмотр удалённой статьи
     //(требуются технические права)
-    public function show_deleted(string $wikiName, string $articleName): string|View {
+    public function show_deleted(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
@@ -243,19 +262,22 @@ class ArticleController extends Controller
                     return view('deleted-article', compact('revision', 'wiki', 'article'));
                 }
                  else {
-                    return __('Article does not exist');
+                    return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
                  }
             } else {
-                return __('No articles');
+                return response(__('No articles'), 404)
+                    ->header('Content-Type', 'text/plain');
             }
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //POST-ручка для восстановления стаьи
     //(требуются технические права)
-    public function restore(string $wikiName, string $articleName): string {
+    public function restore(string $wikiName, string $articleName): Response {
         $wiki = Wiki::where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
@@ -265,16 +287,20 @@ class ArticleController extends Controller
                 if ($my_article2) {
 
                     $my_article2->restore();
-                    return __('Article was restored');
+                    return response(__('Article was restored'), 200)
+                        ->header('Content-Type', 'text/plain');
                 }   else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('Error');
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
             }
 
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 

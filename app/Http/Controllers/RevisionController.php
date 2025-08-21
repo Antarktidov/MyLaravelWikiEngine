@@ -12,7 +12,7 @@ use Illuminate\Contracts\View\View;
 class RevisionController extends Controller
 {
     //DELETE-ручка для сокрытия правки
-    public function destroy(string $wikiName, string $articleName, int $revisionId): string
+    public function destroy(string $wikiName, string $articleName, int $revisionId)
     {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
@@ -28,25 +28,30 @@ class RevisionController extends Controller
                         $my_revision = $revisions->where('id', $revisionId)->first();
                         $my_revision->delete();
 
-                        return __('The edit was hidden');
+                        return response(__('The edit was hidden'), 200)
+                            ->header('Content-Type', 'text/plain');
                     } else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                     }
 
                 }   else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('Error');
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
             }
 
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //POST-ручка для восстановления скрытой правки
-    public function restore(string $wikiName, string $articleName, int $revisionId): string {
+    public function restore(string $wikiName, string $articleName, int $revisionId) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
@@ -57,24 +62,29 @@ class RevisionController extends Controller
                     if ($revisions) {
                         $my_revision = $revisions->where('id', $revisionId)->first();
                         $my_revision->restore();
-                        return __('The edit has been restored');
+                        return response(__('The edit has been restored'), 200)
+                            ->header('Content-Type', 'text/plain');
                     } else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                     }
                 }   else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('Error');
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
             }
 
         } else {
-            return __('Wiki does not exist');;
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Просмотр правки статьи по ID
-    public function view(string $wikiName, string $articleName, int $revisionId): string|View
+    public function view(string $wikiName, string $articleName, int $revisionId)
     {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
@@ -93,26 +103,31 @@ class RevisionController extends Controller
                             return view('revision', compact('revision', 'wiki', 'article'));
                         }
                         else {
-                            return __('404. Invalid edit id entered.');
+                            return response(__('404. Invalid edit id entered.'), 404)
+                                ->header('Content-Type', 'text/plain');
                         }
                     } else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                     }
 
                 }   else {
-                        return __('Error');
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('Error');
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
             }
 
         } else {
-            return __('Wiki does not exist');
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Показывает историю страницы
-    public function index(string $wikiName, string $articleName): string|View {
+    public function index(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
@@ -124,19 +139,22 @@ class RevisionController extends Controller
                     return view('history', compact('article', 'revisions',
                         'users', 'wiki'));
                 } else {
-                    return __('Article does not exist');
+                    return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('No articles');
+                return response(__('No articles'), 404)
+                    ->header('Content-Type', 'text/plain');
             }
         } else {
-            return __('Wiki does not exist');;
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Показывает историю удалённой страницы
     //(требуются технические права)
-    public function show_deleted_hist(string $wikiName, string $articleName): string|View {
+    public function show_deleted_hist(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
@@ -148,19 +166,22 @@ class RevisionController extends Controller
                     return view('show_deleted_article_history', compact('article', 'revisions',
                         'users', 'wiki'));
                 } else {
-                    return __('Article does not exist');
+                    return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
                 }
             } else {
-                return __('No articles');
+                return response(__('No articles'), 404)
+                    ->header('Content-Type', 'text/plain');
             }
         } else {
-            return __('Wiki does not exist');;
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Показывает скрытые правки в истории страницы
     //(требуются технические права)
-    public function trash(string $wikiName, string $articleName): string|View {
+    public function trash(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $article = Article::where('wiki_id', $wiki->id)->where('url_title', $articleName)->whereNull('deleted_at')->first();
@@ -169,10 +190,12 @@ class RevisionController extends Controller
                 $users = User::all();
                 return view('deleted_history', compact('article', 'revisions', 'users', 'wiki'));
             } else {
-                return __('Article does not exist');
+                return response(__('Article does not exist'), 404)
+                    ->header('Content-Type', 'text/plain');
             }
         } else {
-            return __('Wiki does not exist');;
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
         }
     }
 }

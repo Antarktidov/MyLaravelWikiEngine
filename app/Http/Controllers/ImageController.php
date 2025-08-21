@@ -10,7 +10,7 @@ use Illuminate\Contracts\View\View;
 class ImageController extends Controller
 {
     //Форма загрузки изображения
-    public function create(): View {
+    public function create() {
         return view('upload');
     }
 
@@ -24,15 +24,17 @@ class ImageController extends Controller
             Image::create($data);
 
             $index = route('index');
-            return __('The file is uploaded! To add an image to an article, use the following code: ![Image]') . "($index/storage/$path)";
+            return response(__('The file is uploaded! To add an image to an article, use the following code: ![Image]') . "($index/storage/$path)", 200)
+                ->header('Content-Type', 'text/plain');
             //После загрузки файла возвращаем код для вставки в статью
         } else {
-            return __('Unknown error');
+            return response(__('Unknown error'), 400)
+                ->header('Content-Type', 'text/plain');
         }
     }
 
     //Заглавная страница викисклада - галерея
-    public function index(): View {
+    public function index() {
         $images = Image::Paginate(10);
         $wiki = Wiki::withTrashed()->first();
 

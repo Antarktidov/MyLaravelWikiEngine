@@ -8,7 +8,7 @@ class WikisController extends Controller
 {
     //Заглавная вики-фермы. Показывает все вики.
     //Аналог Special:NewWikis
-    public function index(): View
+    public function index()
     {
         $wikis = Wiki::all();
 
@@ -18,41 +18,44 @@ class WikisController extends Controller
     //Показывает закрытые вики
     //Предназначена для участников со специальными глобальными правами
     //по умолчанию - steward
-    public function trash(): View {
+    public function trash() {
         $wikis = Wiki::onlyTrashed()->get();
 
         return view('show-all-closed-wikis', compact('wikis'));
     }
 
     //Форма создания вики. Страница с ограниченным доступом
-    public function create(): View {
+    public function create() {
         return view('create-wiki');
     }
 
     //POST-ручка для формы создания вики
-    public function store(): string {
+    public function store() {
         $data = request()->validate([
             'url' => 'string',
         ]);
         Wiki::create($data);
 
-        return __('Wiki was created');
+        return response(__('Wiki was created'), 201)
+            ->header('Content-Type', 'text/plain');
     }
 
     //DELETE-ручка закрытия вики
     //Ограничена для пользователей без глобальных прав
     //по умолчанию - steward
-    public function destroy(Wiki $wiki): string {
+    public function destroy(Wiki $wiki) {
         $wiki->delete();
-        return __('Wiki was closed');
+        return response(__('Wiki was closed'), 200)
+            ->header('Content-Type', 'text/plain');
     }
 
     //POST-ручка открытия вики
     //Ограничена для пользователей без глобальных прав
     //по умолчанию - steward
-    public function restore($wikiId): string {
+    public function restore($wikiId) {
         $wiki = Wiki::onlyTrashed()->findOrFail($wikiId);
         $wiki->restore();
-        return __('Wiki was opened');
+        return response(__('Wiki was opened'), 200)
+            ->header('Content-Type', 'text/plain');
     }
 }

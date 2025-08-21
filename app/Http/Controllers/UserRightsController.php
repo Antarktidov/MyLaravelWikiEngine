@@ -13,7 +13,7 @@ class UserRightsController extends Controller
     //TODO: разделить логику управления локальными и глоабьными группами, избавиться от дублирующегося кода
 
     //Форма для управления глобальными группами
-    public function manage_global_user_rights(int $userId): View {
+    public function manage_global_user_rights(int $userId) {
         $managed_user = User::findOrFail($userId);
         $user_groups = UserGroup::where('is_global', 1)->get();
         $user_user_group_wiki = UserUserGroupWiki::where('wiki_id', 0)->get();
@@ -22,7 +22,7 @@ class UserRightsController extends Controller
     }
     //POST-ручка для сохранения глобальных прав участника
     //Уровень доступа - глобальная группа steward
-    public function store_global_user_rights(int $userId): string {
+    public function store_global_user_rights(int $userId) {
         $data = request()->validate([
             'user_group_ids' => 'array',
         ]);
@@ -70,14 +70,15 @@ class UserRightsController extends Controller
             UserUserGroupWiki::create($one_user_group_to_add);
         }
 
-        return __('The user\'s usergroups was changed');
+        return response(__('The user\'s usergroups was changed'), 200)
+            ->header('Content-Type', 'text/plain');
     }
 
 
     /**
      * Управление локальными групами. Уровень дсотупа - steward и admin
      */
-    public function manage_local_user_rights(string $wikiName, int $userId): View {
+    public function manage_local_user_rights(string $wikiName, int $userId) {
         $wiki = Wiki::where('url', $wikiName)->first();
         if ($wiki) {
             $managed_user = User::findOrFail($userId);
@@ -90,7 +91,7 @@ class UserRightsController extends Controller
     /**
      * POST-ручка для управления локальными группами
      */
-    public function store_local_user_rights(string $wikiName, int $userId): string {
+    public function store_local_user_rights(string $wikiName, int $userId) {
         $wiki = Wiki::where('url', $wikiName)->first();
         if ($wiki) {
             $data = request()->validate([
@@ -138,7 +139,8 @@ class UserRightsController extends Controller
                 UserUserGroupWiki::create($one_user_group_to_add);
             }
 
-            return __('The user\'s usergroups was changed');
+            return response(__('The user\'s usergroups was changed'), 200)
+                ->header('Content-Type', 'text/plain');
         }
     }
 }

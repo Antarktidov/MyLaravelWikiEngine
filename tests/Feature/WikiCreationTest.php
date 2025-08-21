@@ -77,7 +77,7 @@ class WikiCreationTest extends TestCase
 
         $response = $this->post('/store', $data);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         $this->assertDatabaseHas('wikis', [
             'url' => $data['url'],
