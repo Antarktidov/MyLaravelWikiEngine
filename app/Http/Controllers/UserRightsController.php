@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserUserGroupWiki;
-use App\Models\Wiki;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Contracts\View\View;
 class UserRightsController extends Controller
@@ -28,7 +28,8 @@ class UserRightsController extends Controller
         ]);
 
         $managed_user = User::findOrFail($userId);//ищем управляемого участника
-        $user_user_group_wiki = UserUserGroupWiki::where('user_id', $userId)
+        $user_user_group_wiki = DB::table('user_user_group_wiki')
+            ->where('user_id', $userId)
             ->where('wiki_id', 0)
             ->get();
         //получаем текущие группы
@@ -56,7 +57,8 @@ class UserRightsController extends Controller
         $user_group_ids_to_add = array_values($user_group_ids_to_add);
 
         for ($i = 0; $i < count($user_group_ids_to_remove); $i++) {
-            UserUserGroupWiki::where('user_id', $userId)
+            $user_groups_to_remove = DB::table('user_user_group_wiki')
+                ->where('user_id', $userId)
                 ->where('wiki_id', 0)
                 ->where('user_group_id', $user_group_ids_to_remove[$i])
                 ->delete();
@@ -78,7 +80,7 @@ class UserRightsController extends Controller
      * Управление локальными групами. Уровень дсотупа - steward и admin
      */
     public function manage_local_user_rights(string $wikiName, int $userId): View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $managed_user = User::findOrFail($userId);
             $user_groups = UserGroup::where('is_global', 0)->get();
@@ -91,13 +93,14 @@ class UserRightsController extends Controller
      * POST-ручка для управления локальными группами
      */
     public function store_local_user_rights(string $wikiName, int $userId): string {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $data = request()->validate([
                 'user_group_ids' => 'array',
             ]);
             $managed_user = User::findOrFail($userId);
-            $user_user_group_wiki = UserUserGroupWiki::where('user_id', $userId)
+            $user_user_group_wiki = DB::table('user_user_group_wiki')
+                ->where('user_id', $userId)
                 ->where('wiki_id', $wiki->id)
                 ->get();
             $user_user_group_wiki_ids = [];
@@ -124,7 +127,8 @@ class UserRightsController extends Controller
             $user_group_ids_to_add = array_values($user_group_ids_to_add);
 
             for ($i = 0; $i < count($user_group_ids_to_remove); $i++) {
-                UserUserGroupWiki::where('user_id', $userId)
+                $user_groups_to_remove = DB::table('user_user_group_wiki')
+                    ->where('user_id', $userId)
                     ->where('wiki_id', $wiki->id)
                     ->where('user_group_id', $user_group_ids_to_remove[$i])
                     ->delete();

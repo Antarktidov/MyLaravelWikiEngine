@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\Revision;
-use App\Models\Wiki;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +15,7 @@ class ArticleController extends Controller
     //Заглавная конкретной вики: список всех статей
     //(Аналог Служебная:Все страницы)
     public function index(string $wikiName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
 
@@ -27,7 +27,7 @@ class ArticleController extends Controller
 
     //Показывает вики-страницу
     public function show(string $wikiName, string $articleName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
 
@@ -35,7 +35,8 @@ class ArticleController extends Controller
                 $article = $articles->where('url_title', $articleName)->first();
 
                 if($article) {
-                    $revision = Revision::where('article_id', $article->id)
+                    $revision = DB::table('revisions')
+                    ->where('article_id', $article->id)
                     //->where('deleted_at', '')
                     ->orderBy('id', 'desc')->first();
                     if ($revision) {
@@ -57,7 +58,7 @@ class ArticleController extends Controller
 
     //Форма создания статьи
     public function create(string $wikiName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             return view('create-article', compact('wiki'));
         } else {
@@ -74,7 +75,7 @@ class ArticleController extends Controller
             'content' => 'string',
         ]);
 
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             //dd(auth()->user());
             $my_article = [
@@ -110,13 +111,13 @@ class ArticleController extends Controller
 
     //Форма правки статьи
     public function edit(string $wikiName, string $articleName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
             if ($articles) {
                 $article = $articles->where('url_title', $articleName)->first();
                 if ($article) {
-                    $revision = Revision::where('article_id', $article->id)->orderBy('id', 'desc')->first();
+                    $revision = DB::table('revisions')->where('article_id', $article->id)->orderBy('id', 'desc')->first();
                     return view('edit', compact('article', 'revision', 'wiki'));
                 } else {
                     return __('Article does not exist');
@@ -139,7 +140,7 @@ class ArticleController extends Controller
             'content' => 'string',
         ]);
 
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $my_article = [
                 'wiki_id' => $wiki->id,
@@ -191,7 +192,7 @@ class ArticleController extends Controller
     //(требуются технические права)
     public function destroy(string $wikiName, string $articleName): string
     {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->get();
             if ($articles) {
@@ -217,7 +218,7 @@ class ArticleController extends Controller
     //Список удалённых статей
     //(требуются технические права)
     public function trash(string $wikiName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
 
@@ -230,7 +231,7 @@ class ArticleController extends Controller
     //Просмотр удалённой статьи
     //(требуются технические права)
     public function show_deleted(string $wikiName, string $articleName): string|View {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
 
@@ -238,7 +239,7 @@ class ArticleController extends Controller
                 $article = $articles->where('url_title', $articleName)->first();
 
                 if($article) {
-                    $revision = Revision::where('article_id', $article->id)->orderBy('id', 'desc')->first();
+                    $revision = DB::table('revisions')->where('article_id', $article->id)->orderBy('id', 'desc')->first();
                     return view('deleted-article', compact('revision', 'wiki', 'article'));
                 }
                  else {
@@ -255,7 +256,7 @@ class ArticleController extends Controller
     //POST-ручка для восстановления стаьи
     //(требуются технические права)
     public function restore(string $wikiName, string $articleName): string {
-        $wiki = Wiki::where('url', $wikiName)->first();
+        $wiki = DB::table('wikis')->where('url', $wikiName)->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
             if ($articles) {
