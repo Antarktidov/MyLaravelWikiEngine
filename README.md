@@ -29,7 +29,7 @@ Then run http-server via:
 ```
 go to url `<path to your wiki>/home`
 and create your account.
-Than you should grant you steward (global superadmin) via database editor.
+Than you should grant you steward (global superadmin) rights via database editor.
 Add the following row in user_user_group_wiki:
 | id | user_id |user_group_id|wiki_id|
 | ------ | ----------- | ----------- |----------- |
