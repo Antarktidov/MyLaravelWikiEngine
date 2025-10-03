@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
 @if (count($articles) !== 0)
 <h1>{{__('Deleted pages')}}</h1>

@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
 <h1>{{__('Manage userrights')}}</h1>
 <h2>{{__('User information')}}</h2>

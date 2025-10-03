@@ -15,6 +15,16 @@
 
     <!-- Scripts -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <style>
+        .links {
+        display: flex;
+        gap: 10px;
+    }
+    
+        textarea#content {
+        height: 50vh;
+    }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -73,7 +83,9 @@
         </nav>
 
         <main class="py-4">
-            @yield('content')
+            <div class="container">
+                @yield('content')
+            </div>
         </main>
     </div>
 </body>

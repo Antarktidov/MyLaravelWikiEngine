@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
 <form action="{{route('articles.update', [$wiki->url, $article->url_title])}}" method="post">
     @csrf

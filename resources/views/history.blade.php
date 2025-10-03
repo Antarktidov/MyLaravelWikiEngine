@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
 <h1>{{__('Page history')}}</h1>
     <table class="table">

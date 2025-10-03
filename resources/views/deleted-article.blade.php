@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
     <h1>{{$revision->title}}</h1>
     <div class="links">

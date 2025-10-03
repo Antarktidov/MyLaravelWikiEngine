@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
 <form action="{{route('articles.store', $wiki->url)}}" method="post">
     @csrf

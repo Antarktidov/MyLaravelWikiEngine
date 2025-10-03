@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
 @if(count($wikis) !== 0)
     <h1>{{__('List of all wikis')}}</h1>

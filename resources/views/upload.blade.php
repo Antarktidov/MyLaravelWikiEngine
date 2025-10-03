@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
 <h1>{{__('Upload image')}}</h1>
 <form class="" action="{{route('images.store')}}" enctype="multipart/form-data" method="post">
