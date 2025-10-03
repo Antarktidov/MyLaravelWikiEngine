@@ -15,7 +15,7 @@ class ImageController extends Controller
     }
 
     //POST-ручка для формы загрузки страницы
-    public function store(Request $request): string|View {
+    public function store(Request $request) {
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('images', 'public');
             $filename = str_replace("images/","",$path);
