@@ -2,8 +2,6 @@
 # MyLaravelWikiEngine
 A simple PHP Laravel 11 Wiki Engine.
 
-IMPORTANT! THIS WIKI ENGINE IS NOT READY FOR RELEASE AND SHOULD NOT BE USED ON PRODUCTION SERVERS!
-
 ## Requirements
 * PHP 8.2.12
 * database (optional)
