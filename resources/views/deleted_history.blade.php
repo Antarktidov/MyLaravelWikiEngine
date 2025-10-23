@@ -4,7 +4,7 @@
     <table class="table">
         <thead>
           <tr>
-            <th scope="col">id</th>
+            <th scope="col">{{__('Id')}}</th>
             <th scope="col">{{__('Title')}}</th>
             <th scope="col">{{__('url-title')}}</th>
             <th scope="col">{{__('Content')}}</th>
