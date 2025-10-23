@@ -38,6 +38,8 @@ class ArticleController extends Controller
                     //->where('deleted_at', '')
                     ->whereNull('deleted_at')
                     ->orderBy('id', 'desc')->first();
+                    /*dump($wiki);
+                    dd($article);*/
                     if ($revision) {
                         return view('article', compact('revision', 'wiki', 'article'));
                     } else {

@@ -25,6 +25,7 @@
         height: 50vh;
     }
     </style>
+    @vite('resources/js/app.js')
 </head>
 <body>
     <div id="app">

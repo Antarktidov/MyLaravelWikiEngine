@@ -22,48 +22,45 @@ class CommentsController extends Controller
 
                 if($article) {
                     $comments = Comment::whereNull('deleted_at')
-                    ->where('article_id', $article->id)
-                    ->paginate(10);
+                        ->where('article_id', $article->id)
+                        ->orderBy('created_at', 'asc')
+                        ->paginate(10);
 
                     $output_comments = [];
 
                     foreach ($comments as $comment) {
                         $user = User::find($comment->user_id);
-
-                        if ($user != null) {
-                            $output_comments[]['user_name'] = $user->name;
-                        } else {
-                            $output_comments[]['user_name'] = 'Анонимный участник';
-                        }
-
-                        $output_comments[]['user'] = User::find($comment->user_id);
-                        $output_comments[]['created_at'] = $comment->created_at;
+                        $user_name = $user ? $user->name : 'Анонимный участник';
 
                         $comment_revision = CommentRevision::where('comment_id', $comment->id)
-                        ->whereNull('deleted_at')
-                        ->orderBy('id', 'desc')->first();
+                            ->whereNull('deleted_at')
+                            ->orderBy('id', 'desc')
+                            ->first();
 
-                        $output_comments[]['content'] = $comment_revision->content;
+                        $content = $comment_revision ? $comment_revision->content : null;
+
+                        $output_comments[] = [
+                            'id' => $comment->id,
+                            'user_id' => $comment->user_id,
+                            'user_name' => $user_name,
+                            'created_at' => $comment->created_at ? $comment->created_at->toIso8601String() : null,
+                            'content' => $content,
+                        ];
                     }
 
-                    return $output_comments;
-
-                    //return $comments;
-                    /*$comment_revision = CommentRevision::where('comment_id', $article->id)
-                    //->where('deleted_at', '')
-                    ->whereNull('deleted_at')
-                    ->orderBy('id', 'desc')->first();
-                    if ($revision) {
-                        return view('article', compact('revision', 'wiki', 'article'));
-                    } else {
-                        return response(__('All edits of this article are hidden'), 404)
-                            ->header('Content-Type', 'text/plain');
-                    }*/
-                }
-                 else {
+                    return response()->json([
+                        'data' => $output_comments,
+                        'meta' => [
+                            'current_page' => $comments->currentPage(),
+                            'per_page' => $comments->perPage(),
+                            'total' => $comments->total(),
+                            'last_page' => $comments->lastPage(),
+                        ],
+                    ]);
+                } else {
                     return response(__('Article does not exist'), 404)
                         ->header('Content-Type', 'text/plain');
-                 }
+                }
             } else {
                 return response(__('No articles'), 404)
                     ->header('Content-Type', 'text/plain');
