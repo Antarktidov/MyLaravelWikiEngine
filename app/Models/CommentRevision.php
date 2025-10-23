@@ -6,21 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use App\Models\User;
+use App\Models\Comment;
 
-class Revision extends Model
+class CommentRevision extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $guarded = false;
 
+    use HasFactory;
+
     public function article()
     {
-        return $this->belongsTo(Article::class, 'article_id', 'id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(Comment::class, 'comment_id', 'id');
     }
 }

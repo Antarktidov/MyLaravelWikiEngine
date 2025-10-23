@@ -6,6 +6,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\RevisionController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserRightsController;
+use App\Http\Controllers\CommentsController;
 
 use App\Http\Middleware\DeleteMiddleware;
 use App\Http\Middleware\DeleteRevisionMiddleware;
@@ -85,6 +86,9 @@ Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionCont
 ->middleware(RestoreRevisionMiddleware::class);
 Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
 
+//Работа с комментариями под статьями
+Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');
+//Логин, регистрация
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\Comment;
+use App\Models\Revision;
+
 class Article extends Model
 {
     use HasFactory;
@@ -20,6 +23,11 @@ class Article extends Model
     public function revisions()
     {
         return $this->hasMany(Revision::class, 'article_id', 'id');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'article_id', 'id');
     }
 
 }

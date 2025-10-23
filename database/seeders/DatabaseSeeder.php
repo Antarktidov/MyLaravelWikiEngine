@@ -7,6 +7,9 @@ use App\Models\UserGroup;
 use App\Models\Wiki;
 use App\Models\Article;
 use App\Models\Revision;
+
+use App\Models\Comment;
+use App\Models\CommentRevision;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -89,7 +92,21 @@ class DatabaseSeeder extends Seeder
             'user_ip' => '127.0.0.1',//localhost
             'user_id' => 0,
         ]);
-        
+
+        //Creating first comment for your first article
+        Comment::create([
+            'user_id' => 0,
+            'user_ip' => '127.0.0.1',//localhost
+            'article_id' => 1,
+        ]);
+
+        //Creating first comment revision for your first comment
+        CommentRevision::create([
+            'user_ip' => '127.0.0.1',//localhost
+            'content' => 'Hello, this is comment under your first article',
+            'comment_id' => 1,
+        ]);
+
         echo 'Installation completed! Don\'t forget to register and grant steward rights to your account via database editor!';
     }
 }
