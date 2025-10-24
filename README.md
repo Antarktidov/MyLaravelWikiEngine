@@ -1,8 +1,8 @@
 
 # MyLaravelWikiEngine
-A simple PHP Laravel 11 Wiki Engine.
+A simple PHP Laravel 11 Wiki Engine with comments.
 
-![Article Screenshot](https://raw.githubusercontent.com/Antarktidov/MyLaravelWikiEngine/refs/heads/master/images/article%20screenshot.png)
+![Article Screenshot](https://github.com/Antarktidov/MyLaravelWikiEngine/blob/master/images/article%20screenshot%20with%20comments.png?raw=true)
 
 ## Requirements
 * PHP 8.2
