@@ -8,7 +8,9 @@ if (el) {
         target: el,
         props: {
             wikiName: el.dataset.wikiName,
-            articleName: el.dataset.articleName
+            articleName: el.dataset.articleName,
+            userId: el.dataset.userId,
+            userName: el.dataset.userName,
         }
     })
 }

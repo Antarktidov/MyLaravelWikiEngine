@@ -38,10 +38,20 @@ class ArticleController extends Controller
                     //->where('deleted_at', '')
                     ->whereNull('deleted_at')
                     ->orderBy('id', 'desc')->first();
-                    /*dump($wiki);
-                    dd($article);*/
+                    
+                    $user = auth()->user();
+                    $userInfo;
+
+                    if ($user != null) {
+                        $userId = $user->id;
+                        $userName = $user->name;
+                    } else {
+                        $userId = 0;
+                        $userName = 'Анонимный участник';
+                    }
+
                     if ($revision) {
-                        return view('article', compact('revision', 'wiki', 'article'));
+                        return view('article', compact('revision', 'wiki', 'article', 'userId', 'userName'));
                     } else {
                         return response(__('All edits of this article are hidden'), 404)
                             ->header('Content-Type', 'text/plain');

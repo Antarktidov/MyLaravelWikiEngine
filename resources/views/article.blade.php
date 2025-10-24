@@ -17,6 +17,9 @@
     ])!!}</p>
     <div id="comments"
          data-wiki-name="{{ $wiki->url }}"
-         data-article-name="{{ $article->url_title }}">
+         data-article-name="{{ $article->url_title }}"
+         data-user-id="{{ $userId }}
+         ata-user-name="{{ $userName }}
+         ">
     </div>
 @endsection

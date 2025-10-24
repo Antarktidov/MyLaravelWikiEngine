@@ -2,14 +2,14 @@
   import { onMount } from 'svelte';
 
   // получаем пропсы
-  let { wikiName, articleName } = $props();
+  let { wikiName, articleName, userId, userName } = $props();
 
   let comments = $state([]);
   let new_comment = $state('');
 
   const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-  console.log('Пропсы:', wikiName, articleName);
+  console.log('Пропсы:', wikiName, articleName, userId, userName);
 
   async function start_comments(){ 
     try {
@@ -36,6 +36,12 @@
       body: JSON.stringify(comment)
     });
     console.log(response);
+    comments.data.push({
+      'user_id': userId,
+      'user_name': userName,
+      'content': new_comment,
+      'created_at:': Date.now(),
+    });
   }
 </script>
 
