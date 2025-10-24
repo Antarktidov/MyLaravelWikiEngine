@@ -80,6 +80,10 @@ public function boot(): void
     Gate::define('delete_commons_images', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_delete_commons_images');
     });
+
+    Gate::define('delete_comments', function ($user, $wikiName) {
+        return PermissionChecker::check($user, $wikiName, 'can_delete_comments');
+    });
     
     /*Gate::define('check_revisions', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_check_revisions');
