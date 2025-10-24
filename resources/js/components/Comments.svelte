@@ -1,6 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
-
   // получаем пропсы
   let { wikiName, articleName, userId, userName } = $props();
 
@@ -14,9 +12,10 @@
   async function start_comments(){ 
     try {
       const res = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments`);
-      comments = await res.json();
+      let tempComments = await res.json();
+      comments = tempComments.data;
       console.log('Комменты:', comments);
-      console.log(comments.data.length);
+      //console.log(comments.data.length);
     } catch (e) {
       console.error('Ошибка загрузки комментариев:', e);
     }
@@ -36,12 +35,14 @@
       body: JSON.stringify(comment)
     });
     console.log(response);
-    comments.data.push({
+    comments.unshift({
       'user_id': userId,
       'user_name': userName,
       'content': new_comment,
-      'created_at:': Date.now(),
+      'created_at': 'только что',
     });
+    console.log('Обновлённые комменты: ', comments.data);
+    new_comment = '';
   }
 </script>
 
@@ -52,12 +53,19 @@
     <textarea bind:value={new_comment} class="form-control" ></textarea>
     <button onclick={() => postComment()} class="btn btn-primary ms-4">Отправить</button>
   </div>
-  {#if comments.data}
-    <ul>
-      {#each comments.data as comment (comment.content)}
-        <li>{comment.content}</li>
+  {#if comments}
+    <div>
+      {#each comments as comment (comment.id)}
+        <div class="card mt-4 p-2">
+          <div class="d-flex">
+            <span class="fw-bold">{comment.user_name}</span><span class="ms-auto fst-italic text-secondary">{comment.created_at}</span>
+          </div>
+          <div class="p2 mt-2">
+          {comment.content}
+          </div>
+        </div>
       {/each}
-    </ul>
+    </div>
   {:else}
     <p>Пока нет комментариев.</p>
   {/if}

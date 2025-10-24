@@ -23,7 +23,7 @@ class CommentsController extends Controller
                 if($article) {
                     $comments = Comment::whereNull('deleted_at')
                         ->where('article_id', $article->id)
-                        ->orderBy('created_at', 'asc')
+                        ->orderBy('created_at', 'desc')
                         ->paginate(10);
 
                     $output_comments = [];
@@ -43,7 +43,7 @@ class CommentsController extends Controller
                             'id' => $comment->id,
                             'user_id' => $comment->user_id,
                             'user_name' => $user_name,
-                            'created_at' => $comment->created_at ? $comment->created_at->toIso8601String() : null,
+                            'created_at' => $comment->created_at ? $comment->created_at->format('Y-m-d H:i:s') : null,
                             'content' => $content,
                         ];
                     }

@@ -18,8 +18,8 @@
     <div id="comments"
          data-wiki-name="{{ $wiki->url }}"
          data-article-name="{{ $article->url_title }}"
-         data-user-id="{{ $userId }}
-         ata-user-name="{{ $userName }}
-         ">
+         data-user-id="{{ $userId }}"
+         data-user-name="{{ $userName }}"
+         >
     </div>
 @endsection
