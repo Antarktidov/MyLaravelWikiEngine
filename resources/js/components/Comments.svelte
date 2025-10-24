@@ -58,7 +58,7 @@
       'user_id': userId,
       'user_name': userName,
       'content': md.render(new_comment),
-      'created_at': 'только что',
+      'created_at': __('Just now'),
     });
     console.log('Обновлённые комменты: ', comments);
     new_comment = '';

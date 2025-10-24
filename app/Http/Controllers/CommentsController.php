@@ -32,7 +32,7 @@ class CommentsController extends Controller
 
                     foreach ($comments as $comment) {
                         $user = User::find($comment->user_id);
-                        $user_name = $user ? $user->name : 'Анонимный участник';
+                        $user_name = $user ? $user->name : __('Anonymous user');
 
                         $comment_revision = CommentRevision::where('comment_id', $comment->id)
                             ->whereNull('deleted_at')
