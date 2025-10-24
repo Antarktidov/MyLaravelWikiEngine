@@ -49,6 +49,7 @@ class CommentsController extends Controller
                             'content' => Str::of($content)->markdown([
                                 'html_input' => 'strip',
                             ]),
+                            'markdown_content' => $content,
                         ];
                     }
 

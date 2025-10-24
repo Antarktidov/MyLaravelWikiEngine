@@ -58,6 +58,7 @@
       'user_id': userId,
       'user_name': userName,
       'content': md.render(new_comment),
+      'markdown_content': new_comment,
       'created_at': __('Just now'),
     });
     console.log('Обновлённые комменты: ', comments);
@@ -84,7 +85,7 @@
     let comment = comments.find(comment => comment.id === commentId);
     console.log('Комент, выбранный для редактирования:', comment);
     comment.is_editor_open = true;
-    edited_comment = comment.content;
+    edited_comment = comment.markdown_content;
   }
 
   async function saveEditedComment(commentId) {
@@ -108,6 +109,7 @@
         let comment = comments.find(comment => comment.id === commentId);
         if (comment) {
           comment.content = md.render(edited_comment);
+          comment.markdown_content = edited_comment;
         }
         
         closeEditedComment(edited_comment_id);
