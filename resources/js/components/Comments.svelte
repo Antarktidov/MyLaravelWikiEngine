@@ -1,4 +1,5 @@
 <script>
+  import MarkdownIt from 'markdown-it';
   // получаем пропсы
   let { wikiName, articleName, userId, userName } = $props();
 
@@ -6,6 +7,9 @@
   let new_comment = $state('');
 
   const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+  const md = new MarkdownIt();
+
 
   console.log('Пропсы:', wikiName, articleName, userId, userName);
 
@@ -40,12 +44,13 @@
       'id': comments[comments.length - 1].id + 1,
       'user_id': userId,
       'user_name': userName,
-      'content': new_comment,
+      'content': md.render(new_comment),
       'created_at': 'только что',
     });
     console.log('Обновлённые комменты: ', comments.data);
     new_comment = '';
   }
+
 </script>
 
 <div class="comments">
