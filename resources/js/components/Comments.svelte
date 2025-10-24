@@ -1,7 +1,7 @@
 <script>
   import MarkdownIt from 'markdown-it';
   // получаем пропсы
-  let { wikiName, articleName, userId, userName } = $props();
+  let { wikiName, articleName, userId, userName, userCanDeleteComments } = $props();
 
   let comments = $state([]);
   let new_comment = $state('');
@@ -11,7 +11,7 @@
   const md = new MarkdownIt();
 
 
-  console.log('Пропсы:', wikiName, articleName, userId, userName);
+  console.log('Пропсы:', wikiName, articleName, userId, userName, userCanDeleteComments);
 
   async function start_comments(){ 
     try {
@@ -38,10 +38,11 @@
     },
       body: JSON.stringify(comment)
     });
-    console.log(response);
+    const resJson = await response.json();
+    const commentId = resJson.id;
     console.log('comments[comments.length - 1].id + 1', comments[comments.length - 1].id + 2);
     comments.unshift({
-      'id': comments[comments.length - 1].id + 1,
+      'id': commentId,
       'user_id': userId,
       'user_name': userName,
       'content': md.render(new_comment),
@@ -49,6 +50,19 @@
     });
     console.log('Обновлённые комменты: ', comments.data);
     new_comment = '';
+  }
+
+  async function deleteComment(commentId) {
+    console.log('Delete btn pressed');
+    let response = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments/${commentId}/delete`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+      'X-CSRF-TOKEN': csrf_token,
+    },
+    });
+    comments = comments.filter(comment => comment.id !== commentId);
+    console.log(response);
   }
 
 </script>
@@ -69,6 +83,13 @@
           </div>
           <div class="p2 mt-2">
           {@html comment.content}
+          </div>
+          <div class="ms-auto">
+            <span>
+              {#if userCanDeleteComments}
+               <button onclick={() => deleteComment(comment.id)} class="btn btn-danger">Удалить</button>
+              {/if}
+            </span>
           </div>
         </div>
       {/each}

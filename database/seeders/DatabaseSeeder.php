@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
             'can_manage_local_userrights' => 1,
             'can_manage_global_userrights' => 1,
             'can_delete_commons_images' => 1,
+            'can_delete_comments' => 1,
         ]);
 
         //Creating local user groups
@@ -69,6 +70,7 @@ class DatabaseSeeder extends Seeder
             'can_manage_local_userrights' => 1,
             'can_manage_global_userrights' => 0,
             'can_delete_commons_images' => 0,
+            'can_delete_comments' => 1,
         ]);
 
         //Creating your first wiki

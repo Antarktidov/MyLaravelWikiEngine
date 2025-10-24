@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 use App\Models\User;
@@ -60,7 +61,7 @@ class PermissionChecker
     /**
      * Данная функция предназвачена для вызова в Middleware.
      */
-    public static function check_for_middleware($request, $next, $permission): Response
+    public static function check_for_middleware($request, $next, $permission)
     {
         $user = auth()->user();
 

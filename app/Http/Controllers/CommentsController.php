@@ -111,8 +111,16 @@ class CommentsController extends Controller
 
                 CommentRevision::create($comment_revision);
 
-                return ['message' => 'comment_posted'];
+                return [
+                    'message' => 'comment_posted',
+                    'id' => $created_comment->id,
+                ];
             }
         }
+    }
+
+    public function delete(string $wikiName, string $articleName, Comment $comment) {
+        $comment->delete();
+        return ['message' => 'comment deleted'];
     }
 }

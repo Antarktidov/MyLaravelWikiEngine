@@ -20,6 +20,7 @@
          data-article-name="{{ $article->url_title }}"
          data-user-id="{{ $userId }}"
          data-user-name="{{ $userName }}"
+         data-user-can-delete-comments="{{ $userCanDeleteComments }}"
          >
     </div>
 @endsection

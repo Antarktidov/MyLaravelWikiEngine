@@ -12,6 +12,7 @@ if (el) {
             articleName: el.dataset.articleName,
             userId: el.dataset.userId,
             userName: el.dataset.userName,
+            userCanDeleteComments: el.dataset.userCanDeleteComments,
         }
     })
 }

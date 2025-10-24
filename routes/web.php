@@ -23,6 +23,8 @@ use App\Http\Middleware\ManageLocalUserrightsMiddleware;
 
 use App\Http\Middleware\DeleteImagesMiddleware;
 
+use App\Http\Middleware\DeleteCommentsMiddleware;
+
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
 Route::get('/create-wiki', [WikisController::class,'create'])->name('wikis.create')
@@ -89,6 +91,9 @@ Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [Revi
 //Работа с комментариями под статьями
 Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');
 Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])->name('comments.store');
+Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
+->middleware(DeleteCommentsMiddleware::class)
+->name('comments.store');
 //Логин, регистрация
 Auth::routes();
 

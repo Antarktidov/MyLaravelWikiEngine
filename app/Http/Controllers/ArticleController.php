@@ -40,18 +40,20 @@ class ArticleController extends Controller
                     ->orderBy('id', 'desc')->first();
                     
                     $user = auth()->user();
-                    $userInfo;
 
                     if ($user != null) {
                         $userId = $user->id;
                         $userName = $user->name;
+                        $userCanDeleteComments = $user->can('delete_comments', $wiki->url);
                     } else {
                         $userId = 0;
                         $userName = 'Анонимный участник';
+                        $userCanDeleteComments = false;
                     }
 
                     if ($revision) {
-                        return view('article', compact('revision', 'wiki', 'article', 'userId', 'userName'));
+                        return view('article', compact('revision', 'wiki', 'article',
+                        'userId', 'userName', 'userCanDeleteComments'));
                     } else {
                         return response(__('All edits of this article are hidden'), 404)
                             ->header('Content-Type', 'text/plain');
