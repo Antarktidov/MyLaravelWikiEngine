@@ -9,6 +9,8 @@ use App\Models\Article;
 use App\Models\Comment;
 use App\Models\CommentRevision;
 
+use Illuminate\Support\Str;
+
 class CommentsController extends Controller
 {
     public function show_comments_under_article(string $wikiName, string $articleName)
@@ -44,7 +46,9 @@ class CommentsController extends Controller
                             'user_id' => $comment->user_id,
                             'user_name' => $user_name,
                             'created_at' => $comment->created_at ? $comment->created_at->format('Y-m-d H:i:s') : null,
-                            'content' => $content,
+                            'content' => Str::of($content)->markdown([
+                                'html_input' => 'strip',
+                            ]),
                         ];
                     }
 

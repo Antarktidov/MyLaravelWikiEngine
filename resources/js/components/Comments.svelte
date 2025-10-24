@@ -63,7 +63,7 @@
             <span class="fw-bold">{comment.user_name}</span><span class="ms-auto fst-italic text-secondary">{comment.created_at}</span>
           </div>
           <div class="p2 mt-2">
-          {comment.content}
+          {@html comment.content}
           </div>
         </div>
       {/each}
