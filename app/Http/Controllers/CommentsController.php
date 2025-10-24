@@ -92,7 +92,6 @@ class CommentsController extends Controller
 
                 $userId = 0;
                 if ($user != null) {
-                    return ['user' => $user];
                     $userId = $user->id;
                 }
 
