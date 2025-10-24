@@ -95,6 +95,15 @@
     "Wiki was created": "Вики успешно создана!",
     "Wiki was closed": "Вики успешно закрыта!",
     "Wiki was opened": "Вики успешно открыта!",
-    "The user's usergroups was changed": "Группы участника успешно изменены!"
+    "The user's usergroups was changed": "Группы участника успешно изменены!",
 
+    "Back": "Назад",
+    "Forward": "Вперёд",
+    "Page": "Страница",
+    "(Page) of":"из",
+    "Send": "Отправить",
+    "Close": "Закрыть",
+    "Comments": "Комментарии",
+    "New comment": "Новый комментарий",
+    "Enter new comment": "Введите комментарий"
 }

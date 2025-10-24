@@ -9,7 +9,17 @@
   let currentPage = $state(1);
   let meta = $state({});
 
+  //Код локализации интерфейса
+  import ru from '../../../lang/ru.json';
+  import en from '../../../lang/en.json';
 
+  const translations = { ru, en };
+  const locale = window.locale || 'en';
+
+  function __(key) {
+    return translations[locale][key] || key;
+  }
+  //Конец кода локализации интерфеса
 
   const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -134,11 +144,11 @@
 </script>
 
 <div class="comments">
-  <h2>Комментарии</h2>
-  <h3>Новый комментарий</h3>
+  <h2>{__('Comments')}</h2>
+  <h3>{__('New comment')}</h3>
   <div class="d-flex">
-    <textarea bind:value={new_comment} class="form-control" ></textarea>
-    <button onclick={() => postComment()} class="btn btn-primary ms-4">Отправить</button>
+    <textarea bind:value={new_comment} class="form-control" placeholder={__('Enter new comment')}></textarea>
+    <button onclick={() => postComment()} class="btn btn-primary ms-4">{__('Send')}</button>
   </div>
   {#if comments}
     <div>
@@ -156,13 +166,13 @@
           <div class="ms-auto">
             {#if userId !== 0 && comment.user_id !== 0 && +userId === +comment.user_id}
               <span>
-                <button onclick={() => openCommentEditor(comment.id)} class="btn btn-primary">Править</button>
+                <button onclick={() => openCommentEditor(comment.id)} class="btn btn-primary">{__('Edit')}</button>
               </span>  
             {/if}
             <span>
               {#if userCanDeleteComments}
                <span>
-                <button onclick={() => deleteComment(comment.id)} class="btn btn-danger">Удалить</button>
+                <button onclick={() => deleteComment(comment.id)} class="btn btn-danger">{__('Delete')}</button>
               </span>
               {/if}
             </span>
@@ -170,20 +180,20 @@
           {:else}
           <div class="d-flex">
             <textarea bind:value={edited_comment} class="form-control" ></textarea>
-            <button onclick={() => closeEditedComment(comment.id)} class="btn btn-danger ms-2">Закрыть</button>
-            <button onclick={() => saveEditedComment(comment.id)} class="btn btn-primary ms-2">Сохранить</button>
+            <button onclick={() => closeEditedComment(comment.id)} class="btn btn-danger ms-2">{__('Close')}</button>
+            <button onclick={() => saveEditedComment(comment.id)} class="btn btn-primary ms-2">{__('Save')}</button>
           </div>
           {/if}
         </div>
       {/each}
     </div>
-    <div class="pagination mt-4">
+  <div class="pagination mt-4">
     <button class="btn btn-primary" onclick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-      ← Назад
+      ← {__('Back')}
     </button>
-    <span class="m-auto">Страница {currentPage} из {meta.last_page}</span>
+    <span class="m-auto">{__('Page')} {currentPage} {__('(Page) of')} {meta.last_page}</span>
     <button class="btn btn-primary" onclick={() => goToPage(currentPage + 1)} disabled={currentPage === meta.last_page}>
-      Вперёд →
+      {__('Forward')} →
     </button>
   </div>
   {:else}

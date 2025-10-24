@@ -26,6 +26,9 @@
     }
     </style>
     @vite('resources/js/app.js')
+    <script>
+        window.locale = "{{ app()->getLocale() }}";
+    </script>
 </head>
 <body>
     <div id="app">
