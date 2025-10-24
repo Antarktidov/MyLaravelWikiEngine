@@ -35,7 +35,9 @@
       body: JSON.stringify(comment)
     });
     console.log(response);
+    console.log('comments[comments.length - 1].id + 1', comments[comments.length - 1].id + 2);
     comments.unshift({
+      'id': comments[comments.length - 1].id + 1,
       'user_id': userId,
       'user_name': userName,
       'content': new_comment,
@@ -55,7 +57,7 @@
   </div>
   {#if comments}
     <div>
-      {#each comments as comment (comment.id)}
+      {#each comments as comment, index (comment.id + '-' + index)}
         <div class="card mt-4 p-2">
           <div class="d-flex">
             <span class="fw-bold">{comment.user_name}</span><span class="ms-auto fst-italic text-secondary">{comment.created_at}</span>
