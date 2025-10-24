@@ -52,6 +52,8 @@ class CommentsController extends Controller
                         ];
                     }
 
+                    //dd($comments);
+
                     return response()->json([
                         'data' => $output_comments,
                         'meta' => [

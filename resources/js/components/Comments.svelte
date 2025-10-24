@@ -5,8 +5,11 @@
   let comments = $state([]);
   let new_comment = $state('');
   let edited_comment = $state('');
-
   let edited_comment_id = 0;
+  let currentPage = $state(1);
+  let meta = $state({});
+
+
 
   const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -15,17 +18,15 @@
 
   console.log('Пропсы:', wikiName, articleName, userId, userName, userCanDeleteComments);
 
-  async function start_comments(){ 
-    try {
-      const res = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments`);
-      let tempComments = await res.json();
-      comments = tempComments.data;
-      console.log('Комменты:', comments);
-    } catch (e) {
-      console.error('Ошибка загрузки комментариев:', e);
-    }
+  async function loadComments(page = 1) {
+    const res = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments?page=${page}`);
+    const json = await res.json();
+    comments = json.data;
+    meta = json.meta;
+    currentPage = meta.current_page;
   }
-  start_comments();
+  loadComments();
+
   async function postComment() {
     let comment = {
       'content': new_comment
@@ -121,7 +122,14 @@
     let comment = comments.find(comment => comment.id === commentId);
     comment.is_editor_open = false;
     edited_comment = '';
+
   }
+
+  function goToPage(page) {
+    if (page >= 1 && page <= meta.last_page) {
+      loadComments(page);
+      }
+    }
 
 </script>
 
@@ -169,6 +177,15 @@
         </div>
       {/each}
     </div>
+    <div class="pagination mt-4">
+    <button class="btn btn-primary" onclick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+      ← Назад
+    </button>
+    <span class="m-auto">Страница {currentPage} из {meta.last_page}</span>
+    <button class="btn btn-primary" onclick={() => goToPage(currentPage + 1)} disabled={currentPage === meta.last_page}>
+      Вперёд →
+    </button>
+  </div>
   {:else}
     <p>Пока нет комментариев.</p>
   {/if}
