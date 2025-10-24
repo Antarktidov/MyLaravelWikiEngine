@@ -5,6 +5,9 @@
 
   let comments = $state([]);
   let new_comment = $state('');
+  let edited_comment = $state('');
+
+  let edited_comment_id = 0;
 
   const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -65,6 +68,36 @@
     console.log(response);
   }
 
+  function openCommentEditor(commentId) {
+    closeEditedComment(edited_comment_id)
+    edited_comment_id = commentId;
+    console.log('Edit btn pressed');
+    let comment = comments.find(comment => comment.id === commentId);
+    console.log('Комент, выбранный для редактирования:', comment);
+    comment.is_editor_open = true;
+    edited_comment = comment.content;
+  }
+
+  function saveEditedComment(commentId) {
+    closeEditedComment(edited_comment_id)
+    edited_comment_id = 0;
+    console.log('Save btn pressed');
+    let comment = comments.find(comment => comment.id === commentId);
+    comment.is_editor_open = false;
+    edited_comment = '';
+  }
+
+  function closeEditedComment(commentId) {
+    if (commentId === 0) {
+      return;
+    }
+
+    console.log('Save btn pressed');
+    let comment = comments.find(comment => comment.id === commentId);
+    comment.is_editor_open = false;
+    edited_comment = '';
+  }
+
 </script>
 
 <div class="comments">
@@ -82,15 +115,32 @@
             <span class="fw-bold">{comment.user_name}</span><span class="ms-auto fst-italic text-secondary">{comment.created_at}</span>
           </div>
           <div class="p2 mt-2">
-          {@html comment.content}
+            {#if comment.is_editor_open == undefined || comment.is_editor_open == null || comment.is_editor_open === false}
+              {@html comment.content}
+            {/if}
           </div>
+          {#if comment.is_editor_open == undefined || comment.is_editor_open == null || comment.is_editor_open === false}
           <div class="ms-auto">
+            {#if userId !== 0 && comment.user_id !== 0 && +userId === +comment.user_id}
+              <span>
+                <button onclick={() => openCommentEditor(comment.id)} class="btn btn-primary">Править</button>
+              </span>  
+            {/if}
             <span>
               {#if userCanDeleteComments}
-               <button onclick={() => deleteComment(comment.id)} class="btn btn-danger">Удалить</button>
+               <span>
+                <button onclick={() => deleteComment(comment.id)} class="btn btn-danger">Удалить</button>
+              </span>
               {/if}
             </span>
           </div>
+          {:else}
+          <div class="d-flex">
+            <textarea bind:value={edited_comment} class="form-control" ></textarea>
+            <button onclick={() => saveEditedComment(comment.id)} class="btn btn-danger ms-2">Закрыть</button>
+            <button onclick={() => closeEditedComment(comment.id)} class="btn btn-primary ms-2">Сохранить</button>
+          </div>
+          {/if}
         </div>
       {/each}
     </div>
