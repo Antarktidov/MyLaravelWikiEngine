@@ -5,6 +5,9 @@
   let { wikiName, articleName } = $props();
 
   let comments = $state([]);
+  let new_comment = $state('');
+
+  const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
   console.log('Пропсы:', wikiName, articleName);
 
@@ -19,10 +22,30 @@
     }
   }
   start_comments();
+  async function postComment() {
+    let comment = {
+      'content': new_comment
+    };
+
+    let response = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments/store`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+      'X-CSRF-TOKEN': csrf_token,
+    },
+      body: JSON.stringify(comment)
+    });
+    console.log(response);
+  }
 </script>
 
 <div class="comments">
-  <h3>Комментарии</h3>
+  <h2>Комментарии</h2>
+  <h3>Новый комментарий</h3>
+  <div class="d-flex">
+    <textarea bind:value={new_comment} class="form-control" ></textarea>
+    <button onclick={() => postComment()} class="btn btn-primary ms-4">Отправить</button>
+  </div>
   {#if comments.data}
     <ul>
       {#each comments.data as comment (comment.content)}

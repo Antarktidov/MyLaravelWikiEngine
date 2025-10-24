@@ -88,6 +88,7 @@ Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [Revi
 
 //Работа с комментариями под статьями
 Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');
+Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])->name('comments.store');
 //Логин, регистрация
 Auth::routes();
 

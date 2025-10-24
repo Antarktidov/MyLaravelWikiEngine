@@ -70,4 +70,46 @@ class CommentsController extends Controller
                 ->header('Content-Type', 'text/plain');
         }
     }
+
+    public function store(string $wikiName, string $articleName, Request $request) {
+        $data = request()->validate([
+            'content' => 'string',
+        ]);
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+
+        if ($wiki) {
+            $article = Article::where('wiki_id', $wiki->id)
+            ->where('url_title', $articleName)
+            ->whereNull('deleted_at')
+            ->first();
+
+            if ($article) {
+                $user = auth()->user();
+
+                $userId = 0;
+                if ($user != null) {
+                    return ['user' => $user];
+                    $userId = $user->id;
+                }
+
+                $comment = [
+                    'user_id' => $userId,
+                    'user_ip' => $request->ip(),
+                    'article_id' => $article->id,
+                ];
+
+                $created_comment = Comment::create($comment);
+
+                $comment_revision = [
+                    'content' => $data['content'],
+                    'user_ip' => $request->ip(),
+                    'comment_id' => $created_comment->id,
+                ];
+
+                CommentRevision::create($comment_revision);
+
+                return ['message' => 'comment_posted'];
+            }
+        }
+    }
 }
