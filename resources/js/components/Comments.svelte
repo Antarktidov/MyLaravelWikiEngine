@@ -78,13 +78,41 @@
     edited_comment = comment.content;
   }
 
-  function saveEditedComment(commentId) {
-    closeEditedComment(edited_comment_id)
-    edited_comment_id = 0;
-    console.log('Save btn pressed');
-    let comment = comments.find(comment => comment.id === commentId);
-    comment.is_editor_open = false;
-    edited_comment = '';
+  async function saveEditedComment(commentId) {
+    let toSaveEditedComment = {
+      'content': edited_comment,
+    }
+
+    try {
+      let response = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments/${commentId}/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        body: JSON.stringify(toSaveEditedComment)
+      });
+
+      const result = await response.json();
+      
+      if (response.ok) {
+        // Обновляем содержимое комментария в списке
+        let comment = comments.find(comment => comment.id === commentId);
+        if (comment) {
+          comment.content = md.render(edited_comment);
+        }
+        
+        closeEditedComment(edited_comment_id);
+        edited_comment_id = 0;
+        console.log('Save btn pressed - success');
+      } else {
+        console.error('Ошибка при сохранении комментария:', result.error);
+        alert('Ошибка при сохранении комментария: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Ошибка сети при сохранении комментария:', error);
+      alert('Ошибка сети при сохранении комментария');
+    }
   }
 
   function closeEditedComment(commentId) {
@@ -92,7 +120,7 @@
       return;
     }
 
-    console.log('Save btn pressed');
+    console.log('Close btn pressed');
     let comment = comments.find(comment => comment.id === commentId);
     comment.is_editor_open = false;
     edited_comment = '';
@@ -137,8 +165,8 @@
           {:else}
           <div class="d-flex">
             <textarea bind:value={edited_comment} class="form-control" ></textarea>
-            <button onclick={() => saveEditedComment(comment.id)} class="btn btn-danger ms-2">Закрыть</button>
-            <button onclick={() => closeEditedComment(comment.id)} class="btn btn-primary ms-2">Сохранить</button>
+            <button onclick={() => closeEditedComment(comment.id)} class="btn btn-danger ms-2">Закрыть</button>
+            <button onclick={() => saveEditedComment(comment.id)} class="btn btn-primary ms-2">Сохранить</button>
           </div>
           {/if}
         </div>

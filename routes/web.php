@@ -93,7 +93,9 @@ Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsContr
 Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])->name('comments.store');
 Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
 ->middleware(DeleteCommentsMiddleware::class)
-->name('comments.store');
+->name('comments.delete');
+Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
+->name('comments.update');
 //Логин, регистрация
 Auth::routes();
 

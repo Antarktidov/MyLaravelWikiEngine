@@ -123,4 +123,44 @@ class CommentsController extends Controller
         $comment->delete();
         return ['message' => 'comment deleted'];
     }
+
+    public function update(string $wikiName, string $articleName, Comment $comment, Request $request) {
+        $data = request()->validate([
+            'content' => 'string',
+        ]);
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+
+        if ($wiki) {
+            $article = Article::where('wiki_id', $wiki->id)
+            ->where('url_title', $articleName)
+            ->whereNull('deleted_at')
+            ->first();
+
+            if ($article) {
+                $user = auth()->user();
+                if ($user == null) {
+                    return response()->json(['error' => 'forbidden'], 403);
+                }
+                
+                if ($user->id === $comment->user_id) {
+                    $comment_revision = [
+                        'content' => $data['content'],
+                        'user_ip' => $request->ip(),
+                        'comment_id' => $comment->id,
+                    ];
+
+                    CommentRevision::create($comment_revision);
+
+                    return response()->json(['message' => 'success']);
+                } else {
+                    return response()->json(['error' => 'forbidden'], 403);
+                }
+                
+            } else {
+                return response()->json(['error' => 'Article not found'], 404);
+            }
+        } else {
+            return response()->json(['error' => 'Wiki not found'], 404);
+        }
+    }
 }
