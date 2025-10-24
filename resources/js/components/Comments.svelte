@@ -150,7 +150,7 @@
     <textarea bind:value={new_comment} class="form-control" placeholder={__('Enter new comment')}></textarea>
     <button onclick={() => postComment()} class="btn btn-primary ms-4">{__('Send')}</button>
   </div>
-  {#if comments}
+  {#if comments.length > 0}
     <div>
       {#each comments as comment, index (comment.id + '-' + index)}
         <div class="card mt-4 p-2">
@@ -197,6 +197,6 @@
     </button>
   </div>
   {:else}
-    <p>Пока нет комментариев.</p>
+    <p>{__('No comments yet.')}</p>
   {/if}
 </div>
