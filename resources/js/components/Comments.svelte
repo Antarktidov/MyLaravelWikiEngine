@@ -1,6 +1,5 @@
 <script>
   import MarkdownIt from 'markdown-it';
-  // получаем пропсы
   let { wikiName, articleName, userId, userName, userCanDeleteComments } = $props();
 
   let comments = $state([]);
@@ -22,7 +21,6 @@
       let tempComments = await res.json();
       comments = tempComments.data;
       console.log('Комменты:', comments);
-      //console.log(comments.data.length);
     } catch (e) {
       console.error('Ошибка загрузки комментариев:', e);
     }
@@ -43,7 +41,7 @@
     });
     const resJson = await response.json();
     const commentId = resJson.id;
-    console.log('comments[comments.length - 1].id + 1', comments[comments.length - 1].id + 2);
+    
     comments.unshift({
       'id': commentId,
       'user_id': userId,
@@ -51,7 +49,7 @@
       'content': md.render(new_comment),
       'created_at': 'только что',
     });
-    console.log('Обновлённые комменты: ', comments.data);
+    console.log('Обновлённые комменты: ', comments);
     new_comment = '';
   }
 
@@ -96,7 +94,6 @@
       const result = await response.json();
       
       if (response.ok) {
-        // Обновляем содержимое комментария в списке
         let comment = comments.find(comment => comment.id === commentId);
         if (comment) {
           comment.content = md.render(edited_comment);
