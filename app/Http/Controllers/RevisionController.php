@@ -24,17 +24,22 @@ class RevisionController extends Controller
 
                     if ($revisions) {
                         $my_revision = $revisions->where('id', $revisionId)->first();
-                        $my_revision->delete();
-
-                        return response(__('The edit was hidden'), 200)
+                        if ($my_revision) {
+                            $my_revision->delete();
+                            return response(__('The edit was hidden'), 200)
                             ->header('Content-Type', 'text/plain');
+                        } else {
+                            return response(__('No such revision'), 404)
+                            ->header('Content-Type', 'text/plain');
+                        }
+
                     } else {
-                        return response(__('Error'), 500)
+                        return response(__('No article revisions'), 404)
                             ->header('Content-Type', 'text/plain');
                     }
 
                 }   else {
-                        return response(__('No such articles'), 404)
+                        return response(__('No such article'), 404)
                             ->header('Content-Type', 'text/plain');
                 }
             } else {

@@ -7,18 +7,15 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Models\Wiki;
-use App\Models\Article;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserUserGroupWiki;
 
-class DeleteRevisionOnUnexistingWikiTest extends TestCase
+class DeleteUnexistingRevisionTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_that_deletion_revision_on_unexisting_wiki_will_return_404(): void
+    public function test_that_deletion_unexisting_revision_will_return_404(): void
     {
-        $wiki = Wiki::factory()->create();
-
         $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -41,12 +38,8 @@ class DeleteRevisionOnUnexistingWikiTest extends TestCase
             'wiki_id' => 0,
         ]);
 
-        $article = Article::factory()->create([
-            'wiki_id' => $wiki->id,
-        ]);
-
-        $wikiName = $wiki->url;
-        $articleName = $article->url_title;
+        $wikiName = "no_such_wiki";
+        $articleName = "no_such_article";
         $revisionId = "2222";
 
         $this->actingAs($user);
