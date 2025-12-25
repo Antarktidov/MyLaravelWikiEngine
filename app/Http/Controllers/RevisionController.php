@@ -34,7 +34,7 @@ class RevisionController extends Controller
                     }
 
                 }   else {
-                        return response(__('Error'), 500)
+                        return response(__('No such articles'), 404)
                             ->header('Content-Type', 'text/plain');
                 }
             } else {
