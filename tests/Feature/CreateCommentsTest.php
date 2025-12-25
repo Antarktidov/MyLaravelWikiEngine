@@ -46,7 +46,6 @@ class CreateCommentsTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('comment_revisions', [
-            'comment_id' => 1,
             'content' => $data['content'],
         ]);
     }

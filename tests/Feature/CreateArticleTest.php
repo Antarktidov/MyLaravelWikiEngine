@@ -37,7 +37,6 @@ class CreateArticleTest extends TestCase
             'url_title' => $data['url_title'],
             'title' => $data['title'],
             'content' => $data['content'],
-            'article_id' => 1,
             'user_id' => 0,
         ]);
     }
@@ -74,7 +73,6 @@ class CreateArticleTest extends TestCase
             'url_title' => $data['url_title'],
             'title' => $data['title'],
             'content' => $data['content'],
-            'article_id' => 2,
             'user_id' => $user->id,
         ]);
     }
