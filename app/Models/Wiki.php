@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\Article;
+
 class Wiki extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $guarded = false;
 
-    public function article()
+    public function articles()
     {
-        $this->hasMany(Article::class, 'article_id', 'id');
+        return $this->hasMany(Article::class, 'wiki_id', 'id');
     }
 }

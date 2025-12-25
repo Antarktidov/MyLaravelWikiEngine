@@ -97,6 +97,16 @@ Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/del
 Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
 ->name('comments.update');
 //Логин, регистрация
-Auth::routes();
+Auth::routes(['verify' => true]);
+
+// Email verification routes
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', [App\Http\Controllers\Auth\VerificationController::class, 'show'])->name('verification.notice');
+    Route::post('/email/resend', [App\Http\Controllers\Auth\VerificationController::class, 'resend'])->name('verification.resend');
+});
+
+Route::middleware(['auth', 'signed'])->group(function () {
+    Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\Auth\VerificationController::class, 'verify'])->name('verification.verify');
+});
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

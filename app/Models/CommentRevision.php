@@ -14,9 +14,7 @@ class CommentRevision extends Model
     use SoftDeletes;
     protected $guarded = false;
 
-    use HasFactory;
-
-    public function article()
+    public function comment()
     {
         return $this->belongsTo(Comment::class, 'comment_id', 'id');
     }
