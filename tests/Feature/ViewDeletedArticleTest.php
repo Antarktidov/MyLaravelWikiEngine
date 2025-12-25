@@ -16,7 +16,7 @@ use App\Models\UserUserGroupWiki;
 class ViewDeletedArticleTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_that_unauthorized_user_can_not_view_deleted_article(): void
+    public function test_that_unauthorized_user_can_not_view_deleted_article_and_its_history(): void
     {
         $wiki = Wiki::factory()->create([
             'url' => 'wiki-for-article-deletion-test',
@@ -38,5 +38,9 @@ class ViewDeletedArticleTest extends TestCase
         $response = $this->get("/wiki/{$wiki->url}/trash/article/{$article->url_title}");
 
         $response->assertStatus(401);
+
+        $response2 = $this->get("/wiki/{$wiki->url}/trash/article/{$article->url_title}/history");
+
+        $response2->assertStatus(401);
     }
 }
