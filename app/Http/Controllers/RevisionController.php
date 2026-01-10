@@ -6,7 +6,6 @@ use App\Models\Article;
 use App\Models\Revision;
 use App\Models\User;
 use App\Models\Wiki;
-use Illuminate\Http\Request;
 
 class RevisionController extends Controller
 {
@@ -88,7 +87,7 @@ class RevisionController extends Controller
     }
 
     //Просмотр правки статьи по ID
-    public function view(string $wikiName, string $articleName, int $revisionId, Request $request)
+    public function view(string $wikiName, string $articleName, int $revisionId)
     {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
@@ -110,36 +109,10 @@ class RevisionController extends Controller
                         ->whereNull('deleted_at')
                         ->get();
                     } else {
-                        if ($user != null) {
-                            // Авторизованный пользователь видит: свои правки (даже неодобренные), отпатрулированные и одобренные правки
-                            $revisions = Revision::where('article_id', $article->id)
-                            ->whereNull('deleted_at')
-                            ->where(function($query) use ($user) {
-                                $query->where('is_approved', true)
-                                    ->orWhere(function($q) use ($user) {
-                                        $q->where('user_id', $user->id);
-                                    })
-                                    ->orWhere('is_patrolled', true);
-                            })
-                            ->get();
-                        } else {
-                            // Неавторизованный пользователь видит: отпатрулированные и одобренные правки, или свои анонимные правки (по IP) в течение 15 минут
-                            $userIp = $request->ip();
-                            $revisions = Revision::where('article_id', $article->id)
-                            ->whereNull('deleted_at')
-                            ->where(function($query) use ($userIp) {
-                                $query->where(function($q) {
-                                    $q->where('is_approved', true)
-                                      ->where('is_patrolled', true);
-                                })
-                                ->orWhere(function($q) use ($userIp) {
-                                    $q->where('user_id', 0)
-                                      ->where('user_ip', $userIp)
-                                      ->where('created_at', '>=', now()->subMinutes(15));
-                                });
-                            })
-                            ->get();
-                        }
+                        $revisions = Revision::where('article_id', $article->id)
+                        ->whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->get();
                     }
 
                     if ($revisions) {
@@ -173,7 +146,7 @@ class RevisionController extends Controller
     }
 
     //Показывает историю страницы
-    public function index(string $wikiName, string $articleName, Request $request) {
+    public function index(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
@@ -187,40 +160,12 @@ class RevisionController extends Controller
                         $can_check_revisions = false;
                     }
                     if ($can_check_revisions) {
-                        $revisions = Revision::where('article_id', $article->id)
-                        ->whereNull('deleted_at')
+                        $revisions = Revision::whereNull('deleted_at')
                         ->get();
                     } else {
-                        if ($user != null) {
-                            // Авторизованный пользователь видит: свои правки (даже неодобренные), отпатрулированные и одобренные правки
-                            $revisions = Revision::where('article_id', $article->id)
-                            ->whereNull('deleted_at')
-                            ->where(function($query) use ($user) {
-                                $query->where('is_approved', true)
-                                    ->orWhere(function($q) use ($user) {
-                                        $q->where('user_id', $user->id);
-                                    })
-                                    ->orWhere('is_patrolled', true);
-                            })
-                            ->get();
-                        } else {
-                            // Неавторизованный пользователь видит: отпатрулированные и одобренные правки, или свои анонимные правки (по IP) в течение 15 минут
-                            $userIp = $request->ip();
-                            $revisions = Revision::where('article_id', $article->id)
-                            ->whereNull('deleted_at')
-                            ->where(function($query) use ($userIp) {
-                                $query->where(function($q) {
-                                    $q->where('is_approved', true)
-                                      ->where('is_patrolled', true);
-                                })
-                                ->orWhere(function($q) use ($userIp) {
-                                    $q->where('user_id', 0)
-                                      ->where('user_ip', $userIp)
-                                      ->where('created_at', '>=', now()->subMinutes(15));
-                                });
-                            })
-                            ->get();
-                        }
+                        $revisions = Revision::whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->get();
                     }
                     if (count($revisions) > 0) {
                         $users = User::all();
@@ -246,7 +191,7 @@ class RevisionController extends Controller
 
     //Показывает историю удалённой страницы
     //(требуются технические права)
-    public function show_deleted_hist(string $wikiName, string $articleName, Request $request) {
+    public function show_deleted_hist(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
@@ -260,41 +205,12 @@ class RevisionController extends Controller
                         $can_check_revisions = false;
                     }
                     if ($can_check_revisions) {
-                        $revisions = Revision::where('article_id', $article->id)
-                        ->whereNull('deleted_at')
-                        ->get();
+                        $revisions = Revision::all();
                     }
                     else {
-                        if ($user != null) {
-                            // Авторизованный пользователь видит: свои правки (даже неодобренные), отпатрулированные и одобренные правки
-                            $revisions = Revision::where('article_id', $article->id)
-                            ->whereNull('deleted_at')
-                            ->where(function($query) use ($user) {
-                                $query->where('is_approved', true)
-                                    ->orWhere(function($q) use ($user) {
-                                        $q->where('user_id', $user->id);
-                                    })
-                                    ->orWhere('is_patrolled', true);
-                            })
-                            ->get();
-                        } else {
-                            // Неавторизованный пользователь видит: отпатрулированные и одобренные правки, или свои анонимные правки (по IP) в течение 15 минут
-                            $userIp = $request->ip();
-                            $revisions = Revision::where('article_id', $article->id)
-                            ->whereNull('deleted_at')
-                            ->where(function($query) use ($userIp) {
-                                $query->where(function($q) {
-                                    $q->where('is_approved', true)
-                                      ->where('is_patrolled', true);
-                                })
-                                ->orWhere(function($q) use ($userIp) {
-                                    $q->where('user_id', 0)
-                                      ->where('user_ip', $userIp)
-                                      ->where('created_at', '>=', now()->subMinutes(15));
-                                });
-                            })
-                            ->get();
-                        }
+                        $revisions = Revision::whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->get();
                     }
                     if (count($revisions) > 0) {
                         $users = User::all();
