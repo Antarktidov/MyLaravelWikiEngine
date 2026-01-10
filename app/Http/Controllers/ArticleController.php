@@ -13,7 +13,7 @@ class ArticleController extends Controller
 {
     //Заглавная конкретной вики: список всех статей
     //(Аналог Служебная:Все страницы)
-    public function index(string $wikiName) {
+    public function index(string $wikiName, Request $request) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $user = auth()->user();
@@ -28,22 +28,46 @@ class ArticleController extends Controller
                 $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
             } else {
                 if ($user != null) {
-                    $articles = DB::table('articles')
-                    ->join('revisions', 'articles.id', '=', 'revisions.article_id')
-                    ->select('articles.*')
-                    ->where('articles.wiki_id', $wiki->id)
-                    ->whereNull('articles.deleted_at')
-                    ->where('revisions.is_approved', true)
-                    ->get();
+                    // Авторизованный пользователь видит статьи с одобренными правками, своими правками или отпатрулированными
+                    $articleIds = DB::table('revisions')
+                        ->select('article_id')
+                        ->whereNull('deleted_at')
+                        ->where(function($query) use ($user) {
+                            $query->where('is_approved', true)
+                                ->orWhere('user_id', $user->id)
+                                ->orWhere('is_patrolled', true);
+                        })
+                        ->distinct()
+                        ->pluck('article_id');
+                    
+                    $articles = Article::where('wiki_id', $wiki->id)
+                        ->whereNull('deleted_at')
+                        ->whereIn('id', $articleIds)
+                        ->get();
                 } else {
-                    $articles = DB::table('articles')
-                    ->join('revisions', 'articles.id', '=', 'revisions.article_id')
-                    ->select('articles.*')
-                    ->where('articles.wiki_id', $wiki->id)
-                    ->whereNull('articles.deleted_at')
-                    ->where('revisions.is_approved', true)
-                    ->where('revisions.is_patrolled', true)
-                    ->get();
+                    // Неавторизованный пользователь видит статьи с отпатрулированными и одобренными правками, или своими анонимными правками (по IP) в течение 15 минут
+                    $userIp = $request->ip();
+                    $articleIds = DB::table('revisions')
+                        ->select('article_id')
+                        ->whereNull('deleted_at')
+                        ->where(function($query) use ($userIp) {
+                            $query->where(function($q) {
+                                $q->where('is_approved', true)
+                                  ->where('is_patrolled', true);
+                            })
+                            ->orWhere(function($q) use ($userIp) {
+                                $q->where('user_id', 0)
+                                  ->where('user_ip', $userIp)
+                                  ->where('created_at', '>=', now()->subMinutes(15));
+                            });
+                        })
+                        ->distinct()
+                        ->pluck('article_id');
+                    
+                    $articles = Article::where('wiki_id', $wiki->id)
+                        ->whereNull('deleted_at')
+                        ->whereIn('id', $articleIds)
+                        ->get();
                 }
             }
 
@@ -55,7 +79,7 @@ class ArticleController extends Controller
     }
 
     //Показывает вики-страницу
-    public function show(string $wikiName, string $articleName) {
+    public function show(string $wikiName, string $articleName, Request $request) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         $user = auth()->user();
         if ($wiki) {
@@ -81,17 +105,33 @@ class ArticleController extends Controller
                         ->orderBy('id', 'desc')->first();
                     } else {
                         if ($user != null) {
+                            // Авторизованный пользователь видит: свои правки (даже неодобренные), отпатрулированные и одобренные правки
                             $revision = Revision::where('article_id', $article->id)
-                            //->where('deleted_at', '')
                             ->whereNull('deleted_at')
-                            ->where('is_approved', true)
+                            ->where(function($query) use ($user) {
+                                $query->where('is_approved', true)
+                                    ->orWhere(function($q) use ($user) {
+                                        $q->where('user_id', $user->id);
+                                    })
+                                    ->orWhere('is_patrolled', true);
+                            })
                             ->orderBy('id', 'desc')->first();
                         } else {
+                            // Неавторизованный пользователь видит: отпатрулированные и одобренные правки, или свои анонимные правки (по IP) в течение 15 минут
+                            $userIp = $request->ip();
                             $revision = Revision::where('article_id', $article->id)
-                            //->where('deleted_at', '')
                             ->whereNull('deleted_at')
-                            ->where('is_approved', true)
-                            ->where('is_patrolled', true)
+                            ->where(function($query) use ($userIp) {
+                                $query->where(function($q) {
+                                    $q->where('is_approved', true)
+                                      ->where('is_patrolled', true);
+                                })
+                                ->orWhere(function($q) use ($userIp) {
+                                    $q->where('user_id', 0)
+                                      ->where('user_ip', $userIp)
+                                      ->where('created_at', '>=', now()->subMinutes(15));
+                                });
+                            })
                             ->orderBy('id', 'desc')->first();
                         }
                     }
@@ -186,7 +226,7 @@ class ArticleController extends Controller
     }
 
     //Форма правки статьи
-    public function edit(string $wikiName, string $articleName) {
+    public function edit(string $wikiName, string $articleName, Request $request) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
@@ -208,11 +248,38 @@ class ArticleController extends Controller
                         ->orderBy('id', 'desc')
                         ->first();
                     } else {
-                        $revision = Revision::where('article_id', $article->id)
-                        ->whereNull('deleted_at')
-                        ->where('is_approved', true)
-                        ->orderBy('id', 'desc')
-                        ->first();
+                        if ($user != null) {
+                            // Авторизованный пользователь видит: свои правки (даже неодобренные), отпатрулированные и одобренные правки
+                            $revision = Revision::where('article_id', $article->id)
+                            ->whereNull('deleted_at')
+                            ->where(function($query) use ($user) {
+                                $query->where('is_approved', true)
+                                    ->orWhere(function($q) use ($user) {
+                                        $q->where('user_id', $user->id);
+                                    })
+                                    ->orWhere('is_patrolled', true);
+                            })
+                            ->orderBy('id', 'desc')
+                            ->first();
+                        } else {
+                            // Неавторизованный пользователь видит: отпатрулированные и одобренные правки, или свои анонимные правки (по IP) в течение 15 минут
+                            $userIp = $request->ip();
+                            $revision = Revision::where('article_id', $article->id)
+                            ->whereNull('deleted_at')
+                            ->where(function($query) use ($userIp) {
+                                $query->where(function($q) {
+                                    $q->where('is_approved', true)
+                                      ->where('is_patrolled', true);
+                                })
+                                ->orWhere(function($q) use ($userIp) {
+                                    $q->where('user_id', 0)
+                                      ->where('user_ip', $userIp)
+                                      ->where('created_at', '>=', now()->subMinutes(15));
+                                });
+                            })
+                            ->orderBy('id', 'desc')
+                            ->first();
+                        }
                     }
 
                     if ($revision) {
@@ -329,7 +396,7 @@ class ArticleController extends Controller
 
     //Список удалённых статей
     //(требуются технические права)
-    public function trash(string $wikiName) {
+    public function trash(string $wikiName, Request $request) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
             $user = auth()->user();
@@ -342,13 +409,48 @@ class ArticleController extends Controller
             if ($can_check_revisions) {
                 $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
             } else {
-                $articles = DB::table('articles')
-                ->join('revisions', 'articles.id', '=', 'revisions.article_id')
-                ->select('articles.*')
-                ->where('articles.wiki_id', $wiki->id)
-                ->whereNotNull('articles.deleted_at')
-                ->where('revisions.is_approved', true)
-                ->get();
+                if ($user != null) {
+                    // Авторизованный пользователь видит удаленные статьи с одобренными правками, своими правками или отпатрулированными
+                    $articleIds = DB::table('revisions')
+                        ->select('article_id')
+                        ->whereNull('deleted_at')
+                        ->where(function($query) use ($user) {
+                            $query->where('is_approved', true)
+                                ->orWhere('user_id', $user->id)
+                                ->orWhere('is_patrolled', true);
+                        })
+                        ->distinct()
+                        ->pluck('article_id');
+                    
+                    $articles = Article::onlyTrashed()
+                        ->where('wiki_id', $wiki->id)
+                        ->whereIn('id', $articleIds)
+                        ->get();
+                } else {
+                    // Неавторизованный пользователь видит удаленные статьи с отпатрулированными и одобренными правками, или своими анонимными правками (по IP) в течение 15 минут
+                    $userIp = $request->ip();
+                    $articleIds = DB::table('revisions')
+                        ->select('article_id')
+                        ->whereNull('deleted_at')
+                        ->where(function($query) use ($userIp) {
+                            $query->where(function($q) {
+                                $q->where('is_approved', true)
+                                  ->where('is_patrolled', true);
+                            })
+                            ->orWhere(function($q) use ($userIp) {
+                                $q->where('user_id', 0)
+                                  ->where('user_ip', $userIp)
+                                  ->where('created_at', '>=', now()->subMinutes(15));
+                            });
+                        })
+                        ->distinct()
+                        ->pluck('article_id');
+                    
+                    $articles = Article::onlyTrashed()
+                        ->where('wiki_id', $wiki->id)
+                        ->whereIn('id', $articleIds)
+                        ->get();
+                }
             }
 
             return view('trash', compact('articles', 'wiki'));
@@ -360,7 +462,7 @@ class ArticleController extends Controller
 
     //Просмотр удалённой статьи
     //(требуются технические права)
-    public function show_deleted(string $wikiName, string $articleName) {
+    public function show_deleted(string $wikiName, string $articleName, Request $request) {
         $wiki = Wiki::where('url', $wikiName)->first();
         if ($wiki) {
             $user = auth()->user();
@@ -382,11 +484,38 @@ class ArticleController extends Controller
                         ->orderBy('id', 'desc')
                         ->first();
                     } else {
-                        $revision = Revision::where('article_id', $article->id)
-                        ->whereNull('deleted_at')
-                        ->where('is_approved', true)
-                        ->orderBy('id', 'desc')
-                        ->first();
+                        if ($user != null) {
+                            // Авторизованный пользователь видит: свои правки (даже неодобренные), отпатрулированные и одобренные правки
+                            $revision = Revision::where('article_id', $article->id)
+                            ->whereNull('deleted_at')
+                            ->where(function($query) use ($user) {
+                                $query->where('is_approved', true)
+                                    ->orWhere(function($q) use ($user) {
+                                        $q->where('user_id', $user->id);
+                                    })
+                                    ->orWhere('is_patrolled', true);
+                            })
+                            ->orderBy('id', 'desc')
+                            ->first();
+                        } else {
+                            // Неавторизованный пользователь видит: отпатрулированные и одобренные правки, или свои анонимные правки (по IP) в течение 15 минут
+                            $userIp = $request->ip();
+                            $revision = Revision::where('article_id', $article->id)
+                            ->whereNull('deleted_at')
+                            ->where(function($query) use ($userIp) {
+                                $query->where(function($q) {
+                                    $q->where('is_approved', true)
+                                      ->where('is_patrolled', true);
+                                })
+                                ->orWhere(function($q) use ($userIp) {
+                                    $q->where('user_id', 0)
+                                      ->where('user_ip', $userIp)
+                                      ->where('created_at', '>=', now()->subMinutes(15));
+                                });
+                            })
+                            ->orderBy('id', 'desc')
+                            ->first();
+                        }
                     }
 
                     if ($revision) {
