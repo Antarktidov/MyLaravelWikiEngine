@@ -50,6 +50,15 @@ class DatabaseSeeder extends Seeder
             'can_delete_comments' => 1,
         ]);
 
+        //Approver-global
+        UserGroup::create([
+            'name' => 'approver-global',
+            'is_global' => 1,
+            'can_check_revisions' => 1,
+            'can_check_comments' => 1,
+            'can_check_images' => 1,
+        ]);
+
         //Creating local user groups
         //Admin    
         UserGroup::create([
@@ -71,6 +80,21 @@ class DatabaseSeeder extends Seeder
             'can_manage_global_userrights' => 0,
             'can_delete_commons_images' => 0,
             'can_delete_comments' => 1,
+        ]);
+
+        //Approver
+        UserGroup::create([
+            'name' => 'approver',
+            'is_global' => 0,
+            'can_check_revisions' => 1,
+            'can_check_comments' => 1,
+        ]);
+
+        //Patroller
+        UserGroup::create([
+            'name' => 'patroller',
+            'is_global' => 0,
+            'can_patrol_revisions' => 1,
         ]);
 
         //Creating your first wiki

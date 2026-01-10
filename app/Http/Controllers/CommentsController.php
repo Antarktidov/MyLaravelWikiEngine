@@ -30,16 +30,40 @@ class CommentsController extends Controller
 
                     $output_comments = [];
 
+                    $user = auth()->user();
+                    if ($wiki) {
+                        if ($user != null) {
+                            $check_comments = $user->can('check_comments', $wiki->url);
+                        } else {
+                            $check_comments = false;
+                        }
+                    }
+
                     foreach ($comments as $comment) {
                         $user = User::find($comment->user_id);
                         $user_name = $user ? $user->name : __('Anonymous user');
 
-                        $comment_revision = CommentRevision::where('comment_id', $comment->id)
+
+                        if ($check_comments) {
+                            $comment_revision = CommentRevision::where('comment_id', $comment->id)
                             ->whereNull('deleted_at')
                             ->orderBy('id', 'desc')
                             ->first();
+                        } else {
+                            $comment_revision = CommentRevision::where('comment_id', $comment->id)
+                            ->whereNull('deleted_at')
+                            ->orderBy('id', 'desc')
+                            ->where('is_approved', true)
+                            ->first();
+                        }
 
                         $content = $comment_revision ? $comment_revision->content : null;
+
+                        $is_approved = $comment_revision ? $comment_revision->is_approved : null;
+
+                        if ($content == null) {
+                            continue;
+                        }
 
                         $output_comments[] = [
                             'id' => $comment->id,
@@ -50,6 +74,7 @@ class CommentsController extends Controller
                                 'html_input' => 'strip',
                             ]),
                             'markdown_content' => $content,
+                            'is_approved' => $is_approved,
                         ];
                     }
 
@@ -166,4 +191,34 @@ class CommentsController extends Controller
             return response()->json(['error' => 'Wiki not found'], 404);
         }
     }
+
+    public function approve(string $wikiName, string $articleName, Comment $comment, Request $request) {
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+
+        if ($wiki) {
+            $article = Article::where('wiki_id', $wiki->id)
+            ->where('url_title', $articleName)
+            ->whereNull('deleted_at')
+            ->first();
+
+            if ($article) {
+                $user = auth()->user();
+                    $comment_revision = CommentRevision::where('comment_id', $comment->id)
+                    ->whereNull('deleted_at')
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                    $comment_revision->update([
+                        'is_approved' => true,
+                    ]);
+
+                    return response()->json(['message' => 'success']);
+                } else {
+                return response()->json(['error' => 'Article not found'], 404);
+            }
+                
+            } else {
+                return response()->json(['error' => 'Wiki not found'], 404);
+            }
+        }
 }

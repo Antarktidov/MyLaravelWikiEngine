@@ -71,7 +71,7 @@
     "( Let's create) new wiki": " вашу первую вики.",
 
     "Deleted pages": "Список всех удалённых статей на вики",
-    "There is no deleted articles on this wiki" :"На данной вики удалённых нет статей.",
+    "There is no deleted articles on this wiki" :"На данной вики нет удалённых статей.",
 
     "Upload image": "Загрузить изображение",
 
@@ -107,5 +107,7 @@
     "New comment": "Новый комментарий",
     "Enter new comment": "Введите комментарий",
     "No comments yet.": "Пока нет комментариев.",
-    "Just now": "Только что"
+    "Just now": "Только что",
+
+    "Approve": "Одобрить"
 }

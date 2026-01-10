@@ -25,6 +25,13 @@ use App\Http\Middleware\DeleteImagesMiddleware;
 
 use App\Http\Middleware\DeleteCommentsMiddleware;
 
+
+//Approve and patrol feature middlewares
+use App\Http\Middleware\ApproveRevisionMiddleware;
+use App\Http\Middleware\PatrolRevisionMiddleware;
+use App\Http\Middleware\ApproveCommentMiddleware;
+use App\Http\Middleware\ApproveImageMiddleware;
+
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
 Route::get('/create-wiki', [WikisController::class,'create'])->name('wikis.create')
@@ -56,6 +63,12 @@ Route::post('/commons/store', [ImageController::class,'store'])->name('images.st
 Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
 Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
 ->middleware(DeleteImagesMiddleware::class);
+Route::get('/private-images/{filename}', [ImageController::class, 'show_private'])->name('private.image')
+->middleware(ApproveImageMiddleware::class);
+Route::get('/approvers_commons', [ImageController::class,'approvers_index'])->name('images.approvers_gallery')
+->middleware(ApproveImageMiddleware::class);
+Route::post('/commons/approve/{image}', [ImageController::class,'approve'])->name('images.approve')
+->middleware(ApproveImageMiddleware::class);
 
 //Работа со статьями на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
@@ -87,6 +100,12 @@ Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionCo
 Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionController::class,'restore'])->name('revision.restore')
 ->middleware(RestoreRevisionMiddleware::class);
 Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
+Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/approve', [RevisionController::class,'approve'])->name('revision.approve')
+->middleware(ApproveRevisionMiddleware::class);
+Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/patrol', [RevisionController::class,'patrol'])->name('revision.patrol')
+->middleware(PatrolRevisionMiddleware::class);
+Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/depatrol', [RevisionController::class,'depatrol'])->name('revision.depatrol')
+->middleware(PatrolRevisionMiddleware::class);
 
 //Работа с комментариями под статьями
 Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');
@@ -94,6 +113,9 @@ Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [Commen
 Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
 ->middleware(DeleteCommentsMiddleware::class)
 ->name('comments.delete');
+Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/approve', [CommentsController::class,'approve'])
+->middleware(ApproveCommentMiddleware::class)
+->name('comments.approve');
 Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
 ->name('comments.update');
 //Логин, регистрация

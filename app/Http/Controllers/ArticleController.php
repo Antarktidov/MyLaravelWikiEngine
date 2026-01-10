@@ -7,6 +7,7 @@ use App\Models\Revision;
 use App\Models\Wiki;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
@@ -15,7 +16,38 @@ class ArticleController extends Controller
     public function index(string $wikiName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
-            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
+            $user = auth()->user();
+            if ($wiki) {
+                if ($user != null) {
+                    $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                    $userCanApproveComments = $user->can('check_comments', $wiki->url);
+                } else {
+                    $can_check_revisions = false;
+                    $userCanApproveComments = false;
+                }
+            }
+            if ($can_check_revisions) {
+                $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
+            } else {
+                if ($user != null) {
+                    $articles = DB::table('articles')
+                    ->join('revisions', 'articles.id', '=', 'revisions.article_id')
+                    ->select('articles.*')
+                    ->where('articles.wiki_id', $wiki->id)
+                    ->whereNull('articles.deleted_at')
+                    ->where('revisions.is_approved', true)
+                    ->get();
+                } else {
+                    $articles = DB::table('articles')
+                    ->join('revisions', 'articles.id', '=', 'revisions.article_id')
+                    ->select('articles.*')
+                    ->where('articles.wiki_id', $wiki->id)
+                    ->whereNull('articles.deleted_at')
+                    ->where('revisions.is_approved', true)
+                    ->where('revisions.is_patrolled', true)
+                    ->get();
+                }
+            }
 
             return view('show-all-articles', compact('articles', 'wiki'));
         } else {
@@ -27,19 +59,48 @@ class ArticleController extends Controller
     //Показывает вики-страницу
     public function show(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+        $user = auth()->user();
         if ($wiki) {
+            if ($user != null) {
+                $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                $userCanApproveComments = $user->can('check_comments', $wiki->url);
+            } else {
+                $can_check_revisions = false;
+                $userCanApproveComments = false;
+            }
+
+            //dd($can_check_revisions);
+
             $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
 
             if($articles) {
                 $article = $articles->where('url_title', $articleName)->first();
 
                 if($article) {
-                    $revision = Revision::where('article_id', $article->id)
-                    //->where('deleted_at', '')
-                    ->whereNull('deleted_at')
-                    ->orderBy('id', 'desc')->first();
+
+                    if ($can_check_revisions) {
+                        $revision = Revision::where('article_id', $article->id)
+                        //->where('deleted_at', '')
+                        ->whereNull('deleted_at')
+                        ->orderBy('id', 'desc')->first();
+                    } else {
+                        if ($user != null) {
+                            $revision = Revision::where('article_id', $article->id)
+                            //->where('deleted_at', '')
+                            ->whereNull('deleted_at')
+                            ->where('is_approved', true)
+                            ->orderBy('id', 'desc')->first();
+                        } else {
+                            $revision = Revision::where('article_id', $article->id)
+                            //->where('deleted_at', '')
+                            ->whereNull('deleted_at')
+                            ->where('is_approved', true)
+                            ->where('is_patrolled', true)
+                            ->orderBy('id', 'desc')->first();
+                        }
+                    }
                     
-                    $user = auth()->user();
+                    //$user = auth()->user();
 
                     if ($user != null) {
                         $userId = $user->id;
@@ -53,9 +114,10 @@ class ArticleController extends Controller
 
                     if ($revision) {
                         return view('article', compact('revision', 'wiki', 'article',
-                        'userId', 'userName', 'userCanDeleteComments'));
+                        'userId', 'userName', 'userCanDeleteComments',
+                        'userCanApproveComments'));
                     } else {
-                        return response(__('All edits of this article are hidden'), 404)
+                        return response(__('Article does not exist'), 404)
                             ->header('Content-Type', 'text/plain');
                     }
                 }
@@ -136,8 +198,34 @@ class ArticleController extends Controller
             if ($articles) {
                 $article = $articles->where('url_title', $articleName)->first();
                 if ($article) {
-                    $revision = Revision::where('article_id', $article->id)->whereNull('deleted_at')->orderBy('id', 'desc')->first();
-                    return view('edit', compact('article', 'revision', 'wiki'));
+
+                    $user = auth()->user();
+
+                    if ($user != null) {
+                        $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                    } else {
+                        $can_check_revisions = false;
+                    }
+
+                    if ($can_check_revisions) {
+                        $revision = Revision::where('article_id', $article->id)
+                        ->whereNull('deleted_at')
+                        ->orderBy('id', 'desc')
+                        ->first();
+                    } else {
+                        $revision = Revision::where('article_id', $article->id)
+                        ->whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->orderBy('id', 'desc')
+                        ->first();
+                    }
+
+                    if ($revision) {
+                        return view('edit', compact('article', 'revision', 'wiki'));
+                    } else {
+                        return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
+                    }
                 } else {
                     return response(__('Article does not exist'), 404)
                         ->header('Content-Type', 'text/plain');
@@ -249,7 +337,24 @@ class ArticleController extends Controller
     public function trash(string $wikiName) {
         $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
         if ($wiki) {
-            $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
+            $user = auth()->user();
+            if ($user != null) {
+                $can_check_revisions = $user->can('check_revisions', $wiki->url);
+            } else {
+                $can_check_revisions = false;
+            }
+
+            if ($can_check_revisions) {
+                $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
+            } else {
+                $articles = DB::table('articles')
+                ->join('revisions', 'articles.id', '=', 'revisions.article_id')
+                ->select('articles.*')
+                ->where('articles.wiki_id', $wiki->id)
+                ->whereNotNull('articles.deleted_at')
+                ->where('revisions.is_approved', true)
+                ->get();
+            }
 
             return view('trash', compact('articles', 'wiki'));
         } else {
@@ -263,14 +368,40 @@ class ArticleController extends Controller
     public function show_deleted(string $wikiName, string $articleName) {
         $wiki = Wiki::where('url', $wikiName)->first();
         if ($wiki) {
+            $user = auth()->user();
+            if ($user != null) {
+                $can_check_revisions = $user->can('check_revisions', $wiki->url);
+            } else {
+                $can_check_revisions = false;
+            }
             $articles = Article::onlyTrashed()->where('wiki_id', $wiki->id)->get();
 
             if($articles) {
                 $article = $articles->where('url_title', $articleName)->first();
 
                 if($article) {
-                    $revision = Revision::where('article_id', $article->id)->whereNull('deleted_at')->orderBy('id', 'desc')->first();
-                    return view('deleted-article', compact('revision', 'wiki', 'article'));
+
+                    if ($can_check_revisions) {
+                        $revision = Revision::where('article_id', $article->id)
+                        ->whereNull('deleted_at')
+                        ->orderBy('id', 'desc')
+                        ->first();
+                    } else {
+                        $revision = Revision::where('article_id', $article->id)
+                        ->whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->orderBy('id', 'desc')
+                        ->first();
+                    }
+
+                    if ($revision) {
+                        return view('deleted-article', compact('revision', 'wiki', 'article'));
+                    }
+
+                    else {
+                        return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
+                    }
                 }
                  else {
                     return response(__('Article does not exist'), 404)

@@ -13,6 +13,7 @@ if (el) {
             userId: el.dataset.userId,
             userName: el.dataset.userName,
             userCanDeleteComments: el.dataset.userCanDeleteComments,
+            userCanApproveComments: el.dataset.userCanApproveComments,
         }
     })
 }

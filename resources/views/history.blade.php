@@ -63,20 +63,29 @@
             @endcan
             @can('check_revisions', $wiki->url)
             <th scope="row">
-              <form action="" method="post">
+              @if ($revision->is_approved)
+                <div class="btn btn-outline-success">Правка одобрена</button>
+              @else
+              <form action="{{ route('revision.approve', [$wiki->url, $article->url_title, $revision->id]) }}" method="post">
                 @csrf
-                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-success" type="submit">Одобрить правку</button>
-            </form>
+              </form>
+              @endif
             </th>
             @endcan
             @can('patrol_revisions', $wiki->url)
             <th scope="row">
-              <form action="" method="post">
+              @if ($revision->is_patrolled)
+              <form action="{{ route('revision.depatrol', [$wiki->url, $article->url_title, $revision->id]) }}" method="post">
                 @csrf
-                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
+                <button class="btn btn-info" type="submit">Распатрулировать правку</button>
+              </form>
+              @else
+              <form action="{{ route('revision.patrol', [$wiki->url, $article->url_title, $revision->id]) }}" method="post">
+                @csrf
                 <button class="btn btn-info" type="submit">Отпратрулировать правку</button>
-            </form>
+              </form>
+              @endif
             </th>
             @endcan
             @can('revert_edits_to_old_version', $wiki->url)
