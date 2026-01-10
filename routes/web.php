@@ -28,6 +28,7 @@ use App\Http\Middleware\DeleteCommentsMiddleware;
 
 //Approve feature middlewares
 use App\Http\Middleware\ApproveRevisionMiddleware;
+use App\Http\Middleware\PatrolRevisionMiddleware;
 
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
@@ -93,6 +94,10 @@ Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionCont
 Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
 Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/approve', [RevisionController::class,'approve'])->name('revision.approve')
 ->middleware(ApproveRevisionMiddleware::class);
+Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/patrol', [RevisionController::class,'patrol'])->name('revision.patrol')
+->middleware(PatrolRevisionMiddleware::class);
+Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/depatrol', [RevisionController::class,'depatrol'])->name('revision.depatrol')
+->middleware(PatrolRevisionMiddleware::class);
 
 //Работа с комментариями под статьями
 Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');

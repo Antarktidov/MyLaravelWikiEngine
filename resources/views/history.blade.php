@@ -76,15 +76,13 @@
             @can('patrol_revisions', $wiki->url)
             <th scope="row">
               @if ($revision->is_patrolled)
-              <form action="" method="post">
+              <form action="{{ route('revision.depatrol', [$wiki->url, $article->url_title, $revision->id]) }}" method="post">
                 @csrf
-                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-info" type="submit">Распатрулировать правку</button>
               </form>
               @else
-              <form action="" method="post">
+              <form action="{{ route('revision.patrol', [$wiki->url, $article->url_title, $revision->id]) }}" method="post">
                 @csrf
-                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-info" type="submit">Отпратрулировать правку</button>
               </form>
               @endif

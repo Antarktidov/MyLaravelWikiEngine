@@ -292,4 +292,77 @@ class RevisionController extends Controller
         }
     }
     
+    //Патрулируем правку
+    public function patrol(string $wikiName, string $articleName, int $revisionId) {
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+        if ($wiki) {
+            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
+            if ($articles) {
+                $my_article = $articles->where('url_title', $articleName)->first();
+                if ($my_article) {
+                    $revisions = Revision::where('article_id', $my_article->id)
+                    ->whereNull('deleted_at')
+                    ->get();
+                    if ($revisions) {
+                        $my_revision = $revisions->where('id', $revisionId)->first();
+                        $my_revision->update([
+                            'is_patrolled' => true,
+                        ]);
+                        return response(__('The edit has been patrolled'), 200)
+                            ->header('Content-Type', 'text/plain');
+                    } else {
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
+                    }
+                }   else {
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
+                }
+            } else {
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
+            }
+
+        } else {
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
+        }
+    }
+
+    //Распатрулируем правку
+    public function depatrol(string $wikiName, string $articleName, int $revisionId) {
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+        if ($wiki) {
+            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
+            if ($articles) {
+                $my_article = $articles->where('url_title', $articleName)->first();
+                if ($my_article) {
+                    $revisions = Revision::where('article_id', $my_article->id)
+                    ->whereNull('deleted_at')
+                    ->get();
+                    if ($revisions) {
+                        $my_revision = $revisions->where('id', $revisionId)->first();
+                        $my_revision->update([
+                            'is_patrolled' => false,
+                        ]);
+                        return response(__('The edit has been depatrolled'), 200)
+                            ->header('Content-Type', 'text/plain');
+                    } else {
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
+                    }
+                }   else {
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
+                }
+            } else {
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
+            }
+
+        } else {
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
+        }
+    }
 }
