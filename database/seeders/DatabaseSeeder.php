@@ -50,6 +50,15 @@ class DatabaseSeeder extends Seeder
             'can_delete_comments' => 1,
         ]);
 
+        //Approver-global
+        UserGroup::create([
+            'name' => 'approver-global',
+            'is_global' => 1,
+            'can_check_revisions' => 1,
+            'can_check_comments' => 1,
+            'can_check_images' => 1,
+        ]);
+
         //Creating local user groups
         //Admin    
         UserGroup::create([

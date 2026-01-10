@@ -7,6 +7,8 @@ use App\Models\Wiki;
 use App\Models\Image;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Storage;
+
 class ImageController extends Controller
 {
     //Форма загрузки изображения
@@ -17,7 +19,7 @@ class ImageController extends Controller
     //POST-ручка для формы загрузки страницы
     public function store(Request $request) {
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('images', 'public');
+            $path = $request->file('image')->store('images', 'private');
             $filename = str_replace("images/","",$path);
 
             $data['filename'] = $filename;
@@ -35,10 +37,22 @@ class ImageController extends Controller
 
     //Заглавная страница викисклада - галерея
     public function index() {
-        $images = Image::Paginate(10);
+        $images = Image::where('is_approved', true)
+        ->whereNull('deleted_at')
+        ->Paginate(10);
         $wiki = Wiki::withTrashed()->first();
 
         return view('gallery', compact('images', 'wiki'));
+    }
+
+    //Страница для проверки загруженных изображений
+    public function approvers_index() {
+        $images = Image::where('is_approved', false)
+        ->whereNull('deleted_at')
+        ->Paginate(10);
+        $wiki = Wiki::withTrashed()->first();
+
+        return view('approvers_gallery', compact('images', 'wiki'));
     }
 
     //DELETE-ручка для изображения
@@ -61,5 +75,39 @@ class ImageController extends Controller
 
         $image->delete();
         return $response;
+    }
+
+    public function show_private($filename)
+    {
+    
+    $path = storage_path('app/private/images/' . $filename);
+    
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    
+        return response()->file($path);
+    }
+
+    public function approve(Image $image) {
+
+        $filename = $image->filename;
+
+        $privatePath = 'images/' . $filename;
+        $publicPath = 'public/images/' . $filename;
+        
+        if (!Storage::disk('private')->exists($privatePath)) {
+            return false;
+        }
+        
+        $fileContents = Storage::disk('private')->get($privatePath);
+        Storage::disk('public')->put($publicPath, $fileContents);
+        Storage::disk('private')->delete($privatePath);
+
+        $image->update(
+            ['is_approved' => true]
+        );
+        
+        return true;
     }
 }

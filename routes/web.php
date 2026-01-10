@@ -30,6 +30,7 @@ use App\Http\Middleware\DeleteCommentsMiddleware;
 use App\Http\Middleware\ApproveRevisionMiddleware;
 use App\Http\Middleware\PatrolRevisionMiddleware;
 use App\Http\Middleware\ApproveCommentMiddleware;
+use App\Http\Middleware\ApproveImageMiddleware;
 
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
@@ -62,6 +63,12 @@ Route::post('/commons/store', [ImageController::class,'store'])->name('images.st
 Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
 Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
 ->middleware(DeleteImagesMiddleware::class);
+Route::get('/private-images/{filename}', [ImageController::class, 'show_private'])->name('private.image')
+->middleware(ApproveImageMiddleware::class);
+Route::get('/approvers_commons', [ImageController::class,'approvers_index'])->name('images.approvers_gallery')
+->middleware(ApproveImageMiddleware::class);
+Route::post('/commons/approve/{image}', [ImageController::class,'approve'])->name('images.approve')
+->middleware(ApproveImageMiddleware::class);
 
 //Работа со статьями на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
