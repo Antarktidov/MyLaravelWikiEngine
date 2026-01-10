@@ -1,7 +1,7 @@
 <script>
   import MarkdownIt from 'markdown-it';
-  let { wikiName, articleName, userId, userName, userCanDeleteComments } = $props();
-
+  let { wikiName, articleName, userId, userName, userCanDeleteComments, userCanApproveComments } = $props();
+//data-user-can-approve-comments
   let comments = $state([]);
   let new_comment = $state('');
   let edited_comment = $state('');
@@ -26,7 +26,7 @@
   const md = new MarkdownIt();
 
 
-  console.log('Пропсы:', wikiName, articleName, userId, userName, userCanDeleteComments);
+  console.log('Пропсы:', wikiName, articleName, userId, userName, userCanDeleteComments, userCanApproveComments);
 
   async function loadComments(page = 1) {
     const res = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments?page=${page}`);
@@ -34,6 +34,8 @@
     comments = json.data;
     meta = json.meta;
     currentPage = meta.current_page;
+    console.log(comments);
+    console.log('userCanApproveComments', userCanApproveComments);
   }
   loadComments();
 
@@ -75,6 +77,18 @@
     },
     });
     comments = comments.filter(comment => comment.id !== commentId);
+    console.log(response);
+  }
+
+  async function approveComment(commentId) {
+    console.log('Approve btn pressed');
+    let response = await fetch(`/api/wiki/${wikiName}/article/${articleName}/comments/${commentId}/approve`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+      'X-CSRF-TOKEN': csrf_token,
+      },
+    });
     console.log(response);
   }
 
@@ -175,6 +189,13 @@
               {#if userCanDeleteComments}
                <span>
                 <button onclick={() => deleteComment(comment.id)} class="btn btn-danger">{__('Delete')}</button>
+              </span>
+              {/if}
+            </span>
+            <span>
+              {#if userCanApproveComments && !comment.is_approved}
+               <span>
+                <button onclick={() => approveComment(comment.id)} class="btn btn-success">{__('Approve')}</button>
               </span>
               {/if}
             </span>

@@ -26,9 +26,10 @@ use App\Http\Middleware\DeleteImagesMiddleware;
 use App\Http\Middleware\DeleteCommentsMiddleware;
 
 
-//Approve feature middlewares
+//Approve and patrol feature middlewares
 use App\Http\Middleware\ApproveRevisionMiddleware;
 use App\Http\Middleware\PatrolRevisionMiddleware;
+use App\Http\Middleware\ApproveCommentMiddleware;
 
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
@@ -105,6 +106,9 @@ Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [Commen
 Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
 ->middleware(DeleteCommentsMiddleware::class)
 ->name('comments.delete');
+Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/approve', [CommentsController::class,'approve'])
+->middleware(ApproveCommentMiddleware::class)
+->name('comments.approve');
 Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
 ->name('comments.update');
 //Логин, регистрация

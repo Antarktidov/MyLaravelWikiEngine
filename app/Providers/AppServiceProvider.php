@@ -92,6 +92,10 @@ public function boot(): void
     Gate::define('patrol_revisions', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_patrol_revisions');
     });
+
+    Gate::define('check_comments', function ($user, $wikiName) {
+        return PermissionChecker::check($user, $wikiName, 'can_check_comments');
+    });
     
     /*Gate::define('revert_edits_to_old_version', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_revert_edits_to_old_version');

@@ -78,6 +78,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'approver',
             'is_global' => 0,
             'can_check_revisions' => 1,
+            'can_check_comments' => 1,
         ]);
 
         //Patroller

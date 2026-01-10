@@ -20,8 +20,10 @@ class ArticleController extends Controller
             if ($wiki) {
                 if ($user != null) {
                     $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                    $userCanApproveComments = $user->can('check_comments', $wiki->url);
                 } else {
                     $can_check_revisions = false;
+                    $userCanApproveComments = false;
                 }
             }
             if ($can_check_revisions) {
@@ -61,8 +63,10 @@ class ArticleController extends Controller
         if ($wiki) {
             if ($user != null) {
                 $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                $userCanApproveComments = $user->can('check_comments', $wiki->url);
             } else {
                 $can_check_revisions = false;
+                $userCanApproveComments = false;
             }
 
             //dd($can_check_revisions);
@@ -110,7 +114,8 @@ class ArticleController extends Controller
 
                     if ($revision) {
                         return view('article', compact('revision', 'wiki', 'article',
-                        'userId', 'userName', 'userCanDeleteComments'));
+                        'userId', 'userName', 'userCanDeleteComments',
+                        'userCanApproveComments'));
                     } else {
                         return response(__('Article does not exist'), 404)
                             ->header('Content-Type', 'text/plain');

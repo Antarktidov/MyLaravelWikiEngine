@@ -26,6 +26,7 @@
          data-user-id="{{ $userId }}"
          data-user-name="{{ $userName }}"
          data-user-can-delete-comments="{{ $userCanDeleteComments }}"
+         data-user-can-approve-comments="{{ $userCanApproveComments }}"
          >
     </div>
 @endsection
