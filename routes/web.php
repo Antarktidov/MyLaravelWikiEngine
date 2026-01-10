@@ -25,6 +25,10 @@ use App\Http\Middleware\DeleteImagesMiddleware;
 
 use App\Http\Middleware\DeleteCommentsMiddleware;
 
+
+//Approve feature middlewares
+use App\Http\Middleware\ApproveRevisionMiddleware;
+
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
 Route::get('/create-wiki', [WikisController::class,'create'])->name('wikis.create')
@@ -87,6 +91,8 @@ Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionCo
 Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionController::class,'restore'])->name('revision.restore')
 ->middleware(RestoreRevisionMiddleware::class);
 Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
+Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/approve', [RevisionController::class,'approve'])->name('revision.approve')
+->middleware(ApproveRevisionMiddleware::class);
 
 //Работа с комментариями под статьями
 Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');

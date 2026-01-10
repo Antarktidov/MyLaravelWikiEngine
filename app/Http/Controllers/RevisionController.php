@@ -254,4 +254,42 @@ class RevisionController extends Controller
                 ->header('Content-Type', 'text/plain');
         }
     }
+
+    //Одобряем правку
+    public function approve(string $wikiName, string $articleName, int $revisionId) {
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+        if ($wiki) {
+            $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
+            if ($articles) {
+                $my_article = $articles->where('url_title', $articleName)->first();
+                if ($my_article) {
+                    $revisions = Revision::where('article_id', $my_article->id)
+                    ->whereNull('deleted_at')
+                    ->get();
+                    if ($revisions) {
+                        $my_revision = $revisions->where('id', $revisionId)->first();
+                        $my_revision->update([
+                            'is_approved' => true,
+                        ]);
+                        return response(__('The edit has been approved'), 200)
+                            ->header('Content-Type', 'text/plain');
+                    } else {
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
+                    }
+                }   else {
+                        return response(__('Error'), 500)
+                            ->header('Content-Type', 'text/plain');
+                }
+            } else {
+                return response(__('Error'), 500)
+                    ->header('Content-Type', 'text/plain');
+            }
+
+        } else {
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
+        }
+    }
+    
 }

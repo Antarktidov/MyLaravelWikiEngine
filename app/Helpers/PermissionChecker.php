@@ -31,21 +31,25 @@ class PermissionChecker
         if ($wiki) {
             //получаем права на вики
             $user_user_group_wiki = self::getUserGroupWiki($user, $wiki);
+            //dd($user_user_group_wiki);
         } else {
             //получаем права вне вики (для управления вики-фермой)
             $user_user_group_wiki = self::getUserGroup($user);
         }
 
         $user_groups = UserGroup::all();//получаем все группы
+        //dd($user_groups);
 
         /**
-         * Ищем, где сущесвующая группа (на вики или глобально) совпадает с
+         * Ищем, где существующая группа (на вики или глобально) совпадает с
          * группой участника.
          */
         foreach ($user_user_group_wiki as $user_user_group_wiki_foreach) {
             foreach ($user_groups as $user_group) {
                 if ($user_user_group_wiki_foreach->user_group_id === $user_group->id) {
+                    //dump($user_group->can_check_revisions);
                     if ($user_group->$permission === 1) {
+                        //exit(-1);
                         return true;
                         /**
                          * Если у группы, которой владеет участник,
@@ -55,6 +59,7 @@ class PermissionChecker
                 }
             }
         }
+        //exit(-1);
         return false;//... в противном случае он его не имеет
     }
 
@@ -76,6 +81,7 @@ class PermissionChecker
                 $user_user_group_wiki = self::getUserGroup($user);
             }
                 $user_groups = UserGroup::all();//получаем все группы
+                //dd($user_groups);
 
                 /**
                  * Ищем, где сущесвующая группа (на вики или глобально) совпадает с
@@ -85,7 +91,9 @@ class PermissionChecker
                     foreach ($user_groups as $user_group) {
 
                         if ($user_user_group_wiki_foreach->user_group_id === $user_group->id) {
+                            //dump($user_group->can_check_revisions);
                             if ($user_group->$permission === 1) {
+                                //exit(-1);
                                 return $next($request);
                                 /**
                                 * Если у группы, которой владеет участник,
@@ -94,6 +102,7 @@ class PermissionChecker
                             }
                         }
                     }
+                    //exit(-1);
                     return response('Forbidden', 403)
                         ->header('Content-Type', 'text/plain');
             }
