@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('user_groups', function (Blueprint $table) {
-            //
+            $table->boolean('can_check_revisions')->default(0);
         });
     }
 };
