@@ -97,7 +97,23 @@ class RevisionController extends Controller
                 $article = $articles->where('url_title', $articleName)->first();
 
                 if ($article) {
-                    $revisions = Revision::where('article_id', $article->id)->whereNull('deleted_at')->get();
+                    $user = auth()->user();
+                    if ($user != null) {
+                        $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                    } else {
+                        $can_check_revisions = false;
+                    }
+
+                    if ($can_check_revisions) {
+                        $revisions = Revision::where('article_id', $article->id)
+                        ->whereNull('deleted_at')
+                        ->get();
+                    } else {
+                        $revisions = Revision::where('article_id', $article->id)
+                        ->whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->get();
+                    }
 
                     if ($revisions) {
                         $revision = $revisions->where('id', $revisionId)->first();
@@ -137,10 +153,28 @@ class RevisionController extends Controller
             if($articles) {
                 $article = $articles->where('url_title', $articleName)->first();
                 if($article) {
-                    $revisions = Revision::whereNull('deleted_at')->get();
-                    $users = User::all();
-                    return view('history', compact('article', 'revisions',
+                    $user = auth()->user();
+                    if ($user != null) {
+                        $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                    } else {
+                        $can_check_revisions = false;
+                    }
+                    if ($can_check_revisions) {
+                        $revisions = Revision::whereNull('deleted_at')
+                        ->get();
+                    } else {
+                        $revisions = Revision::whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->get();
+                    }
+                    if (count($revisions) > 0) {
+                        $users = User::all();
+                        return view('history', compact('article', 'revisions',
                         'users', 'wiki'));
+                    } else {
+                        return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
+                    }
                 } else {
                     return response(__('Article does not exist'), 404)
                         ->header('Content-Type', 'text/plain');
@@ -164,10 +198,29 @@ class RevisionController extends Controller
             if($articles) {
                 $article = $articles->where('url_title', $articleName)->first();
                 if($article) {
-                    $revisions = Revision::all();
-                    $users = User::all();
-                    return view('show_deleted_article_history', compact('article', 'revisions',
-                        'users', 'wiki'));
+                    $user = auth()->user();
+                    if ($user != null) {
+                        $can_check_revisions = $user->can('check_revisions', $wiki->url);
+                    } else {
+                        $can_check_revisions = false;
+                    }
+                    if ($can_check_revisions) {
+                        $revisions = Revision::all();
+                    }
+                    else {
+                        $revisions = Revision::whereNull('deleted_at')
+                        ->where('is_approved', true)
+                        ->get();
+                    }
+                    if (count($revisions) > 0) {
+                        $users = User::all();
+                        return view('show_deleted_article_history', compact('article', 'revisions',
+                            'users', 'wiki'));
+                    }
+                    else {
+                        return response(__('Article does not exist'), 404)
+                        ->header('Content-Type', 'text/plain');
+                    }
                 } else {
                     return response(__('Article does not exist'), 404)
                         ->header('Content-Type', 'text/plain');

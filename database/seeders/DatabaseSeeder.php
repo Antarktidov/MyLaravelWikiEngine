@@ -73,6 +73,13 @@ class DatabaseSeeder extends Seeder
             'can_delete_comments' => 1,
         ]);
 
+        //Approver
+        UserGroup::create([
+            'name' => 'approver',
+            'is_global' => 0,
+            'can_check_revisions' => 1,
+        ]);
+
         //Creating your first wiki
         $wiki = Wiki::create([
             'url' => 'my-first-wiki',

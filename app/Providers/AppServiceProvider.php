@@ -85,11 +85,11 @@ public function boot(): void
         return PermissionChecker::check($user, $wikiName, 'can_delete_comments');
     });
     
-    /*Gate::define('check_revisions', function ($user, $wikiName) {
+    Gate::define('check_revisions', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_check_revisions');
     });
 
-    Gate::define('patrol_revisions', function ($user, $wikiName) {
+    /*Gate::define('patrol_revisions', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_patrol_revisions');
     });
     
