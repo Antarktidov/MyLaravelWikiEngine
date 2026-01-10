@@ -27,13 +27,24 @@ class ArticleController extends Controller
             if ($can_check_revisions) {
                 $articles = Article::where('wiki_id', $wiki->id)->whereNull('deleted_at')->get();
             } else {
-                $articles = DB::table('articles')
-                ->join('revisions', 'articles.id', '=', 'revisions.article_id')
-                ->select('articles.*')
-                ->where('articles.wiki_id', $wiki->id)
-                ->whereNull('articles.deleted_at')
-                ->where('revisions.is_approved', true)
-                ->get();
+                if ($user != null) {
+                    $articles = DB::table('articles')
+                    ->join('revisions', 'articles.id', '=', 'revisions.article_id')
+                    ->select('articles.*')
+                    ->where('articles.wiki_id', $wiki->id)
+                    ->whereNull('articles.deleted_at')
+                    ->where('revisions.is_approved', true)
+                    ->get();
+                } else {
+                    $articles = DB::table('articles')
+                    ->join('revisions', 'articles.id', '=', 'revisions.article_id')
+                    ->select('articles.*')
+                    ->where('articles.wiki_id', $wiki->id)
+                    ->whereNull('articles.deleted_at')
+                    ->where('revisions.is_approved', true)
+                    ->where('revisions.is_patrolled', true)
+                    ->get();
+                }
             }
 
             return view('show-all-articles', compact('articles', 'wiki'));
@@ -69,11 +80,20 @@ class ArticleController extends Controller
                         ->whereNull('deleted_at')
                         ->orderBy('id', 'desc')->first();
                     } else {
-                        $revision = Revision::where('article_id', $article->id)
-                        //->where('deleted_at', '')
-                        ->whereNull('deleted_at')
-                        ->where('is_approved', true)
-                        ->orderBy('id', 'desc')->first();
+                        if ($user != null) {
+                            $revision = Revision::where('article_id', $article->id)
+                            //->where('deleted_at', '')
+                            ->whereNull('deleted_at')
+                            ->where('is_approved', true)
+                            ->orderBy('id', 'desc')->first();
+                        } else {
+                            $revision = Revision::where('article_id', $article->id)
+                            //->where('deleted_at', '')
+                            ->whereNull('deleted_at')
+                            ->where('is_approved', true)
+                            ->where('is_patrolled', true)
+                            ->orderBy('id', 'desc')->first();
+                        }
                     }
                     
                     //$user = auth()->user();

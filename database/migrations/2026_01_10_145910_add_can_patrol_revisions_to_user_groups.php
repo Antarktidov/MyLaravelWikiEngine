@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('user_groups', function (Blueprint $table) {
-            $table->boolean('can_check_revisions')->default(0);
+            $table->boolean('can_patrol_revisions')->default(0);
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('user_groups', function (Blueprint $table) {
-           $table->dropColumn('can_check_revisions');
+            $table->dropColumn('can_patrol_revisions');
         });
     }
 };

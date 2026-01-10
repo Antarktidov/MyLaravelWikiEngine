@@ -80,6 +80,13 @@ class DatabaseSeeder extends Seeder
             'can_check_revisions' => 1,
         ]);
 
+        //Patroller
+        UserGroup::create([
+            'name' => 'patroller',
+            'is_global' => 0,
+            'can_patrol_revisions' => 1,
+        ]);
+
         //Creating your first wiki
         $wiki = Wiki::create([
             'url' => 'my-first-wiki',

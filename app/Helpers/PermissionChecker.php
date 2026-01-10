@@ -47,7 +47,9 @@ class PermissionChecker
         foreach ($user_user_group_wiki as $user_user_group_wiki_foreach) {
             foreach ($user_groups as $user_group) {
                 if ($user_user_group_wiki_foreach->user_group_id === $user_group->id) {
-                    //dump($user_group->can_check_revisions);
+                    /*dump($permission);
+                    dump($user_group->can_check_revisions);
+                    dump($user_group->$permission);*/
                     if ($user_group->$permission === 1) {
                         //exit(-1);
                         return true;
@@ -91,7 +93,9 @@ class PermissionChecker
                     foreach ($user_groups as $user_group) {
 
                         if ($user_user_group_wiki_foreach->user_group_id === $user_group->id) {
-                            //dump($user_group->can_check_revisions);
+                            /*dump($permission);
+                            dump($user_group->can_delete_revisions);
+                            dump($user_group->$permission);*/
                             if ($user_group->$permission === 1) {
                                 //exit(-1);
                                 return $next($request);
@@ -103,8 +107,8 @@ class PermissionChecker
                         }
                     }
                     //exit(-1);
-                    return response('Forbidden', 403)
-                        ->header('Content-Type', 'text/plain');
+                    /*return response('Forbidden', 403)
+                        ->header('Content-Type', 'text/plain');*/
             }
         } else {
             return response('Unauthorized', 401)

@@ -75,11 +75,19 @@
             @endcan
             @can('patrol_revisions', $wiki->url)
             <th scope="row">
+              @if ($revision->is_patrolled)
+              <form action="" method="post">
+                @csrf
+                <!--Button text untranslated because it's action not implemented. May be delete this code?-->
+                <button class="btn btn-info" type="submit">Распатрулировать правку</button>
+              </form>
+              @else
               <form action="" method="post">
                 @csrf
                 <!--Button text untranslated because it's action not implemented. May be delete this code?-->
                 <button class="btn btn-info" type="submit">Отпратрулировать правку</button>
-            </form>
+              </form>
+              @endif
             </th>
             @endcan
             @can('revert_edits_to_old_version', $wiki->url)
