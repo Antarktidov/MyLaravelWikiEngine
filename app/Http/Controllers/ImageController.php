@@ -22,7 +22,18 @@ class ImageController extends Controller
             $path = $request->file('image')->store('images', 'private');
             $filename = str_replace("images/","",$path);
 
+            $user = auth()->user();
+
+            if ($user != null) {
+                $userId = $user->id;
+            } else {
+                $userId = 0;
+            }
+
             $data['filename'] = $filename;
+            $data['user_ip'] = $request->ip();
+            $data['user_id'] = $userId;
+
             Image::create($data);
 
             $index = route('index');
@@ -97,7 +108,7 @@ class ImageController extends Controller
         $publicPath = 'images/' . $filename;
         
         if (!Storage::disk('private')->exists($privatePath)) {
-            return false;
+            return 'error';
         }
         
         $fileContents = Storage::disk('private')->get($privatePath);
@@ -108,6 +119,6 @@ class ImageController extends Controller
             ['is_approved' => true]
         );
         
-        return true;
+        return 'image approved';
     }
 }

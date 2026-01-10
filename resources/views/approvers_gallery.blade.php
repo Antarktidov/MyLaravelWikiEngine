@@ -61,6 +61,6 @@
 <div>{{$images->links()}}</div>
 @endif
 @if(count($images) === 0)
-    <p>{{__('There are no pictures on the commons. ')}}<a href="{{route('images.upload_page')}}">{{__('Upload')}}</a>{{__(' your first picture.')}}</p>
+    <p>Нет непроверенных изображений. Проверять нечего.</p>
 @endif
 @endsection
