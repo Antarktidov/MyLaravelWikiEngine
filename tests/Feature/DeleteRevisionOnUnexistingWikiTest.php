@@ -57,3 +57,4 @@ class DeleteRevisionOnUnexistingWikiTest extends TestCase
     }
 }
 
+
