@@ -94,7 +94,7 @@ class ImageController extends Controller
         $filename = $image->filename;
 
         $privatePath = 'images/' . $filename;
-        $publicPath = 'public/images/' . $filename;
+        $publicPath = 'images/' . $filename;
         
         if (!Storage::disk('private')->exists($privatePath)) {
             return false;
