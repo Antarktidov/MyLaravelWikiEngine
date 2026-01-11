@@ -70,6 +70,24 @@ class PermissionsManagerController extends Controller
         return $perm;
     }
 
+    public function create() {
+        $user_group = UserGroup::first();
+        return view('create-user-group', compact('user_group'));
+    }
+
+    public function store_usergroup() {
+        $data = request()->validate([
+            'user-group-name' => 'string',
+            'user-group-is-global' => 'string',
+            'user-group-permissions' => 'array',
+        ]);
+        $user_group = [
+            'name' => $data['user-group-name'],
+            'is_global' => $data['user-group-is-global'] === 'global',
+        ];
+        return 'Заглушка стора группы';
+    }
+
 
     private function parsePermissions(array $permissions): array
     {

@@ -130,6 +130,10 @@ Route::post('/permissions_manager/store', [PermissionsManagerController::class,'
 ->middleware(PermissionManagerMiddleware::class);
 Route::delete('/permissions_manager/delete/{perm}', [PermissionsManagerController::class,'delete_perm'])->name('permissions_manager.destroy')
 ->middleware(PermissionManagerMiddleware::class);
+Route::get('/permissions_manager/create', [PermissionsManagerController::class,'create'])->name('permissions_manager.create')
+->middleware(PermissionManagerMiddleware::class);
+Route::post('/permissions_manager/create/store', [PermissionsManagerController::class,'store_usergroup'])->name('permissions_manager.store_usergroup')
+->middleware(PermissionManagerMiddleware::class);
 
 //Логин, регистрация
 Auth::routes(['verify' => true]);
