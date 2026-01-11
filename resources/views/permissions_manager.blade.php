@@ -67,7 +67,7 @@
           >
         </td>
       @endforeach
-      <td><button data-perm-id="{{$user_group->id}}" class="btn btn-danger delete-perm-btn">{{__('Destroy')}}</td>
+      <td><button data-perm-id="{{$user_group->id}}" class="btn btn-danger delete-perm-btn">{{__('Delete')}}</td>
     </tr>
     @endforeach
   </tbody>
