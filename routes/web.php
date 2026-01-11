@@ -7,6 +7,7 @@ use App\Http\Controllers\RevisionController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserRightsController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\PermissionsManagerController;
 
 use App\Http\Middleware\DeleteMiddleware;
 use App\Http\Middleware\DeleteRevisionMiddleware;
@@ -31,6 +32,9 @@ use App\Http\Middleware\ApproveRevisionMiddleware;
 use App\Http\Middleware\PatrolRevisionMiddleware;
 use App\Http\Middleware\ApproveCommentMiddleware;
 use App\Http\Middleware\ApproveImageMiddleware;
+//End of approve and patrol feature middlewares
+
+use App\Http\Middleware\PermissionManagerMiddleware;
 
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
@@ -118,6 +122,19 @@ Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/appro
 ->name('comments.approve');
 Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
 ->name('comments.update');
+
+//Работа с разрешениями групп участников
+Route::get('/permissions_manager', [PermissionsManagerController::class,'index'])->name('permissions_manager.index')
+->middleware(PermissionManagerMiddleware::class);
+Route::post('/permissions_manager/store', [PermissionsManagerController::class,'store'])->name('permissions_manager.store')
+->middleware(PermissionManagerMiddleware::class);
+Route::delete('/permissions_manager/delete/{perm}', [PermissionsManagerController::class,'delete_perm'])->name('permissions_manager.destroy')
+->middleware(PermissionManagerMiddleware::class);
+Route::get('/permissions_manager/create', [PermissionsManagerController::class,'create'])->name('permissions_manager.create')
+->middleware(PermissionManagerMiddleware::class);
+Route::post('/permissions_manager/create/store', [PermissionsManagerController::class,'store_usergroup'])->name('permissions_manager.store_usergroup')
+->middleware(PermissionManagerMiddleware::class);
+
 //Логин, регистрация
 Auth::routes(['verify' => true]);
 

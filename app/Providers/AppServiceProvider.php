@@ -100,6 +100,10 @@ public function boot(): void
     Gate::define('check_images', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_check_images');
     });
+
+    Gate::define('manage_permissions', function ($user, $wikiName) {
+        return PermissionChecker::check($user, $wikiName, 'can_manage_permissions');
+    });
     
     /*Gate::define('revert_edits_to_old_version', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_revert_edits_to_old_version');
