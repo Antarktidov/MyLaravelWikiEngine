@@ -62,7 +62,7 @@ class PermissionsManagerController extends Controller
         UserGroup::truncate();
         UserGroup::insert($usergroup);
 
-        return 'Заглушка для стора разрешений';
+        return 'Расширения успешно обновлены';
     }
 
 
