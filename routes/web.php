@@ -126,6 +126,8 @@ Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/updat
 //Работа с разрешениями групп участников
 Route::get('/permissions_manager', [PermissionsManagerController::class,'index'])->name('permissions_manager.index')
 ->middleware(PermissionManagerMiddleware::class);
+Route::post('/permissions_manager/store', [PermissionsManagerController::class,'store'])->name('permissions_manager.store')
+->middleware(PermissionManagerMiddleware::class);
 
 //Логин, регистрация
 Auth::routes(['verify' => true]);
