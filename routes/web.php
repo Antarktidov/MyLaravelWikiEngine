@@ -128,6 +128,8 @@ Route::get('/permissions_manager', [PermissionsManagerController::class,'index']
 ->middleware(PermissionManagerMiddleware::class);
 Route::post('/permissions_manager/store', [PermissionsManagerController::class,'store'])->name('permissions_manager.store')
 ->middleware(PermissionManagerMiddleware::class);
+Route::delete('/permissions_manager/delete/{perm}', [PermissionsManagerController::class,'delete_perm'])->name('permissions_manager.destroy')
+->middleware(PermissionManagerMiddleware::class);
 
 //Логин, регистрация
 Auth::routes(['verify' => true]);

@@ -9,6 +9,7 @@
     width: fit-content !important;
   }
 </style>
+<script src="{{ asset('js/del-perm.js') }}" defer></script>
 <h1>{{__('Permissions manager')}}</h1>
 <form action="{{ route('permissions_manager.store') }}" method="post">
 @csrf
@@ -28,11 +29,12 @@
       @foreach ($attributes as $key => $value)
         <th scope="col">{{ $key }}</th>
       @endforeach
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
     @foreach ($user_groups as $user_group)
-    <tr>
+    <tr data-perm-th-id="{{$user_group->id}}">
       <th scope="row">{{ $user_group->id }}</th>
        <th scope="row">
       <input type="text"
@@ -65,6 +67,7 @@
           >
         </td>
       @endforeach
+      <td><button data-perm-id="{{$user_group->id}}" class="btn btn-danger delete-perm-btn">{{__('Destroy')}}</td>
     </tr>
     @endforeach
   </tbody>

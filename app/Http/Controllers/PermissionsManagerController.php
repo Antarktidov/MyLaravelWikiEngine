@@ -65,6 +65,11 @@ class PermissionsManagerController extends Controller
         return 'Разрешения успешно обновлены';
     }
 
+    public function delete_perm(UserGroup $perm) {
+        $perm->delete();
+        return $perm;
+    }
+
 
     private function parsePermissions(array $permissions): array
     {
