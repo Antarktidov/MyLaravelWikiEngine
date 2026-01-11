@@ -25,8 +25,6 @@ class UserRightsController extends Controller
             'user_group_ids' => 'array',
         ]);
 
-        dd($data);
-
         $managed_user = User::findOrFail($userId);//ищем управляемого участника
         $user_user_group_wiki = UserUserGroupWiki::where('user_id', $userId)
             ->where('wiki_id', 0)

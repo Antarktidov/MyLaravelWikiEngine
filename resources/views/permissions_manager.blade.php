@@ -59,8 +59,8 @@
           name="user-group-permissions[]"
           class="form-check-input"
           type="checkbox"
-          id="user-group-permissions"
-          value="{{ $user_group->id }}"
+          id="user-group-permissions[]"
+          value="{{ $user_group->id }}_{{ $key }}"
           {{ $value ? 'checked' : ''}}
           >
         </td>
