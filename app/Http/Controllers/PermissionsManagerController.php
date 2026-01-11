@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserGroup;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PermissionsManagerController extends Controller
 {
@@ -58,7 +59,9 @@ class PermissionsManagerController extends Controller
             ], $permissions);
         }
 
-        dd($usergroup);
+        UserGroup::truncate();
+        UserGroup::insert($usergroup);
+
         return 'Заглушка для стора разрешений';
     }
 
