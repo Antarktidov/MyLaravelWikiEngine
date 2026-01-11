@@ -80,12 +80,13 @@ class PermissionsManagerController extends Controller
             'user-group-name' => 'string',
             'user-group-is-global' => 'string',
             'user-group-permissions' => 'array',
-        ]);
-        $user_group = [
+        ]); 
+        $user_group = array_merge([
             'name' => $data['user-group-name'],
             'is_global' => $data['user-group-is-global'] === 'global',
-        ];
-        return 'Заглушка стора группы';
+        ], array_fill_keys($data['user-group-permissions'], true));
+        UserGroup::create($user_group);
+        return __('User group created successfully');
     }
 
 
