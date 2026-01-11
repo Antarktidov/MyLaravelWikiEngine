@@ -7,6 +7,7 @@ use App\Http\Controllers\RevisionController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserRightsController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\PermissionsManagerController;
 
 use App\Http\Middleware\DeleteMiddleware;
 use App\Http\Middleware\DeleteRevisionMiddleware;
@@ -31,6 +32,9 @@ use App\Http\Middleware\ApproveRevisionMiddleware;
 use App\Http\Middleware\PatrolRevisionMiddleware;
 use App\Http\Middleware\ApproveCommentMiddleware;
 use App\Http\Middleware\ApproveImageMiddleware;
+//End of approve and patrol feature middlewares
+
+use App\Http\Middleware\PermissionManagerMiddleware;
 
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
@@ -118,6 +122,11 @@ Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/appro
 ->name('comments.approve');
 Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
 ->name('comments.update');
+
+//Работа с разрешениями групп участников
+Route::get('/permissions_manager', [PermissionsManagerController::class,'index'])->name('permissions_manager.index')
+->middleware(PermissionManagerMiddleware::class);
+
 //Логин, регистрация
 Auth::routes(['verify' => true]);
 

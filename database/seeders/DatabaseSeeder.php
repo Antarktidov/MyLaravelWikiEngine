@@ -59,6 +59,12 @@ class DatabaseSeeder extends Seeder
             'can_check_images' => 1,
         ]);
 
+        UserGroup::create([
+            'name' => 'permission-manager-assess',
+            'is_global' => 1,
+            'can_manage_permissions' => 1,
+        ]);
+
         //Creating local user groups
         //Admin    
         UserGroup::create([
