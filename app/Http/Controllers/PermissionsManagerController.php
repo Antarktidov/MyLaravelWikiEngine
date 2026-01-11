@@ -10,7 +10,6 @@ class PermissionsManagerController extends Controller
 {
     public function index() {
         $user_groups = UserGroup::all();
-        //dd($user_groups);
         return view('permissions_manager', compact('user_groups'));
     }
 
@@ -20,13 +19,7 @@ class PermissionsManagerController extends Controller
             'user-group-is-global' => 'array',
             'user-group-permissions' => 'array',
         ]);
-        dump($data);
         $parsed_perms = self::parsePermissions($data['user-group-permissions']);
-        dump($parsed_perms);
-        /*$groups = [
-            'name' => 'user-group-names',
-            'is-global' => 'user-group-is-global' === 'global'
-        ];*/
         $usergroup = [];
         
         $userGroupNames = $data['user-group-names'];
@@ -44,16 +37,25 @@ class PermissionsManagerController extends Controller
             return str_starts_with($key, 'can_');
         });
 
-        dump($attributes);
+        // Получаем все группы из базы данных для получения ID
+        $userGroupsFromDb = UserGroup::all();
 
         for ($i = 0; $i < count($userGroupNames); $i++) {
+            $userGroupId = $userGroupsFromDb[$i]->id;
+            $permissions = [];
+            
             foreach($attributes as $key => $value) {
-
+                // Проверяем, есть ли в $parsed_perms запись для этой группы и этого разрешения
+                $hasPermission = collect($parsed_perms)->contains(function ($item) use ($userGroupId, $key) {
+                    return $item['user_group_id'] === $userGroupId && $item['permission'] === $key;
+                });
+                $permissions[$key] = $hasPermission;
             }
-            $usergroup[] = [
+            
+            $usergroup[] = array_merge([
                 'name' => $userGroupNames[$i],
                 'is_global' => $userGroupIsGlobal[$i] === 'global'
-            ];
+            ], $permissions);
         }
 
         dd($usergroup);
