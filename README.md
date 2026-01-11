@@ -1,6 +1,6 @@
 
 # MyLaravelWikiEngine
-A simple PHP Laravel 11 Wiki Engine with comments.
+A PHP Laravel 11 Wiki Engine with comments.
 
 ![Article Screenshot](https://github.com/Antarktidov/MyLaravelWikiEngine/blob/master/images/article%20screenshot%20with%20comments.png?raw=true)
 
