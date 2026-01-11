@@ -62,7 +62,7 @@ class PermissionsManagerController extends Controller
         UserGroup::truncate();
         UserGroup::insert($usergroup);
 
-        return 'Расширения успешно обновлены';
+        return 'Разрешения успешно обновлены';
     }
 
 
