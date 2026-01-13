@@ -40,6 +40,8 @@ use App\Http\Middleware\ManageWikifarmMiddleware;
 
 use App\Http\Middleware\CommentsEnabledMiddleware;
 
+use App\Models\Option;
+
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
 Route::get('/create-wiki', [WikisController::class,'create'])->name('wikis.create')
@@ -148,7 +150,11 @@ Route::post('/manage_wikifarm/update', [OptionsController::class,'update'])->nam
 ->middleware(ManageWikifarmMiddleware::class);
 
 //Логин, регистрация
-Auth::routes(['verify' => true]);
+$options = Option::firstOrFail();
+Auth::routes([
+    'verify' => true,
+    'register' => $options->is_registration_enabled
+    ]);
 
 // Email verification routes
 Route::middleware('auth')->group(function () {
