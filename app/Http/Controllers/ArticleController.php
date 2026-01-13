@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\Revision;
 use App\Models\Wiki;
+use App\Models\Option;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -113,9 +114,13 @@ class ArticleController extends Controller
                     }
 
                     if ($revision) {
+                        $options = Option::firstOrFail();
+                        
+                        $is_comments_enabled = $options->is_comments_enabled;
+
                         return view('article', compact('revision', 'wiki', 'article',
                         'userId', 'userName', 'userCanDeleteComments',
-                        'userCanApproveComments'));
+                        'userCanApproveComments', 'is_comments_enabled'));
                     } else {
                         return response(__('Article does not exist'), 404)
                             ->header('Content-Type', 'text/plain');

@@ -10,6 +10,8 @@ use App\Models\Revision;
 
 use App\Models\Comment;
 use App\Models\CommentRevision;
+
+use App\Models\Option;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -48,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'can_manage_global_userrights' => 1,
             'can_delete_commons_images' => 1,
             'can_delete_comments' => 1,
+            'can_manage_wikifarm' => 1,
         ]);
 
         //Approver-global
@@ -59,6 +62,7 @@ class DatabaseSeeder extends Seeder
             'can_check_images' => 1,
         ]);
 
+        //Permission manager assess
         UserGroup::create([
             'name' => 'permission-manager-assess',
             'is_global' => 1,
@@ -137,6 +141,14 @@ class DatabaseSeeder extends Seeder
             'user_ip' => '127.0.0.1',//localhost
             'content' => 'Hello, this is comment under your first article',
             'comment_id' => 1,
+        ]);
+
+        //Creating wiki options
+
+        Option::create([
+            'protection_level' => 'public',
+            'is_comments_enabled' => true,
+            'is_registration_enabled' => true,
         ]);
 
         echo 'Installation completed! Don\'t forget to register and grant steward rights to your account via database editor!';
