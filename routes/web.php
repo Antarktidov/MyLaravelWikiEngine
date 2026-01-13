@@ -74,6 +74,7 @@ Route::get('/commons/upload', [ImageController::class,'create'])->name('images.u
 ->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
 Route::post('/commons/store', [ImageController::class,'store'])->name('images.store')
 ->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
+Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
 Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
 ->middleware(DeleteImagesMiddleware::class);
 Route::get('/private-images/{filename}', [ImageController::class, 'show_private'])->name('private.image')
