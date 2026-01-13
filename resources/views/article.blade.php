@@ -20,6 +20,7 @@
     <p class="mt-3">{!!Str::of($revision->content)->markdown([
         'html_input' => 'strip',
     ])!!}</p>
+    @if ($is_comments_enabled)
     <div id="comments"
          data-wiki-name="{{ $wiki->url }}"
          data-article-name="{{ $article->url_title }}"
@@ -29,4 +30,5 @@
          data-user-can-approve-comments="{{ $userCanApproveComments }}"
          >
     </div>
+    @endif
 @endsection

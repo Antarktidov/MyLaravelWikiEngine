@@ -38,6 +38,8 @@ use App\Http\Middleware\ApproveImageMiddleware;
 use App\Http\Middleware\PermissionManagerMiddleware;
 use App\Http\Middleware\ManageWikifarmMiddleware;
 
+use App\Http\Middleware\CommentsEnabledMiddleware;
+
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
 Route::get('/create-wiki', [WikisController::class,'create'])->name('wikis.create')
@@ -114,16 +116,18 @@ Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/depatrol', [RevisionCon
 ->middleware(PatrolRevisionMiddleware::class);
 
 //Работа с комментариями под статьями
-Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');
-Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])->name('comments.store');
-Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
-->middleware(DeleteCommentsMiddleware::class)
-->name('comments.delete');
-Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/approve', [CommentsController::class,'approve'])
-->middleware(ApproveCommentMiddleware::class)
-->name('comments.approve');
-Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
-->name('comments.update');
+Route::middleware([CommentsEnabledMiddleware::class])->group(function () {
+    Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');
+    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])->name('comments.store');
+    Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
+    ->middleware(DeleteCommentsMiddleware::class)
+    ->name('comments.delete');
+    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/approve', [CommentsController::class,'approve'])
+    ->middleware(ApproveCommentMiddleware::class)
+    ->name('comments.approve');
+    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
+    ->name('comments.update');
+});
 
 //Работа с разрешениями групп участников
 Route::get('/permissions_manager', [PermissionsManagerController::class,'index'])->name('permissions_manager.index')
