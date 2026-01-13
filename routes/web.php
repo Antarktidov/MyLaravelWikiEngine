@@ -40,6 +40,7 @@ use App\Http\Middleware\ManageWikifarmMiddleware;
 
 use App\Http\Middleware\CommentsEnabledMiddleware;
 use App\Http\Middleware\ProtectionLevel1Middleware;
+use App\Http\Middleware\ProtectionLevel2Middleware;
 
 use App\Models\Option;
 
@@ -70,10 +71,9 @@ Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [UserRightsController
 
 //Работа с общими изображениями
 Route::get('/commons/upload', [ImageController::class,'create'])->name('images.upload_page')
-->middleware(ProtectionLevel1Middleware::class);
+->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
 Route::post('/commons/store', [ImageController::class,'store'])->name('images.store')
-->middleware(ProtectionLevel1Middleware::class);
-Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
+->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
 Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
 ->middleware(DeleteImagesMiddleware::class);
 Route::get('/private-images/{filename}', [ImageController::class, 'show_private'])->name('private.image')
@@ -87,11 +87,13 @@ Route::post('/commons/approve/{image}', [ImageController::class,'approve'])->nam
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
 Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show'])->name('articles.show');
 Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit')
-->middleware(ProtectionLevel1Middleware::class);
+->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
 Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create')
-->middleware(ProtectionLevel1Middleware::class);
+->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
 Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store')
 ->middleware(ProtectionLevel1Middleware::class);
+Route::post('/wiki/{wikiName}/update/{articleName}/edit', [ArticleController::class,'update'])->name('articles.update')
+->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
 Route::delete('/wiki/{wikiName}/{articleName}/destroy', [ArticleController::class,'destroy'])->name('articles.destroy')
 ->middleware(DeleteMiddleware::class);
 Route::get('/wiki/{wikiName}/trash', [ArticleController::class,'trash'])->name('articles.trash')
@@ -124,8 +126,11 @@ Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/depatrol', [RevisionCon
 
 //Работа с комментариями под статьями
 Route::middleware([CommentsEnabledMiddleware::class])->group(function () {
-    Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])->name('comments.show_all');
-    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])->name('comments.store');
+    Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])
+    ->name('comments.show_all');
+    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])
+    ->name('comments.store')
+    ->middleware(ProtectionLevel2Middleware::class);
     Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
     ->middleware(DeleteCommentsMiddleware::class)
     ->name('comments.delete');
