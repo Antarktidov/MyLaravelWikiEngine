@@ -26,8 +26,8 @@
          data-article-name="{{ $article->url_title }}"
          data-user-id="{{ $userId }}"
          data-user-name="{{ $userName }}"
-         data-user-can-delete-comments="{{ $userCanDeleteComments }}"
-         data-user-can-approve-comments="{{ $userCanApproveComments }}"
+         data-user-can-delete-comments="{{ $userCanDeleteComments ? 'true' : 'false' }}"
+         data-user-can-approve-comments="{{ $userCanApproveComments ? 'true' : 'false' }}"
          >
     </div>
     @endif
