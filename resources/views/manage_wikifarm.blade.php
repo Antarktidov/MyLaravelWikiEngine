@@ -40,9 +40,9 @@
     {{ __('Is comments enabled') }}</label>
   </div>
   <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="is_registration_enabled" name="is_registration_enabled">
-    <label class="form-check-label" for="is_registration_enabled"
+    <input type="checkbox" class="form-check-input" id="is_registration_enabled" name="is_registration_enabled"
     {{ $options->is_registration_enabled ? 'checked' : '' }}>
+    <label class="form-check-label" for="is_registration_enabled">
     {{ __('Is registration enabled') }}</label>
   </div>
   <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
