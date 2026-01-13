@@ -8,6 +8,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserRightsController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\PermissionsManagerController;
+use App\Http\Controllers\OptionsController;
 
 use App\Http\Middleware\DeleteMiddleware;
 use App\Http\Middleware\DeleteRevisionMiddleware;
@@ -35,6 +36,7 @@ use App\Http\Middleware\ApproveImageMiddleware;
 //End of approve and patrol feature middlewares
 
 use App\Http\Middleware\PermissionManagerMiddleware;
+use App\Http\Middleware\ManageWikifarmMiddleware;
 
 //Работа с САМИМИ викиями
 Route::get('/', [WikisController::class,'index'])->name('index');
@@ -134,6 +136,12 @@ Route::get('/permissions_manager/create', [PermissionsManagerController::class,'
 ->middleware(PermissionManagerMiddleware::class);
 Route::post('/permissions_manager/create/store', [PermissionsManagerController::class,'store_usergroup'])->name('permissions_manager.store_usergroup')
 ->middleware(PermissionManagerMiddleware::class);
+
+//Manage Wikifarm
+Route::get('/manage_wikifarm', [OptionsController::class,'index'])->name('manage_wikifarm.index')
+->middleware(ManageWikifarmMiddleware::class);
+Route::post('/manage_wikifarm/update', [OptionsController::class,'update'])->name('manage_wikifarm.update')
+->middleware(ManageWikifarmMiddleware::class);
 
 //Логин, регистрация
 Auth::routes(['verify' => true]);
