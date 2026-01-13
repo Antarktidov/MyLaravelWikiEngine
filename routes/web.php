@@ -39,6 +39,7 @@ use App\Http\Middleware\PermissionManagerMiddleware;
 use App\Http\Middleware\ManageWikifarmMiddleware;
 
 use App\Http\Middleware\CommentsEnabledMiddleware;
+use App\Http\Middleware\ProtectionLevel1Middleware;
 
 use App\Models\Option;
 
@@ -68,8 +69,10 @@ Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [UserRightsController
     ->middleware(ManageLocalUserrightsMiddleware::class);
 
 //Работа с общими изображениями
-Route::get('/commons/upload', [ImageController::class,'create'])->name('images.upload_page');
-Route::post('/commons/store', [ImageController::class,'store'])->name('images.store');
+Route::get('/commons/upload', [ImageController::class,'create'])->name('images.upload_page')
+->middleware(ProtectionLevel1Middleware::class);
+Route::post('/commons/store', [ImageController::class,'store'])->name('images.store')
+->middleware(ProtectionLevel1Middleware::class);
 Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
 Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
 ->middleware(DeleteImagesMiddleware::class);
@@ -83,10 +86,12 @@ Route::post('/commons/approve/{image}', [ImageController::class,'approve'])->nam
 //Работа со статьями на викиях
 Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
 Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show'])->name('articles.show');
-Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit');
-Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create');
-Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store');
-Route::post('/wiki/{wikiName}/update/{articleName}/edit', [ArticleController::class,'update'])->name('articles.update');
+Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit')
+->middleware(ProtectionLevel1Middleware::class);
+Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create')
+->middleware(ProtectionLevel1Middleware::class);
+Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store')
+->middleware(ProtectionLevel1Middleware::class);
 Route::delete('/wiki/{wikiName}/{articleName}/destroy', [ArticleController::class,'destroy'])->name('articles.destroy')
 ->middleware(DeleteMiddleware::class);
 Route::get('/wiki/{wikiName}/trash', [ArticleController::class,'trash'])->name('articles.trash')
