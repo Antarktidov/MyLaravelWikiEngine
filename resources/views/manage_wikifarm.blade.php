@@ -19,16 +19,16 @@
       </label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="protection_level" id="semi_public" value="semi_public">
-      <label class="form-check-label" for="semi_public"
+      <input class="form-check-input" type="radio" name="protection_level" id="semi_public" value="semi_public"
       {{ $options->protection_level === 'semi_public' ? 'checked' : '' }}>
+      <label class="form-check-label" for="semi_public">
         Полузакрытая, участники без прав могут читать
       </label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="protection_level" id="technical_only" value="technical_only">
-      <label class="form-check-label" for="technical_only"
-      {{ $options->protection_level === 'technical_only' ? 'checked' : '' }}>
+      <input class="form-check-input" type="radio" name="protection_level" id="private" value="private"
+      {{ $options->protection_level === 'private' ? 'checked' : '' }}>
+      <label class="form-check-label" for="private">
         Для доступа к вики требуются технические права
       </label>
     </div>
@@ -40,9 +40,9 @@
     {{ __('Is comments enabled') }}</label>
   </div>
   <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="is_registration_enabled" name="is_registration_enabled"
+    <input type="checkbox" class="form-check-input" id="is_registration_enabled" name="is_registration_enabled">
+    <label class="form-check-label" for="is_registration_enabled"
     {{ $options->is_registration_enabled ? 'checked' : '' }}>
-    <label class="form-check-label" for="is_registration_enabled">
     {{ __('Is registration enabled') }}</label>
   </div>
   <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
