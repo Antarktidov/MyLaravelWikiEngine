@@ -41,124 +41,128 @@ use App\Http\Middleware\ManageWikifarmMiddleware;
 use App\Http\Middleware\CommentsEnabledMiddleware;
 use App\Http\Middleware\ProtectionLevel1Middleware;
 use App\Http\Middleware\ProtectionLevel2Middleware;
+use App\Http\Middleware\ProtectionLevel3Middleware;
 
 use App\Models\Option;
 
-//Работа с САМИМИ викиями
-Route::get('/', [WikisController::class,'index'])->name('index');
-Route::get('/create-wiki', [WikisController::class,'create'])->name('wikis.create')
-->middleware(CreateWikisMiddleware::class);
-Route::post('/store', [WikisController::class,'store'])->name('wikis.store')
-->middleware(CreateWikisMiddleware::class);
-Route::delete('/destroy/{wiki}', [WikisController::class,'destroy'])->name('wikis.destroy')
-->middleware(CloseWikisMiddleware::class);
-Route::post('/open/{wiki}', [WikisController::class,'restore'])->name('wikis.open')
-->middleware(OpenWikisMiddleware::class);
-Route::get('/closed-wikis', [WikisController::class,'trash'])->name('wikis.show_closed')
-->middleware(OpenWikisMiddleware::class);
+Route::middleware([ProtectionLevel3Middleware::class])->group(function () {
 
-//Работа с правами на вики
-//1. Глобальными
-Route::get('/global-user-rights/{userId}', [UserRightsController::class,'manage_global_user_rights'])->name('wikis.global_userrights')
-->middleware(ManageGlobalUserrightsMiddleware::class);
-Route::post('/global-user-rights/{userId}/store', [UserRightsController::class,'store_global_user_rights'])->name('wikis.global_userrights.store')
-->middleware(ManageGlobalUserrightsMiddleware::class);
-//2. Локальными
-Route::get('/wiki/{wikiName}/user-rights/{userId}', [UserRightsController::class,'manage_local_user_rights'])->name('wikis.local_userrights')
-    ->middleware(ManageLocalUserrightsMiddleware::class);
-Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [UserRightsController::class,'store_local_user_rights'])->name('wikis.local_userrights.store')
-    ->middleware(ManageLocalUserrightsMiddleware::class);
+    //Работа с САМИМИ викиями
+    Route::get('/', [WikisController::class,'index'])->name('index');
+    Route::get('/create-wiki', [WikisController::class,'create'])->name('wikis.create')
+    ->middleware(CreateWikisMiddleware::class);
+    Route::post('/store', [WikisController::class,'store'])->name('wikis.store')
+    ->middleware(CreateWikisMiddleware::class);
+    Route::delete('/destroy/{wiki}', [WikisController::class,'destroy'])->name('wikis.destroy')
+    ->middleware(CloseWikisMiddleware::class);
+    Route::post('/open/{wiki}', [WikisController::class,'restore'])->name('wikis.open')
+    ->middleware(OpenWikisMiddleware::class);
+    Route::get('/closed-wikis', [WikisController::class,'trash'])->name('wikis.show_closed')
+    ->middleware(OpenWikisMiddleware::class);
 
-//Работа с общими изображениями
-Route::get('/commons/upload', [ImageController::class,'create'])->name('images.upload_page')
-->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
-Route::post('/commons/store', [ImageController::class,'store'])->name('images.store')
-->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
-Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
-Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
-->middleware(DeleteImagesMiddleware::class);
-Route::get('/private-images/{filename}', [ImageController::class, 'show_private'])->name('private.image')
-->middleware(ApproveImageMiddleware::class);
-Route::get('/approvers_commons', [ImageController::class,'approvers_index'])->name('images.approvers_gallery')
-->middleware(ApproveImageMiddleware::class);
-Route::post('/commons/approve/{image}', [ImageController::class,'approve'])->name('images.approve')
-->middleware(ApproveImageMiddleware::class);
+    //Работа с правами на вики
+    //1. Глобальными
+    Route::get('/global-user-rights/{userId}', [UserRightsController::class,'manage_global_user_rights'])->name('wikis.global_userrights')
+    ->middleware(ManageGlobalUserrightsMiddleware::class);
+    Route::post('/global-user-rights/{userId}/store', [UserRightsController::class,'store_global_user_rights'])->name('wikis.global_userrights.store')
+    ->middleware(ManageGlobalUserrightsMiddleware::class);
+    //2. Локальными
+    Route::get('/wiki/{wikiName}/user-rights/{userId}', [UserRightsController::class,'manage_local_user_rights'])->name('wikis.local_userrights')
+        ->middleware(ManageLocalUserrightsMiddleware::class);
+    Route::post('/wiki/{wikiName}/user-rights/{userId}/store', [UserRightsController::class,'store_local_user_rights'])->name('wikis.local_userrights.store')
+        ->middleware(ManageLocalUserrightsMiddleware::class);
 
-//Работа со статьями на викиях
-Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
-Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show'])->name('articles.show');
-Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit')
-->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
-Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create')
-->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
-Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store')
-->middleware(ProtectionLevel1Middleware::class);
-Route::post('/wiki/{wikiName}/update/{articleName}/edit', [ArticleController::class,'update'])->name('articles.update')
-->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
-Route::delete('/wiki/{wikiName}/{articleName}/destroy', [ArticleController::class,'destroy'])->name('articles.destroy')
-->middleware(DeleteMiddleware::class);
-Route::get('/wiki/{wikiName}/trash', [ArticleController::class,'trash'])->name('articles.trash')
-->middleware(ViewDeletedMiddleware::class);
-Route::get('/wiki/{wikiName}/trash/article/{articleName}', [ArticleController::class,'show_deleted'])
-->name('articles.trash.show')
-->middleware(ViewDeletedMiddleware::class);
-Route::post('/wiki/{wikiName}/{articleName}/restore', [ArticleController::class,'restore'])->name('articles.restore')
-    ->middleware(RestoreMiddleware::class);
+    //Работа с общими изображениями
+    Route::get('/commons/upload', [ImageController::class,'create'])->name('images.upload_page')
+    ->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
+    Route::post('/commons/store', [ImageController::class,'store'])->name('images.store')
+    ->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
+    Route::get('/commons', [ImageController::class,'index'])->name('images.gallery');
+    Route::delete('/commons/delete/{image}', [ImageController::class,'destroy'])->name('images.delete')
+    ->middleware(DeleteImagesMiddleware::class);
+    Route::get('/private-images/{filename}', [ImageController::class, 'show_private'])->name('private.image')
+    ->middleware(ApproveImageMiddleware::class);
+    Route::get('/approvers_commons', [ImageController::class,'approvers_index'])->name('images.approvers_gallery')
+    ->middleware(ApproveImageMiddleware::class);
+    Route::post('/commons/approve/{image}', [ImageController::class,'approve'])->name('images.approve')
+    ->middleware(ApproveImageMiddleware::class);
 
-//Работа с историей правок
-Route::get('/wiki/{wikiName}/article/{articleName}/history', [RevisionController::class,'index'])->name('articles.history');
-Route::get('/wiki/{wikiName}/trash/article/{articleName}/history', [RevisionController::class,'show_deleted_hist'])
-->name('articles.deleted.history')
-->middleware(ViewDeletedMiddleware::class);
-Route::get('/wiki/{wikiName}/article/{articleName}/deleted_history', [RevisionController::class,'trash'])
-->name('articles.trash.edits')
-->middleware(ViewDeletedRevisionsMiddleware::class);
-Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionController::class,'destroy'])->name('revision.delete')
-->middleware(DeleteRevisionMiddleware::class);
-Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionController::class,'restore'])->name('revision.restore')
-->middleware(RestoreRevisionMiddleware::class);
-Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
-Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/approve', [RevisionController::class,'approve'])->name('revision.approve')
-->middleware(ApproveRevisionMiddleware::class);
-Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/patrol', [RevisionController::class,'patrol'])->name('revision.patrol')
-->middleware(PatrolRevisionMiddleware::class);
-Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/depatrol', [RevisionController::class,'depatrol'])->name('revision.depatrol')
-->middleware(PatrolRevisionMiddleware::class);
+    //Работа со статьями на викиях
+    Route::get('/wiki/{wikiName}/all-articles', [ArticleController::class,'index'])->name('index.articles');
+    Route::get('/wiki/{wikiName}/article/{articleName}', [ArticleController::class,'show'])->name('articles.show');
+    Route::get('/wiki/{wikiName}/article/{articleName}/edit', [ArticleController::class,'edit'])->name('articles.edit')
+    ->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
+    Route::get('/wiki/{wikiName}/create-article', [ArticleController::class,'create'])->name('articles.create')
+    ->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
+    Route::post('/wiki/{wikiName}/store', [ArticleController::class,'store'])->name('articles.store')
+    ->middleware(ProtectionLevel1Middleware::class);
+    Route::post('/wiki/{wikiName}/update/{articleName}/edit', [ArticleController::class,'update'])->name('articles.update')
+    ->middleware([ProtectionLevel1Middleware::class, ProtectionLevel2Middleware::class]);
+    Route::delete('/wiki/{wikiName}/{articleName}/destroy', [ArticleController::class,'destroy'])->name('articles.destroy')
+    ->middleware(DeleteMiddleware::class);
+    Route::get('/wiki/{wikiName}/trash', [ArticleController::class,'trash'])->name('articles.trash')
+    ->middleware(ViewDeletedMiddleware::class);
+    Route::get('/wiki/{wikiName}/trash/article/{articleName}', [ArticleController::class,'show_deleted'])
+    ->name('articles.trash.show')
+    ->middleware(ViewDeletedMiddleware::class);
+    Route::post('/wiki/{wikiName}/{articleName}/restore', [ArticleController::class,'restore'])->name('articles.restore')
+        ->middleware(RestoreMiddleware::class);
 
-//Работа с комментариями под статьями
-Route::middleware([CommentsEnabledMiddleware::class])->group(function () {
-    Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])
-    ->name('comments.show_all');
-    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])
-    ->name('comments.store')
-    ->middleware(ProtectionLevel2Middleware::class);
-    Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
-    ->middleware(DeleteCommentsMiddleware::class)
-    ->name('comments.delete');
-    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/approve', [CommentsController::class,'approve'])
-    ->middleware(ApproveCommentMiddleware::class)
-    ->name('comments.approve');
-    Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
-    ->name('comments.update');
+    //Работа с историей правок
+    Route::get('/wiki/{wikiName}/article/{articleName}/history', [RevisionController::class,'index'])->name('articles.history');
+    Route::get('/wiki/{wikiName}/trash/article/{articleName}/history', [RevisionController::class,'show_deleted_hist'])
+    ->name('articles.deleted.history')
+    ->middleware(ViewDeletedMiddleware::class);
+    Route::get('/wiki/{wikiName}/article/{articleName}/deleted_history', [RevisionController::class,'trash'])
+    ->name('articles.trash.edits')
+    ->middleware(ViewDeletedRevisionsMiddleware::class);
+    Route::delete('/wiki/{wikiName}/{articleName}/{revisionId}/destroy', [RevisionController::class,'destroy'])->name('revision.delete')
+    ->middleware(DeleteRevisionMiddleware::class);
+    Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/restore', [RevisionController::class,'restore'])->name('revision.restore')
+    ->middleware(RestoreRevisionMiddleware::class);
+    Route::get('/wiki/{wikiName}/article/{articleName}/revision/{revisionId}', [RevisionController::class,'view'])->name('revision.show');
+    Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/approve', [RevisionController::class,'approve'])->name('revision.approve')
+    ->middleware(ApproveRevisionMiddleware::class);
+    Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/patrol', [RevisionController::class,'patrol'])->name('revision.patrol')
+    ->middleware(PatrolRevisionMiddleware::class);
+    Route::post('/wiki/{wikiName}/{articleName}/{revisionId}/depatrol', [RevisionController::class,'depatrol'])->name('revision.depatrol')
+    ->middleware(PatrolRevisionMiddleware::class);
+
+    //Работа с комментариями под статьями
+    Route::middleware([CommentsEnabledMiddleware::class])->group(function () {
+        Route::get('/api/wiki/{wikiName}/article/{articleName}/comments', [CommentsController::class,'show_comments_under_article'])
+        ->name('comments.show_all');
+        Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/store', [CommentsController::class,'store'])
+        ->name('comments.store')
+        ->middleware(ProtectionLevel2Middleware::class);
+        Route::delete('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/delete', [CommentsController::class,'delete'])
+        ->middleware(DeleteCommentsMiddleware::class)
+        ->name('comments.delete');
+        Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/approve', [CommentsController::class,'approve'])
+        ->middleware(ApproveCommentMiddleware::class)
+        ->name('comments.approve');
+        Route::post('/api/wiki/{wikiName}/article/{articleName}/comments/{comment}/update', [CommentsController::class,'update'])
+        ->name('comments.update');
+    });
+
+    //Работа с разрешениями групп участников
+    Route::get('/permissions_manager', [PermissionsManagerController::class,'index'])->name('permissions_manager.index')
+    ->middleware(PermissionManagerMiddleware::class);
+    Route::post('/permissions_manager/store', [PermissionsManagerController::class,'store'])->name('permissions_manager.store')
+    ->middleware(PermissionManagerMiddleware::class);
+    Route::delete('/permissions_manager/delete/{perm}', [PermissionsManagerController::class,'delete_perm'])->name('permissions_manager.destroy')
+    ->middleware(PermissionManagerMiddleware::class);
+    Route::get('/permissions_manager/create', [PermissionsManagerController::class,'create'])->name('permissions_manager.create')
+    ->middleware(PermissionManagerMiddleware::class);
+    Route::post('/permissions_manager/create/store', [PermissionsManagerController::class,'store_usergroup'])->name('permissions_manager.store_usergroup')
+    ->middleware(PermissionManagerMiddleware::class);
+
+    //Manage Wikifarm
+    Route::get('/manage_wikifarm', [OptionsController::class,'index'])->name('manage_wikifarm.index')
+    ->middleware(ManageWikifarmMiddleware::class);
+    Route::post('/manage_wikifarm/update', [OptionsController::class,'update'])->name('manage_wikifarm.update')
+    ->middleware(ManageWikifarmMiddleware::class);
 });
-
-//Работа с разрешениями групп участников
-Route::get('/permissions_manager', [PermissionsManagerController::class,'index'])->name('permissions_manager.index')
-->middleware(PermissionManagerMiddleware::class);
-Route::post('/permissions_manager/store', [PermissionsManagerController::class,'store'])->name('permissions_manager.store')
-->middleware(PermissionManagerMiddleware::class);
-Route::delete('/permissions_manager/delete/{perm}', [PermissionsManagerController::class,'delete_perm'])->name('permissions_manager.destroy')
-->middleware(PermissionManagerMiddleware::class);
-Route::get('/permissions_manager/create', [PermissionsManagerController::class,'create'])->name('permissions_manager.create')
-->middleware(PermissionManagerMiddleware::class);
-Route::post('/permissions_manager/create/store', [PermissionsManagerController::class,'store_usergroup'])->name('permissions_manager.store_usergroup')
-->middleware(PermissionManagerMiddleware::class);
-
-//Manage Wikifarm
-Route::get('/manage_wikifarm', [OptionsController::class,'index'])->name('manage_wikifarm.index')
-->middleware(ManageWikifarmMiddleware::class);
-Route::post('/manage_wikifarm/update', [OptionsController::class,'update'])->name('manage_wikifarm.update')
-->middleware(ManageWikifarmMiddleware::class);
 
 //Логин, регистрация
 $options = Option::firstOrFail();
