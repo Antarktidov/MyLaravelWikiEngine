@@ -1,5 +1,8 @@
 
 # MyLaravelWikiEngine
+> [!WARNING]  
+> This README is outdated. Some instructions (in particular, installation instructions) given in this document will not work. Some features are not documented.
+
 A PHP Laravel 11 Wiki Engine with comments.
 
 ![Article Screenshot](https://github.com/Antarktidov/MyLaravelWikiEngine/blob/master/images/article%20screenshot%20with%20comments.png?raw=true)
