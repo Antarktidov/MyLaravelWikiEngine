@@ -14,7 +14,7 @@ use App\Models\Revision;
 class ArticleHistoryTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_example(): void
+    public function test_article_history_page_returns_success_with_approved_revision(): void
     {
         $wiki = Wiki::factory()->create();
 
@@ -33,6 +33,7 @@ class ArticleHistoryTest extends TestCase
             'title' => $article->title,
             'user_id' => $user->id,
             'user_ip' => '127.0.0.1',
+            'is_approved' => true,
         ]);
 
         $response = $this->get("/wiki/{$wiki->url}/article/{$article->url_title}/history");

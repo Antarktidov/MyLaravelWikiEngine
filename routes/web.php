@@ -182,7 +182,7 @@ Route::middleware([ProtectionLevel3Middleware::class])->group(function () {
 });
 
 //Логин, регистрация
-$options = Option::firstOrFail();//волшебный код, который может положить всё приложение
+$options = Option::getOptions();//волшебный код, который может положить всё приложение
 Auth::routes([
     'verify' => true,
     'register' => $options->is_registration_enabled//волшебный код, который может положить всё приложение

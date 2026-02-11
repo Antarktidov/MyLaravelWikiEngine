@@ -25,6 +25,8 @@ class ViewAllAndOneArticlesTest extends TestCase
             'article_id' => $article->id,
             'user_id' => $user->id,
             'user_ip' => '127.0.0.1',
+            'is_approved' => true,
+            'is_patrolled' => true,
         ]);
 
         $response = $this->get("/wiki/{$wiki->url}/all-articles");

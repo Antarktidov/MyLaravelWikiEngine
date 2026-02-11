@@ -19,7 +19,7 @@ class RestoreRevisionTest extends TestCase
     public function test_that_user_with_restore_revision_rights_can_restore_revisions(): void
     {
         $wiki = Wiki::factory()->create([
-            'url' => 'wiki-for-article-deletion-test',
+            'url' => 'wiki-for-restore-revision-test-test',
         ]);
 
         $article = Article::factory()->create([
@@ -33,11 +33,13 @@ class RestoreRevisionTest extends TestCase
             'user_id' => 0,
             'user_ip' => '127.0.0.1',
             'deleted_at' => '2025-12-01 21:55:38',
+            'is_approved' => true,
+            'is_patrolled' => true,
         ]);
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test3@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([

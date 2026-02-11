@@ -24,7 +24,7 @@ class CreateWikiPageTest extends TestCase
     {
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test36@example.com',
         ]);
 
         $this->actingAs($user);
@@ -38,7 +38,7 @@ class CreateWikiPageTest extends TestCase
     {
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test37@example.com',
         ]);
 
         $usergoup =  UserGroup::factory()->create([

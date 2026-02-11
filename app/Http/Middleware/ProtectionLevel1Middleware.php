@@ -19,7 +19,7 @@ class ProtectionLevel1Middleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $options = Option::firstOrFail();
+        $options = Option::getOptions();
 
         if ($options->protection_level === 'comments_only') {
             return PermissionChecker::check_for_middleware($request, $next, 'can_edit_articles');

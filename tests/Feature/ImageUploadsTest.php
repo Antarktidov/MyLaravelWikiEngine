@@ -22,7 +22,7 @@ class ImageUploadsTest extends TestCase
             'image' => $image,
         ]);
 
-        Storage::disk('public')->assertExists("images/{$image->hashName()}");
+        Storage::disk('private')->assertExists("images/{$image->hashName()}");
 
         $this->assertDatabaseHas('images', [
             'filename' => $image->hashName(),

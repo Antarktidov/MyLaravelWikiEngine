@@ -114,7 +114,7 @@ class ArticleController extends Controller
                     }
 
                     if ($revision) {
-                        $options = Option::firstOrFail();
+                        $options = Option::getOptions();
                         
                         $is_comments_enabled = $options->is_comments_enabled;
 

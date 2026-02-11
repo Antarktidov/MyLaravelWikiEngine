@@ -19,12 +19,12 @@ class RestoreArticleTest extends TestCase
     public function test_that_user_with_restore_articles_right_can_restore_article(): void
     {
         $wiki = Wiki::factory()->create([
-            'url' => 'wiki-for-article-creation-test',
+            'url' => 'wiki-for-article-restore-test',
         ]);
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test5@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([
@@ -50,6 +50,8 @@ class RestoreArticleTest extends TestCase
             'title' => $article->title,
             'user_id' => $user->id,
             'user_ip' => '127.0.0.1',
+            'is_approved' => true,
+            'is_patrolled' => true,
         ]);
 
         $this->actingAs($user);
