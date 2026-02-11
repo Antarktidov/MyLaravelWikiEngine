@@ -14,7 +14,7 @@ use App\Models\Revision;
 class ArticleHistoryTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_example(): void
+    public function test_article_history_page_returns_success_with_approved_revision(): void
     {
         $wiki = Wiki::factory()->create();
 

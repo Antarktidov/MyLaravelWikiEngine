@@ -21,10 +21,6 @@ class DeleteUnexistingRevisionTest extends TestCase
             'email' => 'test29@example.com',
         ]);
 
-        $managed_user = User::factory()->create([
-            'name' => 'Test User2',
-            'email' => 'test206@example.com',
-        ]);
         $usergroup = UserGroup::factory()->create([
             'name' => 'revisor-global',
             'can_delete_revisions' => 1,
