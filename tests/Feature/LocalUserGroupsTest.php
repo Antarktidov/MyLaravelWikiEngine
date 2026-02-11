@@ -17,7 +17,7 @@ class LocalUserGroupsTest extends TestCase
     public function test_that_users_with_local_manage_local_user_rights_permission_can_assign_local_groups(): void
     {
         $wiki = Wiki::factory()->create([
-            'url' => 'wiki-for-article-creation-test',
+            'url' => 'wiki-for-local-usergroup-test',
         ]);
 
         $user = User::factory()->create([

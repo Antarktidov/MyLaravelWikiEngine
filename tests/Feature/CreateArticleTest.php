@@ -49,7 +49,7 @@ class CreateArticleTest extends TestCase
         ]);
 
         $wiki = Wiki::factory()->create([
-            'url' => 'wiki-for-article-creation-test',
+            'url' => 'wiki-for-article-creation-test1',
         ]);
 
         $data = [

@@ -22,7 +22,7 @@ class DeleteCommentsTest extends TestCase
     public function test_that_user_with_delete_comments_right_can_delete_comments(): void
     {
         $wiki = Wiki::factory()->create([
-            'url' => 'wiki-for-comments-test',
+            'url' => 'wiki-for-comments-test1',
         ]);
 
         $article = Article::factory()->create([

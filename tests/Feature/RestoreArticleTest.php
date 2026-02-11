@@ -19,7 +19,7 @@ class RestoreArticleTest extends TestCase
     public function test_that_user_with_restore_articles_right_can_restore_article(): void
     {
         $wiki = Wiki::factory()->create([
-            'url' => 'wiki-for-article-creation-test',
+            'url' => 'wiki-for-article-restore-test',
         ]);
 
         $user = User::factory()->create([

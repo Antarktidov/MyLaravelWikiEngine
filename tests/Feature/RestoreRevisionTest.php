@@ -19,7 +19,7 @@ class RestoreRevisionTest extends TestCase
     public function test_that_user_with_restore_revision_rights_can_restore_revisions(): void
     {
         $wiki = Wiki::factory()->create([
-            'url' => 'wiki-for-article-deletion-test',
+            'url' => 'wiki-for-restore-revision-test-test',
         ]);
 
         $article = Article::factory()->create([
