@@ -69,7 +69,7 @@ class UserProfileController extends Controller
         foreach ($up_revs as $rev) {
             $rev->delete();
         }
-        return response(__('The user profile has been deled'), 200)
+        return response(__('The user profile has been deleted'), 200)
             >header('Content-Type', 'text/plain');
     }
 
@@ -82,16 +82,54 @@ class UserProfileController extends Controller
         }
 
         
-        $user_profile= UserProfileRevision::where('user_id', $user->id)
+        $user_profile = UserProfileRevision::where('user_id', $user->id)
         ->where('wiki_id', 0)
-        ->where('is_approved', true)
         ->whereNull('deleted_at')
         ->orderBy('id', 'desc')->first();
 
         return view('userprofile-global-edit', compact('user_profile', 'user'));
     }
 
-    public function store_global() {
-        //
+    public function store_global(User $user) {
+        $data = request()->validate([
+            'avatar'          => ['nullable', 'string'],
+            'banner'          => ['nullable', 'string'],
+            'about'           => ['nullable', 'string'],
+            'aka'             => ['nullable', 'string'],
+            'i_live_in'       => ['nullable', 'string'],
+            'discord'         => ['nullable', 'string'],
+            'discord_if_bot'  => ['nullable', 'string'],
+            'vk'              => ['nullable', 'string'],
+            'telegram'        => ['nullable', 'string'],
+            'github'          => ['nullable', 'string'],
+        ]);
+
+        $user2 = auth()->user();
+        if (!($user2 != null && $user2->id === $user->id)) {
+            abort(403);
+        }
+
+        $up_rev = [
+            'avatar'          => $data['avatar'] ?? null,
+            'banner'          => $data['banner'] ?? null,
+            'about'           => $data['about'] ?? null,
+            'aka'             => $data['aka'] ?? null,
+            'i_live_in'       => $data['i_live_in'] ?? null,
+            'discord'         => $data['discord'] ?? null,
+            'discord_if_bot'  => $data['discord_if_bot'] ?? null,
+            'vk'              => $data['vk'] ?? null,
+            'telegram'        => $data['telegram'] ?? null,
+            'github'          => $data['github'] ?? null,
+
+            //значения, устанаваливаемые сервером
+            'is_approved'     => false,
+            'wiki_id'         => 0,
+            'user_id'         => $user->id,
+        ];
+
+        UserProfileRevision::create($up_rev);
+
+        return response(__('The user profile has been successfully updated'), 200)
+            >header('Content-Type', 'text/plain');
     }
 }

@@ -15,20 +15,20 @@ return new class extends Migration
             $table->id();
 
             //Аватарка и баннер
-            $table->string('avatar');
-            $table->string('banner');
+            $table->string('avatar')->nullable();
+            $table->string('banner')->nullable();
 
             //About
-            $table->text('about');
-            $table->string('i_live_in');
-            $table->string('aka');
+            $table->text('about')->nullable();
+            $table->string('i_live_in')->nullable();
+            $table->string('aka')->nullable();
 
             //внешние сайты
-            $table->string('discord');
-            $table->string('discord_if_bot');
-            $table->string('vk');
-            $table->string('telegram');
-            $table->string('github');
+            $table->string('discord')->nullable();
+            $table->string('discord_if_bot')->nullable();
+            $table->string('vk')->nullable();
+            $table->string('telegram')->nullable();
+            $table->string('github')->nullable();
 
             //Внешние ключи
             $table->unsignedBigInteger('wiki_id');
