@@ -178,6 +178,7 @@ Route::middleware([ProtectionLevel3Middleware::class])->group(function () {
     //Локальные профили
     Route::get('/wiki/{wikiName}/userprofile/{user}', [UserProfileController::class, 'show_local'])->name('userprofile.local.show');
     Route::get('/wiki/{wikiName}/userprofile/{user}/edit', [UserProfileController::class, 'edit_local'])->name('userprofile.local.edit');
+    Route::post('/wiki/{wikiName}/userprofile/{user}/store', [UserProfileController::class, 'store_local'])->name('userprofile.local.store');
 });
 
 //Логин, регистрация

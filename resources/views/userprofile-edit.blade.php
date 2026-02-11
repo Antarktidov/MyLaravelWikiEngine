@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <h1>{{__('Edit local profile')}}</h1>
-    <form action="{{ route('userprofile.global.store', $user) }}" method="post">
+    <form action="{{ route('userprofile.local.store',[$wiki->url, $user]) }}" method="post">
         @csrf
         <div class="mb-3">
             <label for="avatar" class="form-label">{{__('Avatar inline styles')}}</label>
