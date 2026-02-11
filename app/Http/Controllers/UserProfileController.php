@@ -28,7 +28,7 @@ class UserProfileController extends Controller
         $wiki = Wiki::withTrashed()->first();
         $user2 = auth()->user();
         if ($user2 != null) {
-            $can_review_user_profiles = $user->can('review_user_profiles', $wiki->url);
+            $can_review_user_profiles = $user2->can('review_user_profiles', $wiki->url);
             $is_my_profile = $user2->id === $user->id;
         } else {
             $can_review_user_profiles = false;
@@ -63,7 +63,10 @@ class UserProfileController extends Controller
 
         $user_usergroups_wiki = UserUserGroupWiki::where('user_id', $user->id)
         ->where('wiki_id', 0)
-        ->orWhere('wiki_id', $wiki->id)
+        ->where(function ($query) use ($wiki) {
+            $query->where('wiki_id', 0)
+                  ->orWhere('wiki_id', $wiki->id);
+        })
         ->select('user_group_id')
         ->get();
 
@@ -75,7 +78,7 @@ class UserProfileController extends Controller
 
         $user2 = auth()->user();
         if ($user2 != null) {
-            $can_review_user_profiles = $user->can('review_user_profiles', $wiki->url);
+            $can_review_user_profiles = $user2->can('review_user_profiles', $wiki->url);
             $is_my_profile = $user2->id === $user->id;
         } else {
             $can_review_user_profiles = false;

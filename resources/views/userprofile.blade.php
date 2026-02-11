@@ -124,7 +124,7 @@
       @if($about)
         <section class="mb-4">
           <h5 class="border-bottom pb-1 mb-2">О себе</h5>
-          <div class="text-break">{{ nl2br(e($about)) }}</div>
+          <div class="text-break">{!! nl2br(e($about)) !!}</div>
         </section>
       @endif
 

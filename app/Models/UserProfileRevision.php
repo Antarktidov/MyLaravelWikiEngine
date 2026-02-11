@@ -10,5 +10,16 @@ class UserProfileRevision extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    protected $guarded = false;
+    protected $fillable = [
+        'avatar',
+        'banner',
+        'about',
+        'aka',
+        'i_live_in',
+        'discord',
+        'discord_if_bot',
+        'vk',
+        'telegram',
+        'github',
+    ];
 }

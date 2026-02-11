@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Helpers\PermissionChecker;
 
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Database\Query\Builder;
 use Closure;
 use Illuminate\Http\Request;

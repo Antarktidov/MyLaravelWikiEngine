@@ -40,8 +40,8 @@
             <input type="text" name="telegram" id="telegram" class="form-control" value="{{ $user_profile->telegram ?? '' }}">
         </div>
         <div class="mb-3">
-            <label for="telegram" class="form-label">GitHub</label>
-            <input type="github" name="github" id="github" class="form-control" value="{{ $user_profile->github ?? '' }}">
+            <label for="github" class="form-label">GitHub</label>
+            <input type="text" name="github" id="github" class="form-control" value="{{ $user_profile->github ?? '' }}">
         </div>
         <button type="submit" class="btn btn-primary">{{__('Save')}}</button>
     </form>
