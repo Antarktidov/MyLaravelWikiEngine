@@ -104,7 +104,7 @@
           </div>
         @endif
         @if($user_profile && $user_profile->i_live_in)
-          <p class="text-muted mt-2 mb-0 small">{{ $user_profile->i_live_in }}</p>
+          <p class="text-muted mt-2 mb-0 small">{{ __('I live in: ') }} {{ $user_profile->i_live_in }}</p>
         @endif
       </div>
     </div>
