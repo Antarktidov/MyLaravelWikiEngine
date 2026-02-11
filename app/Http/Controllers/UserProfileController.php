@@ -62,7 +62,6 @@ class UserProfileController extends Controller
         }
 
         $user_usergroups_wiki = UserUserGroupWiki::where('user_id', $user->id)
-        ->where('wiki_id', 0)
         ->where(function ($query) use ($wiki) {
             $query->where('wiki_id', 0)
                   ->orWhere('wiki_id', $wiki->id);

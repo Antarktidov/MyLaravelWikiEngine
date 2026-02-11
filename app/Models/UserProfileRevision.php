@@ -21,5 +21,8 @@ class UserProfileRevision extends Model
         'vk',
         'telegram',
         'github',
+        'wiki_id',
+        'user_id',
+        'is_approved',
     ];
 }
