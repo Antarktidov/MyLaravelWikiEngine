@@ -53,6 +53,64 @@ class UserProfileController extends Controller
                                         'is_my_profile'));
     }
 
+    public function show_local(string $wikiName, User $user) {
+
+        $wiki = Wiki::where('url', $wikiName)->whereNull('deleted_at')->first();
+        if (!$wiki) {
+            return response(__('Wiki does not exist'), 404)
+                ->header('Content-Type', 'text/plain');
+        }
+
+        $user_usergroups_wiki = UserUserGroupWiki::where('user_id', $user->id)
+        ->where('wiki_id', 0)
+        ->orWhere('wiki_id', $wiki->id)
+        ->select('user_group_id')
+        ->get();
+
+        $user_group_names = [];
+
+        foreach($user_usergroups_wiki as $item) {
+            $user_group_names[] = UserGroup::find($item->user_group_id)->name;
+        }
+
+        $user2 = auth()->user();
+        if ($user2 != null) {
+            $can_review_user_profiles = $user->can('review_user_profiles', $wiki->url);
+            $is_my_profile = $user2->id === $user->id;
+        } else {
+            $can_review_user_profiles = false;
+            $is_my_profile = false;
+        }
+
+        if ($can_review_user_profiles || $is_my_profile) {
+            $user_profile = UserProfileRevision::where('user_id', $user->id)
+            ->where('wiki_id', 0)
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')->first();
+
+            $user_profile_local = UserProfileRevision::where('user_id', $user->id)
+            ->where('wiki_id', $wiki->id)
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')->first();
+        } else {
+            $user_profile = UserProfileRevision::where('user_id', $user->id)
+            ->where('wiki_id', 0)
+            ->where('is_approved', true)
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')->first();
+
+            $user_profile = UserProfileRevision::where('user_id', $user->id)
+            ->where('wiki_id', $wiki->id)
+            ->where('is_approved', true)
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')->first();
+        }
+
+        return view('userprofile', compact('user_profile', 'user_profile_local', 'user',
+                                        'user_group_names', 'can_review_user_profiles',
+                                        'is_my_profile'));
+    }
+
     public function approve(UserProfileRevision $up_rev) {
         $up_rev->update([
             'is_approved' => true,
