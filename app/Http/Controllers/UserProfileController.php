@@ -54,6 +54,8 @@ class UserProfileController extends Controller
             ->orderBy('id', 'desc')->first();
         }
 
-        return view('userprofile-global', compact('user_profile', 'user', 'user_group_names'));
+        return view('userprofile-global', compact('user_profile', 'user',
+                                        'user_group_names', 'can_review_user_profiles',
+                                        'is_my_profile'));
     }
 }

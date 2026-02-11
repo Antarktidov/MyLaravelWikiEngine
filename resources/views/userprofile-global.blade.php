@@ -15,7 +15,7 @@
   }
   .profile-banner {
     min-height: 200px;
-    background: linear-gradient(135deg, var(--bs-secondary) 0%, var(--bs-dark) 100%);
+    background: @if($user_profile && $user_profile->banner_bg_color) {{ $user_profile->banner_bg_color }} @else linear-gradient(135deg, var(--bs-secondary) 0%, var(--bs-dark) 100%)@endif;
     position: relative;
   }
   /* Placeholder для аватара/баннера — загрузка будет на бэкенде */
@@ -56,7 +56,7 @@
 </style>
 <div class="border rounded overflow-hidden">
   {{-- Баннер (заглушка: управление на бэкенде) --}}
-  <div class="profile-banner" @if($user_profile && $user_profile->banner_bg_color) style="background-color: {{ $user_profile->banner_bg_color }};" @endif>
+  <div class="profile-banner">
     {{-- TODO: вывод banner когда будет реализована загрузка/хранение на бэкенде --}}
   </div>
 
@@ -77,6 +77,12 @@
           @if($user_profile && $user_profile->aka)
             <span class="text-muted">aka</span>
             <h3 class="mb-0 fs-5 text-muted">{{ $user_profile->aka }}</h3>
+          @endif
+          @if($can_review_user_profiles && !$user_profile->is_approved)
+            <button class="btn btn-success">{{__('Approve')}}</button>
+          @endif
+          @if($can_review_user_profiles || $is_my_profile)
+            <button class="btn btn-danger">{{__('Delete')}}</button>
           @endif
         </div>
         @if($user_group_names)
