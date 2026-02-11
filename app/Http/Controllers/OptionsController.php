@@ -9,7 +9,7 @@ use App\Models\Option;
 class OptionsController extends Controller
 {
     public function index() {
-        $options = Option::firstOrFail();
+        $options = Option::getOptions();
         return view('manage_wikifarm', compact('options'));
     }
 
@@ -24,7 +24,7 @@ class OptionsController extends Controller
         $data['is_comments_enabled'] = $request->has('is_comments_enabled');
         $data['is_registration_enabled'] = $request->has('is_registration_enabled');
 
-        $options = Option::firstOrFail();
+        $options = Option::getOptions();
 
         $options->update([
             'protection_level' => $data['protection_level'],

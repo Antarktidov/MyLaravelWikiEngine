@@ -18,7 +18,7 @@ class CommentsEnabledMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-        $options = Option::firstOrFail();
+        $options = Option::getOptions();
 
         if (!$options->is_comments_enabled) {
             abort(404);
