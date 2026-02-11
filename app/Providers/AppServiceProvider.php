@@ -13,6 +13,7 @@ use App\Models\Wiki;
 use App\Models\UserGroup;
 use App\Models\UserUserGroupWiki;*/
 use App\Helpers\PermissionChecker;
+use Illuminate\Support\Facades\Schema;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -32,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
 public function boot(): void
 {
+    Schema::defaultStringLength(191);
     
     Gate::define('edit_articles', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_edit_articles');
@@ -103,6 +105,10 @@ public function boot(): void
 
     Gate::define('manage_permissions', function ($user, $wikiName) {
         return PermissionChecker::check($user, $wikiName, 'can_manage_permissions');
+    });
+
+    Gate::define('review_user_profiles', function ($user, $wikiName) {
+        return PermissionChecker::check($user, $wikiName, 'can_review_user_profiles');
     });
     
     /*Gate::define('revert_edits_to_old_version', function ($user, $wikiName) {

@@ -9,6 +9,7 @@ use App\Http\Controllers\UserRightsController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\PermissionsManagerController;
 use App\Http\Controllers\OptionsController;
+use App\Http\Controllers\UserProfileController;
 
 use App\Http\Middleware\DeleteMiddleware;
 use App\Http\Middleware\DeleteRevisionMiddleware;
@@ -43,7 +44,9 @@ use App\Http\Middleware\ProtectionLevel1Middleware;
 use App\Http\Middleware\ProtectionLevel2Middleware;
 use App\Http\Middleware\ProtectionLevel3Middleware;
 
-use App\Models\Option;
+use App\Http\Middleware\ReviewUserProfilesMiddleware;
+
+use App\Models\Option;//волшебный код, который может положить всё приложение
 
 Route::middleware([ProtectionLevel3Middleware::class])->group(function () {
 
@@ -162,13 +165,27 @@ Route::middleware([ProtectionLevel3Middleware::class])->group(function () {
     ->middleware(ManageWikifarmMiddleware::class);
     Route::post('/manage_wikifarm/update', [OptionsController::class,'update'])->name('manage_wikifarm.update')
     ->middleware(ManageWikifarmMiddleware::class);
+
+    //Глобальные профили
+    Route::get('/userprofile-global/{user}', [UserProfileController::class, 'show_global'])->name('userprofile.global.show');
+    Route::post('/userprofile-global/{up_rev}/approve', [UserProfileController::class, 'approve'])->name('userprofile.global.approve')
+    ->middleware(ReviewUserProfilesMiddleware::class);
+    Route::delete('/userprofile-global/{user}/delete', [UserProfileController::class, 'delete'])->name('userprofile.global.delete')
+    ->middleware(ReviewUserProfilesMiddleware::class);
+    Route::get('/userprofile-global/{user}/edit', [UserProfileController::class, 'edit_global'])->name('userprofile.global.edit');
+    Route::post('/userprofile-global/{user}/store', [UserProfileController::class, 'store_global'])->name('userprofile.global.store');
+
+    //Локальные профили
+    Route::get('/wiki/{wikiName}/userprofile/{user}', [UserProfileController::class, 'show_local'])->name('userprofile.local.show');
+    Route::get('/wiki/{wikiName}/userprofile/{user}/edit', [UserProfileController::class, 'edit_local'])->name('userprofile.local.edit');
+    Route::post('/wiki/{wikiName}/userprofile/{user}/store', [UserProfileController::class, 'store_local'])->name('userprofile.local.store');
 });
 
 //Логин, регистрация
-$options = Option::firstOrFail();
+$options = Option::firstOrFail();//волшебный код, который может положить всё приложение
 Auth::routes([
     'verify' => true,
-    'register' => $options->is_registration_enabled
+    'register' => $options->is_registration_enabled//волшебный код, который может положить всё приложение
     ]);
 
 // Email verification routes
