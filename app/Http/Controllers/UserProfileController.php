@@ -99,7 +99,7 @@ class UserProfileController extends Controller
             ->whereNull('deleted_at')
             ->orderBy('id', 'desc')->first();
 
-            $user_profile = UserProfileRevision::where('user_id', $user->id)
+            $user_profile_local = UserProfileRevision::where('user_id', $user->id)
             ->where('wiki_id', $wiki->id)
             ->where('is_approved', true)
             ->whereNull('deleted_at')
