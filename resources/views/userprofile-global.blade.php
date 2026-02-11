@@ -42,5 +42,8 @@
       @endforeach
     @endif
   </div>
+  <div class="profile-body">
+    <div class="rounded-circle w-100"></div>
+  </div>
 </div>
 @endsection
