@@ -104,7 +104,7 @@
             <button class="btn btn-danger"  onclick="deleteProfile()">{{__('Delete')}}</button>
           @endif
           @if($is_my_profile)
-            <a href="{{ route('userprofile.global.edit', $user) }}" class="btn btn-primary">{{__('Edit')}}</a>
+            <a href="{{ route('userprofile.local.edit', [$wiki->url, $user]) }}" class="btn btn-primary">{{__('Edit')}}</a>
           @endif
         </div>
         @if($user_group_names)

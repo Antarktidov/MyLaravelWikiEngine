@@ -108,7 +108,7 @@ class UserProfileController extends Controller
 
         return view('userprofile', compact('user_profile', 'user_profile_local', 'user',
                                         'user_group_names', 'can_review_user_profiles',
-                                        'is_my_profile'));
+                                        'is_my_profile', 'wiki'));
     }
 
     public function approve(UserProfileRevision $up_rev) {
@@ -146,6 +146,23 @@ class UserProfileController extends Controller
         ->orderBy('id', 'desc')->first();
 
         return view('userprofile-global-edit', compact('user_profile', 'user'));
+    }
+
+    public function edit_local(string $wikiName, User $user) {
+
+        $wiki = Wiki::withTrashed()->first();
+        $user2 = auth()->user();
+        if (!($user2 != null && $user2->id === $user->id)) {
+            abort(403);
+        }
+
+        
+        $user_profile = UserProfileRevision::where('user_id', $user->id)
+        ->where('wiki_id', $wiki->id)
+        ->whereNull('deleted_at')
+        ->orderBy('id', 'desc')->first();
+
+        return view('userprofile-edit', compact('user_profile', 'user'));
     }
 
     public function store_global(User $user) {
