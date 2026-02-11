@@ -58,7 +58,7 @@ class UserProfileController extends Controller
             'is_approved' => true,
         ]);
         return response(__('The user profile revision has been approved'), 200)
-            >header('Content-Type', 'text/plain');
+            ->header('Content-Type', 'text/plain');
     }
 
     public function delete(User $user) {
@@ -70,7 +70,7 @@ class UserProfileController extends Controller
             $rev->delete();
         }
         return response(__('The user profile has been deleted'), 200)
-            >header('Content-Type', 'text/plain');
+            ->header('Content-Type', 'text/plain');
     }
 
     public function edit_global(User $user) {
@@ -130,6 +130,6 @@ class UserProfileController extends Controller
         UserProfileRevision::create($up_rev);
 
         return response(__('The user profile has been successfully updated'), 200)
-            >header('Content-Type', 'text/plain');
+            ->header('Content-Type', 'text/plain');
     }
 }
