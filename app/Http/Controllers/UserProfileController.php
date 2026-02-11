@@ -58,4 +58,24 @@ class UserProfileController extends Controller
                                         'user_group_names', 'can_review_user_profiles',
                                         'is_my_profile'));
     }
+
+    public function approve(UserProfileRevision $up_rev) {
+        $up_rev->update([
+            'is_approved' => true,
+        ]);
+        return response(__('The user profile revision has been approved'), 200)
+            >header('Content-Type', 'text/plain');
+    }
+
+    public function delete(User $user) {
+        $up_revs = UserProfileRevision::where('user_id', $user->id)
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')->get();
+
+        foreach ($up_revs as $rev) {
+            $rev->delete();
+        }
+        return response(__('The user profile has been deled'), 200)
+            >header('Content-Type', 'text/plain');
+    }
 }

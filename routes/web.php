@@ -44,6 +44,8 @@ use App\Http\Middleware\ProtectionLevel1Middleware;
 use App\Http\Middleware\ProtectionLevel2Middleware;
 use App\Http\Middleware\ProtectionLevel3Middleware;
 
+use App\Http\Middleware\ReviewUserProfilesMiddleware;
+
 use App\Models\Option;//волшебный код, который может положить всё приложение
 
 Route::middleware([ProtectionLevel3Middleware::class])->group(function () {
@@ -166,6 +168,10 @@ Route::middleware([ProtectionLevel3Middleware::class])->group(function () {
 
     //Глобальные профили
     Route::get('/userprofile-global/{user}', [UserProfileController::class, 'show_global'])->name('userprofile.global.show');
+    Route::post('/userprofile-global/{up_rev}/approve', [UserProfileController::class, 'approve'])->name('userprofile.global.approve')
+    ->middleware(ReviewUserProfilesMiddleware::class);
+    Route::delete('/userprofile-global/{user}/delete', [UserProfileController::class, 'delete'])->name('userprofile.global.delete')
+    ->middleware(ReviewUserProfilesMiddleware::class);
 });
 
 //Логин, регистрация

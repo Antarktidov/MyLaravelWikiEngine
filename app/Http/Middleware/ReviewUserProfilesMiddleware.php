@@ -16,7 +16,7 @@ use App\Models\Wiki;
 use App\Models\UserGroup;
 use App\Models\UserUserGroupWiki;
 
-class ViewDeletedMiddleware
+class ReviewUserProfilesMiddleware
 {
     /**
      * Handle an incoming request.

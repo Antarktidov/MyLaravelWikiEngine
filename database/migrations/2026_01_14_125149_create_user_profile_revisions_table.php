@@ -17,7 +17,6 @@ return new class extends Migration
             //Аватарка и баннер
             $table->string('avatar');
             $table->string('banner');
-            $table->string('banner_bg_color');
 
             //About
             $table->text('about');
