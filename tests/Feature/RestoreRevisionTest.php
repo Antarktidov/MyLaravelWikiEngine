@@ -33,11 +33,13 @@ class RestoreRevisionTest extends TestCase
             'user_id' => 0,
             'user_ip' => '127.0.0.1',
             'deleted_at' => '2025-12-01 21:55:38',
+            'is_approved' => true,
+            'is_patrolled' => true,
         ]);
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test3@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([

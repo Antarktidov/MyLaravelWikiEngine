@@ -39,7 +39,7 @@ class DeleteCommentsTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test34@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([
@@ -63,6 +63,7 @@ class DeleteCommentsTest extends TestCase
         $comment_revision = CommentRevision::factory()->create([
             'user_ip' => '127.0.0.1',
             'comment_id' => $comment->id,
+            'is_approved' => true,
         ]);
 
         $this->actingAs($user);

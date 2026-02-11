@@ -22,7 +22,7 @@ class CloseWikiTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test41@example.com',
         ]);
 
         $usergoup = UserGroup::factory()->create([

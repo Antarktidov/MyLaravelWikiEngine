@@ -36,7 +36,7 @@ class HideRevisionTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test26@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([

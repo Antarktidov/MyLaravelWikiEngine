@@ -21,12 +21,12 @@ class DeleteRevisionOnUnexistingWikiTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test30@example.com',
         ]);
 
         $managed_user = User::factory()->create([
             'name' => 'Test User2',
-            'email' => 'test2@example.com',
+            'email' => 'test207@example.com',
         ]);
         $usergroup = UserGroup::factory()->create([
             'name' => 'revisor-global',

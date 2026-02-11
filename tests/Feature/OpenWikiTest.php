@@ -18,7 +18,7 @@ class OpenWikiTest extends TestCase
     {
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test6@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([

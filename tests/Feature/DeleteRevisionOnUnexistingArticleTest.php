@@ -21,7 +21,7 @@ class DeleteRevisionOnUnexistingArticleTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test33@example.com',
         ]);
 
         $managed_user = User::factory()->create([

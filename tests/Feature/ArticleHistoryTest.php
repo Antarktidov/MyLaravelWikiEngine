@@ -33,6 +33,7 @@ class ArticleHistoryTest extends TestCase
             'title' => $article->title,
             'user_id' => $user->id,
             'user_ip' => '127.0.0.1',
+            'is_approved' => true,
         ]);
 
         $response = $this->get("/wiki/{$wiki->url}/article/{$article->url_title}/history");

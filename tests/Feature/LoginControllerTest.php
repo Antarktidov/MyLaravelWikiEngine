@@ -39,12 +39,12 @@ class LoginControllerTest extends TestCase
     public function test_user_can_login_with_valid_credentials(): void
     {
         $user = User::factory()->create([
-            'email' => 'test@example.com',
+            'email' => 'test8@example.com',
             'password' => bcrypt('password123'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
+            'email' => 'test8@example.com',
             'password' => 'password123',
         ]);
 
@@ -58,12 +58,12 @@ class LoginControllerTest extends TestCase
     public function test_user_cannot_login_with_invalid_password(): void
     {
         $user = User::factory()->create([
-            'email' => 'test@example.com',
+            'email' => 'test9@example.com',
             'password' => bcrypt('correct_password'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
+            'email' => 'test10@example.com',
             'password' => 'wrong_password',
         ]);
 
@@ -105,7 +105,7 @@ class LoginControllerTest extends TestCase
     public function test_login_requires_password(): void
     {
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
+            'email' => 'test11@example.com',
         ]);
 
         $response->assertSessionHasErrors('password');
@@ -144,12 +144,12 @@ class LoginControllerTest extends TestCase
     public function test_redirects_to_home_after_successful_login(): void
     {
         $user = User::factory()->create([
-            'email' => 'test@example.com',
+            'email' => 'test12@example.com',
             'password' => bcrypt('password123'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
+            'email' => 'test12@example.com',
             'password' => 'password123',
         ]);
 
@@ -162,12 +162,12 @@ class LoginControllerTest extends TestCase
     public function test_remember_me_functionality(): void
     {
         $user = User::factory()->create([
-            'email' => 'test@example.com',
+            'email' => 'test14@example.com',
             'password' => bcrypt('password123'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
+            'email' => 'test14@example.com',
             'password' => 'password123',
             'remember' => true,
         ]);

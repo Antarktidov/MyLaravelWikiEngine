@@ -33,7 +33,7 @@ class WikiCreationTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test45@example.com',
         ]);
 
         $data = [
@@ -55,7 +55,7 @@ class WikiCreationTest extends TestCase
     {
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test1@example.com',
         ]);
 
         $usergoup =  UserGroup::factory()->create([
@@ -88,7 +88,7 @@ class WikiCreationTest extends TestCase
     {
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test200@example.com',
         ]);
 
         $usergoup =  UserGroup::factory()->create([
@@ -103,7 +103,7 @@ class WikiCreationTest extends TestCase
         ]);
 
         $data = [
-            'url' => 'TestWiki',
+            'url' => 'TestCreationWiki',
         ];
 
         $this->actingAs($user);

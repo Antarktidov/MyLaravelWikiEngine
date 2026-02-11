@@ -45,7 +45,7 @@ class CreateArticleTest extends TestCase
     {
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test40@example.com',
         ]);
 
         $wiki = Wiki::factory()->create([

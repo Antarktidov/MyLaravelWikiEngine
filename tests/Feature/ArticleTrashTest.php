@@ -22,7 +22,7 @@ class ArticleTrashTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test42@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([
@@ -48,6 +48,8 @@ class ArticleTrashTest extends TestCase
             'title' => $article->title,
             'user_id' => $user->id,
             'user_ip' => '127.0.0.1',
+            'is_approved' => true,
+            'is_patrolled' => true,
         ]);
 
         $this->actingAs($user);

@@ -37,7 +37,7 @@ class ViewDeletedRevisionsTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test100@example.com',
         ]);
 
         $usergroup = UserGroup::factory()->create([
