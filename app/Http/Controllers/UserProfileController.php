@@ -28,7 +28,11 @@ class UserProfileController extends Controller
         $wiki = Wiki::withTrashed()->first();
         $user2 = auth()->user();
         if ($user2 != null) {
-            $can_review_user_profiles = $user2->can('review_user_profiles', $wiki->url);
+            if ($wiki) {
+                $can_review_user_profiles = $user2->can('review_user_profiles', $wiki->url);
+            } else {
+                $can_review_user_profiles = false;
+            }
             $is_my_profile = $user2->id === $user->id;
         } else {
             $can_review_user_profiles = false;
@@ -135,7 +139,6 @@ class UserProfileController extends Controller
 
     public function edit_global(User $user) {
 
-        $wiki = Wiki::withTrashed()->first();
         $user2 = auth()->user();
         if (!($user2 != null && $user2->id === $user->id)) {
             abort(403);
