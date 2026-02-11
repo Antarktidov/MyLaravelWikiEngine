@@ -1,12 +1,23 @@
 @extends('layouts.app')
 @section('content')
+@php
+  $banner = optional($user_profile_local)->banner ?? optional($user_profile)->banner;
+  $avatar = optional($user_profile_local)->avatar ?? optional($user_profile)->avatar;
+  $aka = optional($user_profile_local)->aka ?? optional($user_profile)->aka;
+  $i_live_in = optional($user_profile_local)->i_live_in ?? optional($user_profile)->i_live_in;
+  $about = optional($user_profile_local)->about ?? optional($user_profile)->about;
+  $discord = optional($user_profile_local)->discord ?? optional($user_profile)->discord;
+  $discord_if_bot = optional($user_profile_local)->discord_if_bot ?? optional($user_profile)->discord_if_bot;
+  $vk = optional($user_profile_local)->vk ?? optional($user_profile)->vk;
+  $telegram = optional($user_profile_local)->telegram ?? optional($user_profile)->telegram;
+  $github = optional($user_profile_local)->github ?? optional($user_profile)->github;
+  $profile_id = optional($user_profile_local)->id ?? optional($user_profile)->id;
+  $is_approved_effective = optional($user_profile_local)->is_approved ?? optional($user_profile)->is_approved;
+  $has_profile = $user_profile_local ?? $user_profile;
+@endphp
 <script>
   var userId = {{ $user->id }};
-  @if($user_profile)
-  var upRevId = {{ $user_profile->id }};
-  @else
-  var upRevId = null;
-  @endif
+  var upRevId = @json($profile_id);
 </script>
 <script src="{{ asset('js/user-profile-util.js') }}" defer></script>
 <style>
@@ -24,7 +35,7 @@
   }
   .profile-banner {
     min-height: 200px;
-    background: @if($user_profile && $user_profile->banner) {{ $user_profile->banner }} @else linear-gradient(135deg, var(--bs-secondary) 0%, var(--bs-dark) 100%)@endif;
+    background: @if($banner) {{ $banner }} @else linear-gradient(135deg, var(--bs-secondary) 0%, var(--bs-dark) 100%)@endif;
     position: relative;
   }
   /* Placeholder для аватара/баннера — загрузка будет на бэкенде */
@@ -32,7 +43,7 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: @if($user_profile && $user_profile->avatar) {{ $user_profile->avatar }} @else var(--bs-secondary) @endif;
+    background: @if($avatar) {{ $avatar }} @else var(--bs-secondary) @endif;
     border: 4px solid var(--bs-body-bg);
     display: flex;
     align-items: center;
@@ -72,7 +83,7 @@
       {{-- Аватар (заглушка: управление на бэкенде) --}}
       <div class="profile-avatar flex-shrink-0">
         {{-- TODO: вывод avatar когда будет реализована загрузка/хранение на бэкенде --}}
-        @if($user_profile && $user_profile->avatar)
+        @if($avatar)
           {{-- <img src="..." alt="" class="rounded-circle w-100 h-100 object-fit-cover"> --}}
         @else
         <span class="opacity-50">?</span>
@@ -82,11 +93,11 @@
       <div class="flex-grow-1 min-w-0">
         <div class="profile-header mb-2">
           <h1 class="mb-0">{{ $user->name }}</h1>
-          @if($user_profile && $user_profile->aka)
+          @if($aka)
             <span class="text-muted">aka</span>
-            <h3 class="mb-0 fs-5 text-muted">{{ $user_profile->aka }}</h3>
+            <h3 class="mb-0 fs-5 text-muted">{{ $aka }}</h3>
           @endif
-          @if($can_review_user_profiles && $user_profile && !$user_profile->is_approved)
+          @if($can_review_user_profiles && $has_profile && !$is_approved_effective)
             <button class="btn btn-success" onclick="approveRev()">{{__('Approve')}}</button>
           @endif
           @if($can_review_user_profiles || $is_my_profile)
@@ -103,27 +114,27 @@
             @endforeach
           </div>
         @endif
-        @if($user_profile && $user_profile->i_live_in)
-          <p class="text-muted mt-2 mb-0 small">{{ __('I live in: ') }} {{ $user_profile->i_live_in }}</p>
+        @if($i_live_in)
+          <p class="text-muted mt-2 mb-0 small">{{ __('I live in: ') }} {{ $i_live_in }}</p>
         @endif
       </div>
     </div>
 
-    @if($user_profile)
-      @if($user_profile->about)
+    @if($has_profile)
+      @if($about)
         <section class="mb-4">
           <h5 class="border-bottom pb-1 mb-2">О себе</h5>
-          <div class="text-break">{{ nl2br(e($user_profile->about)) }}</div>
+          <div class="text-break">{{ nl2br(e($about)) }}</div>
         </section>
       @endif
 
       @php
         $links = array_filter([
-          'Discord' => $user_profile->discord ?? null,
-          'Discord (бот)' => $user_profile->discord_if_bot ?? null,
-          'VK' => $user_profile->vk ?? null,
-          'Telegram' => $user_profile->telegram ?? null,
-          'GitHub' => $user_profile->github ?? null,
+          'Discord' => $discord,
+          'Discord (бот)' => $discord_if_bot,
+          'VK' => $vk,
+          'Telegram' => $telegram,
+          'GitHub' => $github,
         ]);
       @endphp
       @if(!empty($links))
