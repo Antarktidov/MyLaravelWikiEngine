@@ -1,7 +1,7 @@
 
 # MyLaravelWikiEngine
 > [!WARNING]  
-> This README is outdated. Some instructions (in particular, installation instructions) given in this document will not work. Some features are not documented.
+> This README is outdated. Some instructions given in this document will not work. Some features are not documented.
 
 A PHP Laravel 11 Wiki Engine with comments.
 
