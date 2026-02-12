@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Revision;
 use App\Models\Wiki;
 use App\Models\Option;
+use App\Models\Image;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -115,12 +116,18 @@ class ArticleController extends Controller
 
                     if ($revision) {
                         $options = Option::getOptions();
+                        $images = Image::where('is_approved', true)
+                        ->whereNull('deleted_at')
+                        ->orderBy('id', 'desc')
+                        ->limit(5)
+                        ->get();
                         
                         $is_comments_enabled = $options->is_comments_enabled;
 
                         return view('article', compact('revision', 'wiki', 'article',
                         'userId', 'userName', 'userCanDeleteComments',
-                        'userCanApproveComments', 'is_comments_enabled'));
+                        'userCanApproveComments', 'is_comments_enabled',
+                        'images'));
                     } else {
                         return response(__('Article does not exist'), 404)
                             ->header('Content-Type', 'text/plain');
