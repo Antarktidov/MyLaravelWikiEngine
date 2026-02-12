@@ -1,5 +1,22 @@
 @extends('layouts.app')
 @section('content')
+    <style>
+        main {
+    display: grid;
+    grid-template-columns: 20vw 1fr 20vw;
+    margin-right: auto;
+    margin-left: auto;
+    & .right-column {
+        overflow-x: auto;
+        width: 18vw;
+        }
+    }
+    .recent-img-item {
+        height: 150px;
+        width: calc(18vw * 0.9);
+        background-size: cover;
+    }
+    </style>
     <h1>{{$revision->title}}</h1>
     <div class="links">
     <a href="{{route('articles.edit', [$wiki->url, $article->url_title])}}" class="btn btn-primary">{{__('Edit')}}</a>
@@ -31,4 +48,11 @@
          >
     </div>
     @endif
+@endsection
+@section('right-column')
+<div class="recent-images">
+    @foreach ($images as $img)
+        <div class="recent-img-item" style="background-image: url({{ asset('/storage/images/' . $img->filename) }})"></div>
+    @endforeach
+</div>
 @endsection

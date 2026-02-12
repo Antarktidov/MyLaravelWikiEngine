@@ -87,8 +87,14 @@
         </nav>
 
         <main class="py-4">
+            <div class="left-column">
+                @yield('left-column')
+            </div>
             <div class="container">
                 @yield('content')
+            </div>
+            <div class="right-column">
+                @yield('right-column')
             </div>
         </main>
     </div>
