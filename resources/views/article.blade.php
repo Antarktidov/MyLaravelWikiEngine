@@ -28,6 +28,15 @@
             background-position: center;
             flex: 0 0 calc(18vw * 0.9);
         }
+        .recent-img-item-wrapper {
+            & .time {
+                margin-top: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+        .ri-header {
+            margin-bottom: 0.5rem;
+        }
     </style>
     <h1>{{$revision->title}}</h1>
     <div class="links">
@@ -62,9 +71,15 @@
     @endif
 @endsection
 @section('right-column')
+    @if (count($images) > 0)
+        <div class="ri-header fw-bold">{{ __('Recent images') }}</div>
+    @endif
 <div class="recent-images">
     @foreach ($images as $img)
+    <div class="recent-img-item-wrapper">
         <div class="recent-img-item" style="background-image: url({{ asset('/storage/images/' . $img->filename) }})"></div>
+        <div class="time ms-auto fst-italic text-secondary">{{ $img->updated_at->diffForHumans() }}</div>
+    </div>
     @endforeach
 </div>
 @endsection
