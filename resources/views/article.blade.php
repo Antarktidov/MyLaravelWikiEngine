@@ -2,20 +2,32 @@
 @section('content')
     <style>
         main {
-    display: grid;
-    grid-template-columns: 20vw 1fr 20vw;
-    margin-right: auto;
-    margin-left: auto;
-    & .right-column {
-        overflow-x: auto;
-        width: 18vw;
+            display: grid;
+            grid-template-columns: 20vw 1fr 20vw;
+            margin-right: auto;
+            margin-left: auto;
         }
-    }
-    .recent-img-item {
-        height: 150px;
-        width: calc(18vw * 0.9);
-        background-size: cover;
-    }
+
+        main .right-column {
+            overflow-x: auto;
+            width: 18vw;
+        }
+
+        .recent-images {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .recent-img-item {
+            height: 150px;
+            width: calc(18vw * 0.9);
+            background-size: cover;
+            background-position: center;
+            flex: 0 0 calc(18vw * 0.9);
+        }
     </style>
     <h1>{{$revision->title}}</h1>
     <div class="links">
