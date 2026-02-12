@@ -22,6 +22,8 @@
         }
 
         .recent-img-item {
+            object-fit: cover;
+                
             height: 150px;
             width: calc(18vw * 0.9);
             background-size: cover;
@@ -77,7 +79,7 @@
 <div class="recent-images">
     @foreach ($images as $img)
     <div class="recent-img-item-wrapper">
-        <div class="recent-img-item" style="background-image: url({{ asset('/storage/images/' . $img->filename) }})"></div>
+        <img class="recent-img-item" src="{{ asset('/storage/images/' . rawurlencode($img->filename)) }}" alt="" loading="lazy">
         <div class="time ms-auto fst-italic text-secondary">{{ $img->updated_at->diffForHumans() }}</div>
     </div>
     @endforeach
